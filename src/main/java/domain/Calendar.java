@@ -29,4 +29,10 @@ public class Calendar {
     public void addSessions(ArrayList<Session> newSessions) {
         sessions.addAll(newSessions);
     }
+    public void removeSessions(Task task) {
+        if(!sessions.containsAll(task.getSessions())){
+            throw new IllegalArgumentException("the task isn't in the calendar");
+        }
+        sessions.removeAll(task.getSessions());
+    }
 }

@@ -51,7 +51,9 @@ public class Shared extends Task {
 
     @Override
     public void handleLimitExceeded(User user) {
-
+        // Rimuovo il task dal calendario, sposto il task dalla cartella InProgress a quella Freezed e lo rimuovo dal feed
+        removeAndFreezeTask(user, this);
+        Feed.getInstance().getShared().remove(this);
     }
 
 }

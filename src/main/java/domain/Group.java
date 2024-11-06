@@ -107,7 +107,24 @@ public class Group extends Task {
     }
     @Override
     public void handleLimitExceeded(User user) {
-
+        // Rimuovo il subtask di competenza dal calendario di ogni membro e sposto il task dal loro subfolder INPROGRESS a quello FREEZED
+        for(User member: this.getMembers()){
+            Subtask subtaskOfCompetence = takenSubtasks.get(member);
+            member.getCalendar().removeSessions(this);
+            ArrayList<Folder> folders = member.getFolders();
+            boolean taskRemoved = false;
+            for (Folder folder : folders) {
+                for (Subfolder subfolder : folder.getSubfolders()) {
+                    if (!taskRemoved && subfolder.getTasks().contains(this)) {
+                        subfolder.getTasks().remove(this);
+                        taskRemoved = true;
+                    }
+                    if (subfolder.getType() == SubfolderType.FREEZED) {
+                        subfolder.getTasks().add(this);
+                    }
+                }
+            }
+        }
     }
 
     @Override

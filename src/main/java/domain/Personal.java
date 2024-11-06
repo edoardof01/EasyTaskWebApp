@@ -20,15 +20,14 @@ public class Personal extends Task {
     public Personal() {}
 
     @Override
-    public void handleLimitExceeded(User user) {
-        // Rimuovo il task dal calendario, sposto il task dalla cartella InProgress a quello Freezed
-
+    public void handleLimitExceeded(User user){
+        // Rimuovo il task dal calendario, sposto il task dalla cartella InProgress a quella Freezed
+        removeAndFreezeTask(user, this);
     }
 
     @Override
     public void toCalendar(User user) {
         commonToCalendarLogic(user);
     }
-
 
 }

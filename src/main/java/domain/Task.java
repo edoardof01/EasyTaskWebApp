@@ -224,6 +224,24 @@ public abstract class Task {
     public void resetConsecutiveSkippedSessions() {
         consecutiveSkippedSessions = 0;
     }
+
+    protected void removeAndFreezeTask(User user, Task task) {
+        user.getCalendar().removeSessions(task);
+        ArrayList<Folder> folders = user.getFolders();
+        boolean taskRemoved = false;
+        for (Folder folder : folders) {
+            for (Subfolder subfolder : folder.getSubfolders()) {
+                if (!taskRemoved && subfolder.getTasks().contains(task)) {
+                    subfolder.getTasks().remove(task);
+                    taskRemoved = true;
+                }
+                if (subfolder.getType() == SubfolderType.FREEZED) {
+                    subfolder.getTasks().add(task);
+                }
+            }
+        }
+    }
+
     public abstract void handleLimitExceeded(User user);
 
     public abstract void toCalendar(User user);

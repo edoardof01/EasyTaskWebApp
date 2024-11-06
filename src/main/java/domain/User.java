@@ -45,6 +45,7 @@ public class User {
         this.folders.add(new Folder(FolderType.GROUP,this));
         this.calendar = new Calendar();
     }
+
     public long getId() {
         return id;
     }
@@ -113,6 +114,7 @@ public class User {
             throw new IllegalArgumentException("No subtask assigned to this user in the group");
         }
     }
+
 
 
 }
