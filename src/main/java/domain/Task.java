@@ -160,7 +160,7 @@ public abstract class Task {
         }
     }
 
-    protected void commonToCalendarLogic(Calendar calendar, User user) {
+    protected void commonToCalendarLogic(User user) {
         if (this.isInProgress()) {
             throw new UnsupportedOperationException("It's already in calendar");
         }
@@ -168,7 +168,7 @@ public abstract class Task {
             throw new UnsupportedOperationException("It can't be brought to inProgress");
         }
         this.updateIsInProgress(true);
-        calendar.addSessions(this.getSessions());
+        user.getCalendar().addSessions(this.getSessions());
 
         ArrayList<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
@@ -185,7 +185,7 @@ public abstract class Task {
         }
     }
 
-    public void skipSession(Session session) {
+    public void skipSession(Session session, User user) {
         if (!sessions.contains(session)) {
             throw new IllegalArgumentException("Session not found in task.");
         }
@@ -204,7 +204,7 @@ public abstract class Task {
 
         maxSkippedSessions.ifPresent(max -> {
             if (skippedSessions > max) {
-                handleLimitExceeded();
+                handleLimitExceeded(user);
             }
         });
 
@@ -216,18 +216,17 @@ public abstract class Task {
 
         maxConsecSkippedSessions.ifPresent(max -> {
             if (consecutiveSkippedSessions > max) {
-                handleLimitExceeded();
+                handleLimitExceeded(user);
             }
         });
     }
-//LA GESTIONE DELLE SESSIONI NEL CALENDARIO AFFIDATA AL SERVICE (VEDI *1)
-
+    //LA GESTIONE DELLE SESSIONI NEL CALENDARIO AFFIDATA AL SERVICE (VEDI *1)
     public void resetConsecutiveSkippedSessions() {
         consecutiveSkippedSessions = 0;
     }
-    public abstract void handleLimitExceeded();
+    public abstract void handleLimitExceeded(User user);
 
-    public abstract void toCalendar(Calendar calendar, User user);
+    public abstract void toCalendar(User user);
 
     protected void updateIsInProgress(boolean b) {
         this.isInProgress = b;

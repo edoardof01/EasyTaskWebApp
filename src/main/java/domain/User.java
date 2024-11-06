@@ -106,7 +106,7 @@ public class User {
         if (group.getTakenSubtasks().containsKey(this)) {
             Subtask subtask = group.getTakenSubtasks().get(this);
             if (this.calendar != null) {
-                group.toCalendar(this.calendar, this);
+                group.toCalendar(this);
                 System.out.println("Subtask added to calendar for user: " + this.id);
             }
         } else {

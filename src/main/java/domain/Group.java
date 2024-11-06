@@ -106,12 +106,12 @@ public class Group extends Task {
                 .collect(Collectors.toList());
     }
     @Override
-    public void handleLimitExceeded() {
+    public void handleLimitExceeded(User user) {
 
     }
 
     @Override
-    public void toCalendar(Calendar calendar, User user) {
+    public void toCalendar(User user) {
         if (this.isInProgress()) {
             throw new UnsupportedOperationException("It's already in calendar");
         }
@@ -121,7 +121,7 @@ public class Group extends Task {
         if(!isComplete){
             throw new UnsupportedOperationException("the group is not complete");
         }
-        calendar.addSessions(takenSubtasks.get(user).getSessions());
+        user.getCalendar().addSessions(takenSubtasks.get(user).getSessions());
         Feed.getInstance().getGroup().add(this);
         }
     }
