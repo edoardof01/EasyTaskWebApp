@@ -1,7 +1,7 @@
 package domain;
-import domain.User;
 import jakarta.persistence.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 
@@ -21,6 +21,7 @@ public class Session {
     private Task task;
     @ManyToOne
     private Subtask subtask;
+    private long sessionDuration;
 
     public Session() {}
 
@@ -30,6 +31,7 @@ public class Session {
         this.endDate = endDate;
         this.user = user;
         this.subtask = subtask;
+        this.sessionDuration =  Duration.between(startDate,endDate).toHours();
     }
     public Session(long id, LocalDateTime startDate, LocalDateTime endDate, User user, Task task) {
         this(id, startDate, endDate, user, task, null);
@@ -51,6 +53,12 @@ public class Session {
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
+    public void findEndDate(long hours){
+        endDate = startDate.plusHours(hours);
+    }
+    public long getSessionDuration() {
+        return sessionDuration;
+    }
     public User getUser() {
         return user;
     }
@@ -69,5 +77,6 @@ public class Session {
     public void setState(SessionState state) {
         this.state = state;
     }
+
 
 }

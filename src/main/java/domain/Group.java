@@ -31,18 +31,17 @@ public class Group extends Task {
     @OneToMany
     private ArrayList<Subtask> subtasks = new ArrayList<>();
     @OneToMany
-    private Map<@NotNull User,@NotNull Subtask> takenSubtasks = new HashMap<>();
+    private Map<@NotNull User, @NotNull Subtask> takenSubtasks = new HashMap<>();
 
 
+    public Group() {
+    }
 
 
-    public Group() {}
-
-
-    public Group(int numUsers, LocalDateTime dateOnFeed,User admin,String name, Topic topic, TaskState state, LocalDateTime deadline,
+    public Group(int numUsers, LocalDateTime dateOnFeed, User admin, String name, Topic topic, TaskState state, LocalDateTime deadline,
                  String description, int percentageOfCompletion, int complexity, int priority,
-                 Timetable timeTable, int totalTime,DefaultStrategy strategy,ArrayList<Resource> resources) {
-        super(name,complexity,description,deadline,percentageOfCompletion,priority,totalTime,topic,state,timeTable,strategy,resources);
+                 Timetable timeTable, int totalTime, DefaultStrategy strategy, ArrayList<Resource> resources) {
+        super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
         this.numUsers = numUsers;
         this.dateOnFeed = dateOnFeed;
         this.members.add(admin);
@@ -51,48 +50,62 @@ public class Group extends Task {
     public ArrayList<Request> getPendingRequest() {
         return pendingRequest;
     }
+
     public void setPendingRequest(ArrayList<Request> pendingRequest) {
         this.pendingRequest = pendingRequest;
     }
+
     public int getNumUsers() {
         return numUsers;
     }
+
     public User getAdmin() {
         return admin;
     }
+
     public LocalDateTime getDateOnFeed() {
         return dateOnFeed;
     }
+
     public void setDateOnFeed(LocalDateTime dateOnFeed) {
         this.dateOnFeed = dateOnFeed;
     }
+
     public boolean isComplete() {
         return isComplete;
     }
+
     public void addMember(User member) {
         members.add(member);
     }
+
     public TaskCalendar getCalendar() {
         return calendar;
     }
+
     public void setCalendar(TaskCalendar calendar) {
         this.calendar = calendar;
     }
+
     public ArrayList<User> getMembers() {
         return members;
     }
-    public void setMembers(ArrayList<User> members) {}
+
+    public void setMembers(ArrayList<User> members) {
+    }
+
     public ArrayList<Integer> getSkippedSessionPerUser() {
         return skippedSessionPerUser;
     }
-    public Map<User,Subtask> getTakenSubtasks() {
+
+    public Map<User, Subtask> getTakenSubtasks() {
         return takenSubtasks;
     }
 
     public void assignSubtaskToUser(User user, Subtask subtask) {
         if (subtasks.contains(subtask) && !takenSubtasks.containsKey(subtask)) {
             takenSubtasks.put(user, subtask);
-            if(subtasks.size()== takenSubtasks.size()){
+            if (subtasks.size() == takenSubtasks.size()) {
                 isComplete = true;
             }
             // Potresti anche voler gestire ulteriori logiche come la notifica all'utente o l'aggiornamento dello stato del subtask
@@ -100,15 +113,17 @@ public class Group extends Task {
             throw new IllegalArgumentException("Subtask not available or already assigned.");
         }
     }
+
     public List<Subtask> getAvailableSubtasks() {
         return subtasks.stream()
                 .filter(subtask -> !takenSubtasks.containsKey(subtask))
                 .collect(Collectors.toList());
     }
+
     @Override
     public void handleLimitExceeded(User user) {
         // Rimuovo il subtask di competenza dal calendario di ogni membro e sposto il task dal loro subfolder INPROGRESS a quello FREEZED
-        for(User member: this.getMembers()){
+        for (User member : this.getMembers()) {
             Subtask subtaskOfCompetence = takenSubtasks.get(member);
             member.getCalendar().removeSessions(this);
             ArrayList<Folder> folders = member.getFolders();
@@ -135,13 +150,46 @@ public class Group extends Task {
         if (this.getState() == TaskState.FINISHED || this.getState() == TaskState.FREEZED) {
             throw new UnsupportedOperationException("It can't be brought to inProgress");
         }
-        if(!isComplete){
+        if (!isComplete) {
             throw new UnsupportedOperationException("the group is not complete");
         }
         user.getCalendar().addSessions(takenSubtasks.get(user).getSessions());
         Feed.getInstance().getGroup().add(this);
-        }
     }
+
+    @Override
+    public void deleteTask(User user) {
+        if (user == admin) {
+            for (User member : this.getMembers()) {
+                Subtask subtaskOfCompetence = takenSubtasks.get(member);
+                member.getCalendar().removeSessions(this);
+                ArrayList<Folder> folders = member.getFolders();
+                boolean taskRemoved = false;
+                for (Folder folder : folders) {
+                    for (Subfolder subfolder : folder.getSubfolders()) {
+                        if (!taskRemoved && subfolder.getTasks().contains(this)) {
+                            subfolder.getTasks().remove(this);
+                            taskRemoved = true;
+                        }
+                    }
+                }
+                Feed.getInstance().getGroup().remove(this);
+            }
+        }
+        else{throw new IllegalArgumentException("user not authorized to delete task");}
+    }
+
+    @Override
+    public void modifyTask(User user) {
+        if (user == admin) {
+            for (User member : this.getMembers()) {
+                commonModifyLogic(member);
+            }
+        }
+        else{throw new IllegalArgumentException("user not authorized to modify task");}
+    }
+
+}
 
 
 

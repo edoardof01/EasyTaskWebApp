@@ -14,13 +14,15 @@ public class Personal extends Task {
 
     public Personal(String name, Topic topic, TaskState state, LocalDateTime deadline,
                     String description, int percentageOfCompletion, int complexity, int priority,
-                    Timetable timeTable, int totalTime,DefaultStrategy strategy,ArrayList<Resource> resources) {
-        super(name,complexity,description,deadline,percentageOfCompletion,priority,totalTime,topic,state,timeTable,strategy,resources);
+                    Timetable timeTable, int totalTime, DefaultStrategy strategy, ArrayList<Resource> resources) {
+        super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
     }
-    public Personal() {}
+
+    public Personal() {
+    }
 
     @Override
-    public void handleLimitExceeded(User user){
+    public void handleLimitExceeded(User user) {
         // Rimuovo il task dal calendario, sposto il task dalla cartella InProgress a quella Freezed
         removeAndFreezeTask(user, this);
     }
@@ -30,4 +32,24 @@ public class Personal extends Task {
         commonToCalendarLogic(user);
     }
 
+    @Override
+    public void deleteTask(User user) {
+        user.getCalendar().removeSessions(this);
+        ArrayList<Folder> folders = user.getFolders();
+        boolean taskRemoved = false;
+        for (Folder folder : folders) {
+            for (Subfolder subfolder : folder.getSubfolders()) {
+                if (!taskRemoved && subfolder.getTasks().contains(this)) {
+                    subfolder.getTasks().remove(this);
+                    taskRemoved = true;
+                }
+
+            }
+        }
+    }
+
+    @Override
+    public void modifyTask(User user) {
+        commonModifyLogic(user);
+    }
 }

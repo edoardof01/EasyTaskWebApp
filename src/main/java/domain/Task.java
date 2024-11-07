@@ -1,5 +1,6 @@
 package domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -48,8 +49,8 @@ public abstract class Task {
 
     public Task() {}
 
-    public Task(String name,int complexity, String description,
-                LocalDateTime deadline, int percentageOfCompletion, int priority, int totalTime, Topic topic,
+    public Task(String name, int complexity, String description,
+                @Nullable LocalDateTime deadline, int percentageOfCompletion, int priority, int totalTime, Topic topic,
                 TaskState state, Timetable timetable, DefaultStrategy strategy, ArrayList<Resource> resources) {
         this.name = name;
         this.description = description;
@@ -105,6 +106,9 @@ public abstract class Task {
     }
     public TaskState getState() {
         return state;
+    }
+    public void setState(TaskState state) {
+        this.state = state;
     }
     public Timetable getTimetable() {
         return timetable;
@@ -164,7 +168,7 @@ public abstract class Task {
         if (this.isInProgress()) {
             throw new UnsupportedOperationException("It's already in calendar");
         }
-        if (this.getState() == TaskState.FINISHED || this.getState() == TaskState.FREEZED) {
+        if (this.getState() == TaskState.FINISHED || this.getState() == TaskState.FREEZED) { // FORSE ANCHE LO STATO FREEZED VA BENE???
             throw new UnsupportedOperationException("It can't be brought to inProgress");
         }
         this.updateIsInProgress(true);
@@ -183,6 +187,31 @@ public abstract class Task {
                 }
             }
         }
+    }
+
+    public void commonModifyLogic(User user){
+        if (this.getState() == TaskState.FINISHED) {
+            throw new UnsupportedOperationException("It can't be brought to freezed");
+        }
+        if (this.getState() == TaskState.FREEZED) {
+            throw new UnsupportedOperationException("It's already freezed");
+        }
+        this.setState(TaskState.FREEZED);
+        user.getCalendar().removeSessions(this);
+        ArrayList<Folder> folders = user.getFolders();
+        boolean taskRemoved = false;
+        for (Folder folder : folders) {
+            for (Subfolder subfolder : folder.getSubfolders()) {
+                if (!taskRemoved && subfolder.getTasks().contains(this)) {
+                    subfolder.getTasks().remove(this);
+                    taskRemoved = true;
+                }
+                if (subfolder.getType() == FREEZED) {
+                    subfolder.getTasks().add(this);
+                }
+            }
+        }
+
     }
 
     public void skipSession(Session session, User user) {
@@ -219,14 +248,14 @@ public abstract class Task {
                 handleLimitExceeded(user);
             }
         });
-    }
-    //LA GESTIONE DELLE SESSIONI NEL CALENDARIO AFFIDATA AL SERVICE (VEDI *1)
+    } // LA PIÙ COMPLESSA GESTIONE DELLE SESSIONI NEL CALENDARIO È NEL SERVICE
     public void resetConsecutiveSkippedSessions() {
         consecutiveSkippedSessions = 0;
     }
 
     protected void removeAndFreezeTask(User user, Task task) {
         user.getCalendar().removeSessions(task);
+        this.setState(TaskState.FREEZED);
         ArrayList<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {
@@ -251,6 +280,10 @@ public abstract class Task {
         this.state = TaskState.INPROGRESS;
     }
 
+    public abstract void deleteTask(User user);
+
+    public abstract void modifyTask(User user);
+
 }
 
 
@@ -270,35 +303,3 @@ public abstract class Task {
 
 
 
-
-
-// *1
-//@Service
-//public class TaskService {
-//
-//    public void checkAndUpdateSkippedSessions(Task task) {
-//        List<Session> sessions = task.getSessions(); // Ottieni le sessioni del task
-//
-//        // Ordina le sessioni in base alla data di inizio
-//        sessions.sort(Comparator.comparing(Session::getStartDate));
-//
-//        for (int i = 0; i < sessions.size() - 1; i++) {
-//            Session currentSession = sessions.get(i);
-//            Session nextSession = sessions.get(i + 1);
-//
-//            // Verifica se la sessione corrente è stata saltata
-//            if (currentSession.getState() != SessionState.COMPLETED &&
-//                    currentSession.getEndDate().isBefore(nextSession.getStartDate())) {
-//                currentSession.setState(SessionState.SKIPPED);
-//                // Potresti anche aggiornare altre informazioni legate alla sessione saltata
-//                updateSession(currentSession);
-//            }
-//        }
-//    }
-//
-//    public void updateSession(Session session) {
-//        // Metodo per aggiornare lo stato della sessione nel database
-//        // Puoi anche usare un repository per aggiornare l'entità
-//        sessionRepository.save(session);
-//    }
-//}

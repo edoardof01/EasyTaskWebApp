@@ -35,4 +35,10 @@ public class Calendar {
         }
         sessions.removeAll(task.getSessions());
     }
+    public void removeSession(Session session) {
+        sessions.remove(session);
+    }
+    public void addSession(Session session) {
+        sessions.add(session);
+    }
 }

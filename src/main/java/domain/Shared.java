@@ -45,7 +45,6 @@ public class Shared extends Task {
     public void toCalendar( User user) {
         commonToCalendarLogic(user);
         Feed.getInstance().getShared().add(this);
-
     } // LA GESTIONE DEL CAMPO USERGUIDANCE È AFFIDATA A ENDPPOINT E SERVICE (vedi *1)
 
 
@@ -56,7 +55,33 @@ public class Shared extends Task {
         Feed.getInstance().getShared().remove(this);
     }
 
+    @Override
+    public void deleteTask(User user) {
+        user.getCalendar().removeSessions(this);
+        ArrayList<Folder> folders = user.getFolders();
+        boolean taskRemoved = false;
+        for (Folder folder : folders) {
+            for (Subfolder subfolder : folder.getSubfolders()) {
+                if (!taskRemoved && subfolder.getTasks().contains(this)) {
+                    subfolder.getTasks().remove(this);
+                    taskRemoved = true;
+                }
+
+            }
+        }
+        Feed.getInstance().getShared().remove(this);
+    }
+
+    public void modifyTask(User user) {
+        commonModifyLogic(user);
+        Feed.getInstance().getShared().remove(this);
+    }
+
+
+
+
 }
+
 
 
 //*1
