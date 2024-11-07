@@ -71,14 +71,6 @@ public class Group extends Task {
         this.dateOnFeed = dateOnFeed;
     }
 
-    public boolean isComplete() {
-        return isComplete;
-    }
-
-    public void addMember(User member) {
-        members.add(member);
-    }
-
     public TaskCalendar getCalendar() {
         return calendar;
     }
@@ -102,6 +94,24 @@ public class Group extends Task {
         return takenSubtasks;
     }
 
+    public List<Subtask> getAvailableSubtasks() {
+        return subtasks.stream()
+                .filter(subtask -> !takenSubtasks.containsKey(subtask))
+                .collect(Collectors.toList());
+    }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(boolean isComplete) {
+        this.isComplete = isComplete;
+    }
+
+    public void addMember(User member) {
+        members.add(member);
+    }
+
     public void assignSubtaskToUser(User user, Subtask subtask) {
         if (subtasks.contains(subtask) && !takenSubtasks.containsKey(subtask)) {
             takenSubtasks.put(user, subtask);
@@ -112,12 +122,6 @@ public class Group extends Task {
         } else {
             throw new IllegalArgumentException("Subtask not available or already assigned.");
         }
-    }
-
-    public List<Subtask> getAvailableSubtasks() {
-        return subtasks.stream()
-                .filter(subtask -> !takenSubtasks.containsKey(subtask))
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -175,8 +179,9 @@ public class Group extends Task {
                 }
                 Feed.getInstance().getGroup().remove(this);
             }
+        } else {
+            throw new IllegalArgumentException("user not authorized to delete task");
         }
-        else{throw new IllegalArgumentException("user not authorized to delete task");}
     }
 
     @Override
@@ -185,9 +190,73 @@ public class Group extends Task {
             for (User member : this.getMembers()) {
                 commonModifyLogic(member);
             }
+        } else {
+            throw new IllegalArgumentException("user not authorized to modify task");
         }
-        else{throw new IllegalArgumentException("user not authorized to modify task");}
     }
+
+    @Override
+    public void completeTaskBySessions(User user) {
+        for (User member : this.getMembers()) {
+            Subtask subtaskOfCompetence = takenSubtasks.get(member);
+            for (Session session : subtaskOfCompetence.getSessions()) {
+                if (session.getState() != SessionState.COMPLETED) {
+                    throw new UnsupportedOperationException("the task can't be completed normally");
+                }
+            }
+        }
+        this.setState(TaskState.FINISHED);
+        for (User member : this.getMembers()) {
+            Subtask subtaskOfCompetence = takenSubtasks.get(member);
+            member.getCalendar().removeSessions(this);
+            ArrayList<Folder> folders = member.getFolders();
+            boolean taskRemoved = false;
+            for (Folder folder : folders) {
+                for (Subfolder subfolder : folder.getSubfolders()) {
+                    if (!taskRemoved && subfolder.getTasks().contains(this)) {
+                        subfolder.getTasks().remove(this);
+                        taskRemoved = true;
+                    }
+                    if (subfolder.getType() == SubfolderType.FINISHED) {
+                        subfolder.getTasks().add(this);
+                    }
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public void forcedCompletion(User user) {
+        if (user == admin) {
+            for (User member : this.getMembers()) {
+                Subtask subtaskOfCompetence = takenSubtasks.get(member);
+                for (Session session : subtaskOfCompetence.getSessions()) {
+                    if (session.getState() != SessionState.COMPLETED) {
+                        session.setState(SessionState.COMPLETED);
+                    }
+                }
+            }
+            this.setState(TaskState.FINISHED);
+            user.getCalendar().removeSessions(this);
+            ArrayList<Folder> folders = user.getFolders();
+            boolean taskRemoved = false;
+            for (Folder folder : folders) {
+                for (Subfolder subfolder : folder.getSubfolders()) {
+                    if (!taskRemoved && subfolder.getTasks().contains(this)) {
+                        subfolder.getTasks().remove(this);
+                        taskRemoved = true;
+                    }
+                    if (subfolder.getType() == SubfolderType.FINISHED) {
+                        subfolder.getTasks().add(this);
+                    }
+                }
+            }
+
+            }
+        else{throw new IllegalArgumentException("user not authorized to forcedCompletion");}
+    }
+
 
 }
 

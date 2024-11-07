@@ -47,7 +47,6 @@ public class Shared extends Task {
         Feed.getInstance().getShared().add(this);
     } // LA GESTIONE DEL CAMPO USERGUIDANCE È AFFIDATA A ENDPPOINT E SERVICE (vedi *1)
 
-
     @Override
     public void handleLimitExceeded(User user) {
         // Rimuovo il task dal calendario, sposto il task dalla cartella InProgress a quella Freezed e lo rimuovo dal feed
@@ -72,15 +71,31 @@ public class Shared extends Task {
         Feed.getInstance().getShared().remove(this);
     }
 
+    @Override
     public void modifyTask(User user) {
         commonModifyLogic(user);
         Feed.getInstance().getShared().remove(this);
     }
 
+    @Override
+    public void completeTaskBySessions(User user) {
+        commonCompleteBySessionsLogic(user);
+        Feed.getInstance().getShared().remove(this);
+    }
 
+    @Override
+    public void forcedCompletion(User user) {
+        commonForcedCompletionLogic(user);
+        Feed.getInstance().getShared().remove(this);
+    }
 
 
 }
+
+
+
+
+
 
 
 

@@ -52,4 +52,15 @@ public class Personal extends Task {
     public void modifyTask(User user) {
         commonModifyLogic(user);
     }
+    @Override
+    public void completeTaskBySessions(User user) {
+        commonCompleteBySessionsLogic(user);
+    }
+
+    @Override
+    public void forcedCompletion(User user) {
+        commonForcedCompletionLogic(user);
+    }
 }
+
+

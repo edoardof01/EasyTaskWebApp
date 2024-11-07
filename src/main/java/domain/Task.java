@@ -147,7 +147,6 @@ public abstract class Task {
         validateStrategySelection(strategies);
         this.strategies = strategies;
     }
-
     private void validateStrategySelection(Set<DefaultStrategy> strategies) {
         boolean requiresTotStrategy = strategies.stream().anyMatch(DefaultStrategy::requiresTot);
         boolean allHaveTot = strategies.stream().allMatch(strategy -> !strategy.requiresTot() || strategy.hasTot());
@@ -188,7 +187,6 @@ public abstract class Task {
             }
         }
     }
-
     public void commonModifyLogic(User user){
         if (this.getState() == TaskState.FINISHED) {
             throw new UnsupportedOperationException("It can't be brought to freezed");
@@ -212,6 +210,50 @@ public abstract class Task {
             }
         }
 
+    }
+    public void commonCompleteBySessionsLogic(User user){
+        for (Session session : this.getSessions()) {
+            if(session.getState() != SessionState.COMPLETED){
+                throw new UnsupportedOperationException("the task can't be completed normally");
+            }
+        }
+        user.getCalendar().removeSessions(this);
+        this.setState(TaskState.FINISHED);
+        ArrayList<Folder> folders = user.getFolders();
+        boolean taskRemoved = false;
+        for (Folder folder : folders) {
+            for (Subfolder subfolder : folder.getSubfolders()) {
+                if (!taskRemoved && subfolder.getTasks().contains(this)) {
+                    subfolder.getTasks().remove(this);
+                    taskRemoved = true;
+                }
+                if (subfolder.getType() == SubfolderType.FINISHED) {
+                    subfolder.getTasks().add(this);
+                }
+            }
+        }
+    }
+    public void commonForcedCompletionLogic(User user){
+        for(Session session : this.getSessions()){
+            if(session.getState() != SessionState.COMPLETED){
+                session.setState(SessionState.COMPLETED);
+            }
+        }
+        this.setState(TaskState.FINISHED);
+        user.getCalendar().removeSessions(this);
+        ArrayList<Folder> folders = user.getFolders();
+        boolean taskRemoved = false;
+        for (Folder folder : folders) {
+            for (Subfolder subfolder : folder.getSubfolders()) {
+                if (!taskRemoved && subfolder.getTasks().contains(this)) {
+                    subfolder.getTasks().remove(this);
+                    taskRemoved = true;
+                }
+                if (subfolder.getType() == SubfolderType.FINISHED) {
+                    subfolder.getTasks().add(this);
+                }
+            }
+        }
     }
 
     public void skipSession(Session session, User user) {
@@ -252,6 +294,7 @@ public abstract class Task {
     public void resetConsecutiveSkippedSessions() {
         consecutiveSkippedSessions = 0;
     }
+    public abstract void handleLimitExceeded(User user);
 
     protected void removeAndFreezeTask(User user, Task task) {
         user.getCalendar().removeSessions(task);
@@ -271,8 +314,6 @@ public abstract class Task {
         }
     }
 
-    public abstract void handleLimitExceeded(User user);
-
     public abstract void toCalendar(User user);
 
     protected void updateIsInProgress(boolean b) {
@@ -281,8 +322,11 @@ public abstract class Task {
     }
 
     public abstract void deleteTask(User user);
-
     public abstract void modifyTask(User user);
+
+    public abstract void completeTaskBySessions(User user);
+
+    public abstract void forcedCompletion(User user);
 
 }
 
