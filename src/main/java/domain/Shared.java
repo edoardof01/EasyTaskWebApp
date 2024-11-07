@@ -1,5 +1,6 @@
 package domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -16,10 +17,11 @@ public class Shared extends Task {
 
     public Shared(){}
 
-    public Shared(String name, Topic topic, TaskState state, LocalDateTime deadline,
+    public Shared(String name, Topic topic, TaskState state,@Nullable LocalDateTime deadline,
                   String description, int percentageOfCompletion, int complexity, int priority,
                   Timetable timeTable, int totalTime, DefaultStrategy strategy, ArrayList<Resource> resources) {
         super(name,complexity,description,deadline,percentageOfCompletion,priority,totalTime,topic,state,timeTable,strategy,resources);
+        Feed.getInstance().addTask(this);
 
     }
     public LocalDateTime getDateOnFeed() {

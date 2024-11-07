@@ -1,5 +1,6 @@
 package domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -38,14 +39,16 @@ public class Group extends Task {
     }
 
 
-    public Group(int numUsers, LocalDateTime dateOnFeed, User admin, String name, Topic topic, TaskState state, LocalDateTime deadline,
+    public Group(int numUsers, LocalDateTime dateOnFeed, User admin, String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
                  String description, int percentageOfCompletion, int complexity, int priority,
                  Timetable timeTable, int totalTime, DefaultStrategy strategy, ArrayList<Resource> resources) {
         super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
         this.numUsers = numUsers;
         this.dateOnFeed = dateOnFeed;
         this.members.add(admin);
+        Feed.getInstance().addTask(this);
     }
+
 
     public ArrayList<Request> getPendingRequest() {
         return pendingRequest;
@@ -256,6 +259,7 @@ public class Group extends Task {
             }
         else{throw new IllegalArgumentException("user not authorized to forcedCompletion");}
     }
+
 
 
 }

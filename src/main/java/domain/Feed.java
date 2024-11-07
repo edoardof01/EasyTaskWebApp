@@ -53,4 +53,13 @@ public class Feed {
         return contributors;
     }
 
+    public void addTask(Task task) {
+        if (task instanceof Group) {
+            groups.add((Group) task);
+        }
+        if (task instanceof Shared) {
+            shared.add((Shared) task);
+        }
+    }
+
 }

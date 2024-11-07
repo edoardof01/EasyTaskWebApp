@@ -336,9 +336,46 @@ public abstract class Task {
 
 
 
+// OSSERVAZIONE: I subtask da mettere nella fase di creazione del task saranno gestiti nel taskService
+/*
+@Service
+public class TaskService {
 
+    @Autowired
+    private TaskRepository taskRepository;
 
+    public Task createTaskWithSubtasks(Task task, List<Subtask> subtasks) {
+        task.getSubtasks().addAll(subtasks);
+        return taskRepository.save(task);
+    }
 
+    public Task updateTask(Task task, String name, String description, LocalDateTime deadline, List<Subtask> updatedSubtasks) {
+        task.setName(name);
+        task.setDescription(description);
+        task.setDeadline(deadline);
+
+        // Aggiorna i subtasks del task
+        task.getSubtasks().clear();
+        task.getSubtasks().addAll(updatedSubtasks);
+
+        return taskRepository.save(task);
+    }
+
+    public void addSubtask(Task task, Subtask subtask) {
+        task.getSubtasks().add(subtask);
+        taskRepository.save(task);
+    }
+
+    public void removeSubtask(Task task, Subtask subtask) {
+        task.getSubtasks().remove(subtask);
+        taskRepository.save(task);
+    }
+
+    public List<Subtask> getSubtasks(Task task) {
+        return new ArrayList<>(task.getSubtasks());
+    }
+}
+*/
 
 
 
