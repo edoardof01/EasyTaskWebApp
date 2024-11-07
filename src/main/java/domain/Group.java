@@ -34,10 +34,8 @@ public class Group extends Task {
     @OneToMany
     private Map<@NotNull User, @NotNull Subtask> takenSubtasks = new HashMap<>();
 
-
     public Group() {
     }
-
 
     public Group(int numUsers, LocalDateTime dateOnFeed, User admin, String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
                  String description, int percentageOfCompletion, int complexity, int priority,
@@ -53,50 +51,38 @@ public class Group extends Task {
     public ArrayList<Request> getPendingRequest() {
         return pendingRequest;
     }
-
     public void setPendingRequest(ArrayList<Request> pendingRequest) {
         this.pendingRequest = pendingRequest;
     }
-
     public int getNumUsers() {
         return numUsers;
     }
-
     public User getAdmin() {
         return admin;
     }
-
     public LocalDateTime getDateOnFeed() {
         return dateOnFeed;
     }
-
     public void setDateOnFeed(LocalDateTime dateOnFeed) {
         this.dateOnFeed = dateOnFeed;
     }
-
     public TaskCalendar getCalendar() {
         return calendar;
     }
-
     public void setCalendar(TaskCalendar calendar) {
         this.calendar = calendar;
     }
-
     public ArrayList<User> getMembers() {
         return members;
     }
-
     public void setMembers(ArrayList<User> members) {
     }
-
     public ArrayList<Integer> getSkippedSessionPerUser() {
         return skippedSessionPerUser;
     }
-
     public Map<User, Subtask> getTakenSubtasks() {
         return takenSubtasks;
     }
-
     public List<Subtask> getAvailableSubtasks() {
         return subtasks.stream()
                 .filter(subtask -> !takenSubtasks.containsKey(subtask))
@@ -161,7 +147,7 @@ public class Group extends Task {
             throw new UnsupportedOperationException("the group is not complete");
         }
         user.getCalendar().addSessions(takenSubtasks.get(user).getSessions());
-        Feed.getInstance().getGroup().add(this);
+        Feed.getInstance().getGroup().remove(this);
     }
 
     @Override
@@ -258,6 +244,45 @@ public class Group extends Task {
 
             }
         else{throw new IllegalArgumentException("user not authorized to forcedCompletion");}
+    }
+
+    public void leaveGroupTask(User user) {
+        if (!members.contains(user)) {
+            throw new IllegalArgumentException("the user is not part of the group");
+        }
+        user.getCalendar().removeSessions(this);
+        ArrayList<Folder> folders = user.getFolders();
+        boolean taskRemoved = false;
+        for (Folder folder : folders) {
+            for (Subfolder subfolder : folder.getSubfolders()) {
+                if (!taskRemoved && subfolder.getTasks().contains(this)) {
+                    subfolder.getTasks().remove(this);
+                    taskRemoved = true;
+                }
+            }
+        }
+        this.getMembers().remove(user);
+        user.getTasks().remove(this);
+        this.setState(TaskState.FREEZED);
+
+        for (User member : this.getMembers()) {
+            Subtask subtaskOfCompetence = takenSubtasks.get(member);
+            member.getCalendar().removeSessions(this);
+            ArrayList<Folder> memberFolders = member.getFolders();
+            boolean memberTaskRemoved = false;
+            for (Folder folder : memberFolders) {
+                for (Subfolder subfolder : folder.getSubfolders()) {
+                    if (!memberTaskRemoved && subfolder.getTasks().contains(this)) {
+                        subfolder.getTasks().remove(this);
+                        memberTaskRemoved = true;
+                    }
+                    if (subfolder.getType() == SubfolderType.FREEZED) {
+                        subfolder.getTasks().add(this);
+                    }
+                }
+            }
+        }
+        Feed.getInstance().getGroup().add(this);
     }
 
 

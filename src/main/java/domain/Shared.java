@@ -44,9 +44,8 @@ public class Shared extends Task {
     }
 
     @Override
-    public void toCalendar( User user) {
+    public void toCalendar(User user) {
         commonToCalendarLogic(user);
-        Feed.getInstance().getShared().add(this);
     } // LA GESTIONE DEL CAMPO USERGUIDANCE È AFFIDATA A ENDPPOINT E SERVICE (vedi *1)
 
     @Override
