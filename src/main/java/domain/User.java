@@ -98,11 +98,13 @@ public class User {
     }
     // FORSE DOVREMO FARE QUALCOSA CON IL FEED
     public void joinGroup(@NotNull Group group, Subtask subtask){
-        if(!group.isComplete()){
+        if(group.getIsComplete()){
             group.addMember(this);
             group.assignSubtaskToUser(this, subtask);
+            group.getCalendar().addSessions();
         }
     }
+
     public void addSubtaskToCalendar(Group group) {
         if (group.getTakenSubtasks().containsKey(this)) {
             Subtask subtask = group.getTakenSubtasks().get(this);

@@ -1,4 +1,5 @@
 package domain;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.time.Duration;
@@ -25,11 +26,12 @@ public class Session {
 
     public Session() {}
 
-    public Session(long id, LocalDateTime startDate, LocalDateTime endDate, User user,Task task, Subtask subtask) {
+    public Session(long id, LocalDateTime startDate, LocalDateTime endDate, User user,Task task,@Nullable Subtask subtask) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.user = user;
+        this.task = task;
         this.subtask = subtask;
         this.sessionDuration =  Duration.between(startDate,endDate).toHours();
     }
@@ -64,6 +66,9 @@ public class Session {
     }
     public void setUser(User user) {
         this.user = user;
+    }
+    public Task getTask() {
+        return task;
     }
     public Subtask getSubtask(){
         if(subtask!=null) {

@@ -14,30 +14,42 @@ public class Shared extends Task {
 
     private LocalDateTime dateOnFeed;
     private String userGuidance;
+    @OneToMany
+    private ArrayList<Comment> comments;
 
-    public Shared(){}
+    public Shared() {
+    }
 
-    public Shared(String name, Topic topic, TaskState state,@Nullable LocalDateTime deadline,
+    public Shared(String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
                   String description, int percentageOfCompletion, int complexity, int priority,
                   Timetable timeTable, int totalTime, DefaultStrategy strategy, ArrayList<Resource> resources) {
-        super(name,complexity,description,deadline,percentageOfCompletion,priority,totalTime,topic,state,timeTable,strategy,resources);
+        super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
         Feed.getInstance().addTask(this);
 
     }
+
     public LocalDateTime getDateOnFeed() {
         return dateOnFeed;
     }
+
     public void setDateOnFeed(LocalDateTime dateOnFeed) {
         this.dateOnFeed = dateOnFeed;
     }
+
     public String getUserGuidance() {
         return userGuidance;
     }
+
     public void updateUserGuidance(String text) {
         this.userGuidance = text;
     }
-    public void bestComment(Comment comment, User owner){
-        if(owner.getTasks().contains(this)){
+
+    public ArrayList<Comment> getComments() {
+        return comments;
+    }
+
+    public void bestComment(Comment comment, User owner) {
+        if (owner.getTasks().contains(this)) {
             comment.setIsBest(true);
             comment.getAuthor().incrementTopicScore(this.getTopic());
         }
@@ -84,14 +96,54 @@ public class Shared extends Task {
         Feed.getInstance().getShared().remove(this);
     }
 
+    public void completeBySessionsAndChooseBestComment(User user, Comment comment) {
+        if (comments.contains(comment)) {
+            commonCompleteBySessionsLogic(user);
+            Feed.getInstance().getShared().remove(this);
+            bestComment(comment, user);
+        }
+    }
+
     @Override
     public void forcedCompletion(User user) {
         commonForcedCompletionLogic(user);
         Feed.getInstance().getShared().remove(this);
     }
 
+    public void removeTaskJustFromFeed(User user) {
+        // Rimuovi il task dal feed
+        Feed.getInstance().getShared().remove(this);
 
+        ArrayList<Folder> folders = user.getFolders();
+        boolean taskRemovedFromShared = false;
+
+        for (Folder folder : folders) {
+            // Rimuove il task solo se è nella cartella SHARED
+            if (folder.getFolderType() == FolderType.SHARED && !taskRemovedFromShared) {
+                for (Subfolder subfolder : folder.getSubfolders()) {
+                    if (subfolder.getTasks().contains(this)) {
+                        subfolder.getTasks().remove(this);
+                        taskRemovedFromShared = true; // Indica che è stato rimosso da SHARED
+                        break;
+                    }
+                }
+            }
+
+            // Aggiunge il task alla cartella PERSONAL se è stato rimosso da SHARED
+            if (folder.getFolderType() == FolderType.PERSONAL && taskRemovedFromShared) {
+                for (Subfolder subfolder : folder.getSubfolders()) {
+                    if (subfolder.getType() == SubfolderType.INPROGRESS) {
+                        subfolder.getTasks().add(this);
+                        break; // Aggiunto, non serve continuare
+                    }
+                }
+            }
+        }
+    }
+
+    
 }
+
 
 
 

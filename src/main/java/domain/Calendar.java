@@ -35,10 +35,11 @@ public class Calendar {
         }
         sessions.removeAll(task.getSessions());
     }
-    public void removeSession(Session session) {
-        sessions.remove(session);
+    public void addSubtaskSessionsForGroups(Subtask subtask){
+        sessions.addAll(subtask.getSessions());
     }
-    public void addSession(Session session) {
-        sessions.add(session);
+    public void removeSubtaskSessionsForGroups(Subtask subtask){
+        sessions.removeAll(subtask.getSessions());
     }
+
 }

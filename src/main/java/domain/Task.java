@@ -4,10 +4,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.OptionalInt;
-import java.util.Set;
+import java.util.*;
 
 import static domain.SubfolderType.*;
 
@@ -142,6 +139,15 @@ public abstract class Task {
         return isInProgress;
     }
 
+
+    public void completeSession(Session session) {
+        if (session.getState() != SessionState.PROGRAMMED) {
+            throw new IllegalStateException("Only sessions programmed can be completed.");
+        }
+        session.setState(SessionState.COMPLETED);
+    }
+
+
     // Metodo per impostare le strategie e validare la selezione
     public void setStrategies(Set<DefaultStrategy> strategies) {
         validateStrategySelection(strategies);
@@ -256,6 +262,7 @@ public abstract class Task {
         }
     }
 
+    // METODI PER LE SESSIONI SALTATE
     public void skipSession(Session session, User user) {
         if (!sessions.contains(session)) {
             throw new IllegalArgumentException("Session not found in task.");
@@ -295,6 +302,30 @@ public abstract class Task {
         consecutiveSkippedSessions = 0;
     }
     public abstract void handleLimitExceeded(User user);
+    public void autoSkipIfNotCompleted(Session session, User user) {
+        if (!sessions.contains(session)) {
+            throw new IllegalArgumentException("Session not found in task.");
+        }
+
+        // Trova la prossima sessione dello stesso task o subtask
+        Session nextSession = findNextSession(session);
+
+        // Verifica se la sessione corrente è non completata e se la prossima è già iniziata
+        if (nextSession != null && LocalDateTime.now().isAfter(nextSession.getStartDate())
+                && session.getState() != SessionState.COMPLETED) {
+            // Chiama skipSession per marcare la sessione come SKIPPED
+            skipSession(session, user);
+        }
+    }
+    private Session findNextSession(Session currentSession) {
+        return sessions.stream()
+                .filter(s -> s.getTask().equals(currentSession.getTask())
+                        && s.getStartDate().isAfter(currentSession.getEndDate()))
+                .min(Comparator.comparing(Session::getStartDate))
+                .orElse(null);
+    }
+
+
 
     protected void removeAndFreezeTask(User user, Task task) {
         user.getCalendar().removeSessions(task);
@@ -314,6 +345,7 @@ public abstract class Task {
         }
     }
 
+
     public abstract void toCalendar(User user);
 
     protected void updateIsInProgress(boolean b) {
@@ -327,7 +359,6 @@ public abstract class Task {
     public abstract void completeTaskBySessions(User user);
 
     public abstract void forcedCompletion(User user);
-
 }
 
 

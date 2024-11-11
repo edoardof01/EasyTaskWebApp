@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static javax.swing.UIManager.put;
 
 @Entity
 @DiscriminatorValue("group")
@@ -44,7 +43,10 @@ public class Group extends Task {
         this.numUsers = numUsers;
         this.dateOnFeed = dateOnFeed;
         this.members.add(admin);
+        this.calendar = new TaskCalendar();
+        this.calendar.addSessions();
         Feed.getInstance().addTask(this);
+        Feed.getInstance().getContributors().add(admin);
     }
 
 
@@ -85,15 +87,15 @@ public class Group extends Task {
     }
     public List<Subtask> getAvailableSubtasks() {
         return subtasks.stream()
-                .filter(subtask -> !takenSubtasks.containsKey(subtask))
+                .filter(subtask -> !takenSubtasks.containsValue(subtask))
                 .collect(Collectors.toList());
     }
 
-    public boolean isComplete() {
+
+    public boolean getIsComplete() {
         return isComplete;
     }
-
-    public void setComplete(boolean isComplete) {
+    public void setIsComplete(boolean isComplete) {
         this.isComplete = isComplete;
     }
 
@@ -107,7 +109,6 @@ public class Group extends Task {
             if (subtasks.size() == takenSubtasks.size()) {
                 isComplete = true;
             }
-            // Potresti anche voler gestire ulteriori logiche come la notifica all'utente o l'aggiornamento dello stato del subtask
         } else {
             throw new IllegalArgumentException("Subtask not available or already assigned.");
         }
@@ -156,6 +157,7 @@ public class Group extends Task {
             for (User member : this.getMembers()) {
                 Subtask subtaskOfCompetence = takenSubtasks.get(member);
                 member.getCalendar().removeSessions(this);
+                this.getCalendar().removeSessions(member);
                 ArrayList<Folder> folders = member.getFolders();
                 boolean taskRemoved = false;
                 for (Folder folder : folders) {
@@ -178,6 +180,7 @@ public class Group extends Task {
         if (user == admin) {
             for (User member : this.getMembers()) {
                 commonModifyLogic(member);
+                this.getCalendar().removeSessions(member);
             }
         } else {
             throw new IllegalArgumentException("user not authorized to modify task");
@@ -188,6 +191,7 @@ public class Group extends Task {
     public void completeTaskBySessions(User user) {
         for (User member : this.getMembers()) {
             Subtask subtaskOfCompetence = takenSubtasks.get(member);
+            this.getCalendar().removeSessions(member);
             for (Session session : subtaskOfCompetence.getSessions()) {
                 if (session.getState() != SessionState.COMPLETED) {
                     throw new UnsupportedOperationException("the task can't be completed normally");
@@ -220,6 +224,7 @@ public class Group extends Task {
         if (user == admin) {
             for (User member : this.getMembers()) {
                 Subtask subtaskOfCompetence = takenSubtasks.get(member);
+                member.getCalendar().removeSessions(this);
                 for (Session session : subtaskOfCompetence.getSessions()) {
                     if (session.getState() != SessionState.COMPLETED) {
                         session.setState(SessionState.COMPLETED);
@@ -251,6 +256,7 @@ public class Group extends Task {
             throw new IllegalArgumentException("the user is not part of the group");
         }
         user.getCalendar().removeSessions(this);
+        this.getCalendar().removeSessions(user);
         ArrayList<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {
@@ -285,7 +291,96 @@ public class Group extends Task {
         Feed.getInstance().getGroup().add(this);
     }
 
+    public void sendExchangeRequest(User sender, User receiver, Subtask reqSubtask) {
+        if (!members.contains(sender) || !members.contains(receiver)) {
+            throw new IllegalArgumentException("both the users must be members of the group ");
+        }
+        if (!takenSubtasks.get(receiver).equals(reqSubtask)) {
+            throw new IllegalArgumentException("the requested subtask is not assigned to the receiver");
+        }
 
+        // Verifica che il sender abbia un subtask da offrire
+        Subtask givenSubtask = takenSubtasks.get(sender);
+        if (givenSubtask == null) {
+            throw new IllegalArgumentException("the sender doesn't have a subtask to offer");
+        }
+
+        // Crea e salva una nuova richiesta di scambio
+        Request exchangeRequest = new Request(sender, receiver, this, givenSubtask, reqSubtask);
+        if (pendingRequest == null) {
+            pendingRequest = new ArrayList<>();
+        }
+        pendingRequest.add(exchangeRequest);
+    }
+
+    public void processExchangeRequest(User receiver, Request request, boolean accept) {
+        if (!request.getReceiver().equals(receiver)) {
+            throw new IllegalArgumentException("The user is not the receiver of this request.");
+        }
+        this.getPendingRequest().remove(request);
+        if (accept) {
+            User sender = request.getSender();
+            Subtask givenSubtask = request.getGivenSubtask();
+            Subtask requestedSubtask = request.getSubtaskToReceive();
+            if (!this.getTakenSubtasks().get(sender).equals(givenSubtask) ||
+                    !this.getTakenSubtasks().get(receiver).equals(requestedSubtask)) {
+                throw new IllegalArgumentException("Subtasks do not match the users' current assignments.");
+            }
+
+            this.getTakenSubtasks().put(sender, requestedSubtask);
+            this.getTakenSubtasks().put(receiver, givenSubtask);
+
+            sender.getCalendar().removeSubtaskSessionsForGroups(givenSubtask);
+            receiver.getCalendar().removeSubtaskSessionsForGroups(requestedSubtask);
+
+            this.getCalendar().moveSessions(sender, receiver);
+
+            sender.getCalendar().addSubtaskSessionsForGroups(requestedSubtask);
+            receiver.getCalendar().addSubtaskSessionsForGroups(givenSubtask);
+        }
+    }
+
+    public void removeMember(User admin, User member, boolean substitute){
+        if (!members.contains(admin)) {
+            throw new IllegalArgumentException("The admin is not part of the group");
+        }
+        if (!members.contains(member)) {
+            throw new IllegalArgumentException("The member is not part of the group");
+        }
+        this.getMembers().remove(member);
+
+
+        if(substitute && !Feed.getInstance().getGroup().contains(member)){
+            Feed.getInstance().getGroup().add(this);
+            getAvailableSubtasks().add(takenSubtasks.get(member));
+            takenSubtasks.remove(member);
+            this.getCalendar().removeSessions(member);
+
+
+            for (User user : this.getMembers()) {
+                this.getCalendar().removeSessions(user);
+                Subtask subtaskOfCompetence = takenSubtasks.get(user);
+                user.getCalendar().removeSessions(this);
+                ArrayList<Folder> folders = user.getFolders();
+                boolean taskRemoved = false;
+                for (Folder folder : folders) {
+                    for (Subfolder subfolder : folder.getSubfolders()) {
+                        if (!taskRemoved && subfolder.getTasks().contains(this)) {
+                            subfolder.getTasks().remove(this);
+                            taskRemoved = true;
+                        }
+                        if (subfolder.getType() == SubfolderType.FREEZED) {
+                            subfolder.getTasks().add(this);
+                        }
+                    }
+                }
+            }
+        }
+        else if(!substitute){
+            this.getSubtasks().remove(takenSubtasks.get(member));
+            takenSubtasks.remove(member);
+        }
+    }
 
 }
 

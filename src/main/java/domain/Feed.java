@@ -61,5 +61,25 @@ public class Feed {
             shared.add((Shared) task);
         }
     }
+    public ArrayList<Task> getFilteredFeed() {
+        ArrayList<Task> filteredFeed = new ArrayList<>();
+
+        // Aggiungi task di gruppo se il filtro groupFilter è attivo
+        if (groupFilter) {
+            filteredFeed.addAll(groups);
+        }
+
+        // Aggiungi task condivisi se il filtro sharedFilter è attivo
+        if (sharedFilter) {
+            filteredFeed.addAll(shared);
+        }
+
+        // Applica il filtro per topic se è impostato
+        if (topicFilter != null) {
+            filteredFeed.removeIf(task -> !task.getTopic().equals(topicFilter));
+        }
+
+        return filteredFeed;
+    }
 
 }
