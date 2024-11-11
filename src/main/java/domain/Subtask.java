@@ -15,7 +15,7 @@ public class Subtask {
     private String description;
     @OneToMany
     private ArrayList<Session> sessions = new ArrayList<>();
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private ArrayList<Resource> resources = new ArrayList<>();
 
 

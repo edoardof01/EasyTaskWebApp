@@ -101,7 +101,7 @@ public class User {
         if(group.getIsComplete()){
             group.addMember(this);
             group.assignSubtaskToUser(this, subtask);
-            group.getCalendar().addSessions();
+            group.getCalendar().addSessions(this, subtask);
         }
     }
 

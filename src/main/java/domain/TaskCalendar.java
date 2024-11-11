@@ -34,20 +34,28 @@ public class TaskCalendar {
         return id;
     }
 
-    public void addSessions() {
-        if (group.getIsComplete() || !group.isInProgress()) {
-            throw new UnsupportedOperationException("Non puoi aggiungere le sessioni se il task non è al completo");
+    public void addSessions(User user, Subtask subtask) {
+        // Verifica che l'utente sia membro del gruppo e che il task sia attivo
+        if (!group.getMembers().contains(user) || !group.getIsComplete()) {
+            throw new UnsupportedOperationException("L'utente non fa parte del gruppo o il task non è completo");
         }
-        for (User member : group.getMembers()) {
-            Subtask subtask = group.getTakenSubtasks().get(member);
 
-            if (subtask != null) {
-                for (Session session : subtask.getSessions()) {
-                    userSessions.add(new UserSession(member, session));
-                }
+        // Verifica che il subtask appartenga effettivamente all'utente
+        if (!subtask.equals(group.getTakenSubtasks().get(user))) {
+            throw new IllegalArgumentException("Il subtask fornito non è associato all'utente specificato");
+        }
+
+        // Aggiungi ciascuna sessione del subtask al calendario
+        for (Session session : subtask.getSessions()) {
+            boolean sessionExists = userSessions.stream()
+                    .anyMatch(userSession -> userSession.getUser().equals(user) && userSession.getSession().equals(session));
+
+            if (!sessionExists) {
+                userSessions.add(new UserSession(user, session));
             }
         }
     }
+
 
     public void removeSessions(User user) {
         userSessions.removeIf(userSession -> userSession.getUser().equals(user));

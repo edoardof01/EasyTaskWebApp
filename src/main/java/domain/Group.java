@@ -44,7 +44,6 @@ public class Group extends Task {
         this.dateOnFeed = dateOnFeed;
         this.members.add(admin);
         this.calendar = new TaskCalendar();
-        this.calendar.addSessions();
         Feed.getInstance().addTask(this);
         Feed.getInstance().getContributors().add(admin);
     }
@@ -120,6 +119,7 @@ public class Group extends Task {
         for (User member : this.getMembers()) {
             Subtask subtaskOfCompetence = takenSubtasks.get(member);
             member.getCalendar().removeSessions(this);
+            this.getCalendar().removeSessions(user);
             ArrayList<Folder> folders = member.getFolders();
             boolean taskRemoved = false;
             for (Folder folder : folders) {
@@ -146,6 +146,12 @@ public class Group extends Task {
         }
         if (!isComplete) {
             throw new UnsupportedOperationException("the group is not complete");
+        }
+        Subtask subtask = takenSubtasks.get(user);
+        if (subtask != null) {
+            this.getCalendar().addSessions(user, subtask);  // Aggiunge le sessioni al calendario del gruppo
+        } else {
+            throw new IllegalArgumentException("No subtask assigned to the user");
         }
         user.getCalendar().addSessions(takenSubtasks.get(user).getSessions());
         Feed.getInstance().getGroup().remove(this);
