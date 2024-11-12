@@ -153,6 +153,11 @@ public class Group extends Task {
         } else {
             throw new IllegalArgumentException("No subtask assigned to the user");
         }
+        // Controlla e aggiorna lo stato del task di gruppo
+        if (!this.isInProgress()) {
+            this.updateIsInProgress(true);
+        }
+
         user.getCalendar().addSessions(takenSubtasks.get(user).getSessions());
         Feed.getInstance().getGroup().remove(this);
     }

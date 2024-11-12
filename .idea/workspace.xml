@@ -9,12 +9,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="a lot of updates. &#10;in particular TaskCalendar">
+    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="a little more of update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Group.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Group.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Subtask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Subtask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/TaskCalendar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/TaskCalendar.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,7 +197,9 @@
       <workItem from="1731339517262" duration="1000" />
       <workItem from="1731345862405" duration="2766000" />
       <workItem from="1731352869903" duration="9031000" />
-      <workItem from="1731362002191" duration="488000" />
+      <workItem from="1731362002191" duration="535000" />
+      <workItem from="1731400725724" duration="17000" />
+      <workItem from="1731401315981" duration="895000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -267,7 +265,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731359589151</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="a little more of update">
+      <option name="closed" value="true" />
+      <created>1731362524678</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1731362524678</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -290,6 +296,7 @@
     <MESSAGE value="little adjustments" />
     <MESSAGE value="leaveGroupTask() e piccoli aggiornamenti sul feed" />
     <MESSAGE value="a lot of updates. &#10;in particular TaskCalendar" />
-    <option name="LAST_COMMIT_MESSAGE" value="a lot of updates. &#10;in particular TaskCalendar" />
+    <MESSAGE value="a little more of update" />
+    <option name="LAST_COMMIT_MESSAGE" value="a little more of update" />
   </component>
 </project>
