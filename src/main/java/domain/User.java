@@ -58,6 +58,9 @@ public class User {
     public String getDescription() {
         return description;
     }
+    public Sex getSex() {
+        return sex;
+    }
     public void setDescription(String description) {
         this.description = description;
     }

@@ -10,7 +10,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="a little more of update">
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/UserDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/UserDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/UserEndpoint.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/UserMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Profile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -199,7 +207,8 @@
       <workItem from="1731352869903" duration="9031000" />
       <workItem from="1731362002191" duration="535000" />
       <workItem from="1731400725724" duration="17000" />
-      <workItem from="1731401315981" duration="895000" />
+      <workItem from="1731401315981" duration="6706000" />
+      <workItem from="1731409453479" duration="6485000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -273,7 +282,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731362524678</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="a little more of update">
+      <option name="closed" value="true" />
+      <created>1731402672226</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1731402672226</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

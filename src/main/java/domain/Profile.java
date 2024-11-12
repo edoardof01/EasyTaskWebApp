@@ -35,4 +35,7 @@ public class Profile {
     public void setTopics(Map<Topic,Integer> topics){
         this.topics = topics;
     }
+    public User getOwner() {
+        return owner;
+    }
 }
