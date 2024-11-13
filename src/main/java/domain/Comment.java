@@ -8,16 +8,16 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Long id;
-    private String description;
+    private String content;
     @ManyToOne
     private User author;
     @OneToOne
     private Shared commentedTask;
-    private boolean isBest=false;
+    private boolean isBest = false;
 
     public Comment() {}
-    public Comment(String description, User author) {
-      this.description = description;
+    public Comment(String content, User author) {
+      this.content = content;
       this.author = author;
     }
 
@@ -25,10 +25,10 @@ public class Comment {
       return id;
     }
     public String getDescription() {
-      return description;
+      return content;
     }
-    public void setDescription(String description) {
-      this.description = description;
+    public void setDescription(String content) {
+      this.content = content;
     }
     public User getAuthor() {
       return author;

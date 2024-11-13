@@ -62,5 +62,8 @@ public class UserEndpoint {
         }
         return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
     }
+
+    @
+
 }
 

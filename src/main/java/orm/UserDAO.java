@@ -14,6 +14,8 @@ public class UserDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public UserDAO() {}
+
     public User findById(long userId) {
         return entityManager.find(User.class, userId);
     }
@@ -37,4 +39,5 @@ public class UserDAO {
             entityManager.remove(user);
         }
     }
+
 }

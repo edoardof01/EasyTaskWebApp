@@ -9,16 +9,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="a little more of update">
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/UserDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/UserDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/UserEndpoint.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/UserMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/UserService.java" afterDir="false" />
+    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="User Enddpoint,Service,Mapper,DAO,DTO">
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/SharedDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/SharedDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/SharedEndpoint.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/SharedMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/SharedService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/SubtaskDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Profile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Comment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Group.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Group.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Personal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Personal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Resource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Resource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Shared.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Shared.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Subtask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Subtask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Task.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserEndpoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -208,7 +217,10 @@
       <workItem from="1731362002191" duration="535000" />
       <workItem from="1731400725724" duration="17000" />
       <workItem from="1731401315981" duration="6706000" />
-      <workItem from="1731409453479" duration="6485000" />
+      <workItem from="1731409453479" duration="14510000" />
+      <workItem from="1731484833437" duration="11931000" />
+      <workItem from="1731503019956" duration="2232000" />
+      <workItem from="1731505279585" duration="4416000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -290,7 +302,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731402672226</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="User Enddpoint,Service,Mapper,DAO,DTO">
+      <option name="closed" value="true" />
+      <created>1731421853826</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1731421853826</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -314,6 +334,7 @@
     <MESSAGE value="leaveGroupTask() e piccoli aggiornamenti sul feed" />
     <MESSAGE value="a lot of updates. &#10;in particular TaskCalendar" />
     <MESSAGE value="a little more of update" />
-    <option name="LAST_COMMIT_MESSAGE" value="a little more of update" />
+    <MESSAGE value="User Enddpoint,Service,Mapper,DAO,DTO" />
+    <option name="LAST_COMMIT_MESSAGE" value="User Enddpoint,Service,Mapper,DAO,DTO" />
   </component>
 </project>

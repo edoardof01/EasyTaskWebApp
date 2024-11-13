@@ -1,5 +1,8 @@
 package orm;
 
+import domain.Group;
+import domain.Subtask;
+import domain.Task;
 import domain.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -54,4 +57,29 @@ public class UserService {
         userDAO.delete(id);
         return true;
     }
+
+    @Transactional
+    public void addTaskToUser(long userId, Task task) {
+        User user = userDAO.findById(userId);
+        if (user != null) {
+            user.addTask(task);
+            userDAO.update(user);
+        } else {
+            throw new IllegalArgumentException("User not found");
+        }
+    }
+
+    @Transactional
+    public void removeTaskFromUser(long userId, Task task) {
+        User user = userDAO.findById(userId);
+        if (user != null && user.getTasks().contains(task)) {
+            user.removeTask(task);
+            userDAO.update(user);
+        } else {
+            throw new IllegalArgumentException("Task or User not found");
+        }
+    }
+
+
+
 }

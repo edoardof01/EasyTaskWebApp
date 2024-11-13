@@ -19,6 +19,7 @@ public class Subtask {
     private ArrayList<Resource> resources = new ArrayList<>();
 
 
+
     public Subtask() {}
     public Subtask(String name, int level, String description) {
         this.name = name;

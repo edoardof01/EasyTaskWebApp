@@ -26,20 +26,22 @@ public abstract class Task {
     private int skippedSessions = 0;
     private int consecutiveSkippedSessions = 0;
     private boolean isInProgress = false;
+    @ManyToOne
+    private User admin;
+    @Enumerated(EnumType.STRING)
+    private Set<Timetable> timetable;
     @Enumerated(EnumType.STRING)
     private SubfolderType currentSubfolderType;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private ArrayList<Subtask> subtasks = new ArrayList<>();
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private ArrayList<Session> sessions = new ArrayList<>();
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private ArrayList<Resource> resources = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     private Topic topic;
     @Enumerated(EnumType.STRING)
     private TaskState state;
-    @Enumerated(EnumType.STRING)
-    private Timetable timetable;
     @ElementCollection(targetClass = DefaultStrategy.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<DefaultStrategy> strategies = new HashSet<>();
@@ -48,12 +50,16 @@ public abstract class Task {
 
     public Task(String name, int complexity, String description,
                 @Nullable LocalDateTime deadline, int percentageOfCompletion, int priority, int totalTime, Topic topic,
-                TaskState state, Timetable timetable, DefaultStrategy strategy, ArrayList<Resource> resources) {
+                TaskState state, Set<Timetable> timetable, Set<DefaultStrategy> strategies, ArrayList<Resource> resources) {
         this.name = name;
         this.description = description;
         this.deadline = deadline;
         this.percentageOfCompletion = percentageOfCompletion;
         this.priority = priority;
+        this.totalTime = totalTime;
+        this.topic = topic;
+        this.state = state;
+        this.timetable = timetable;
         setStrategies(strategies);
     }
 
@@ -107,10 +113,10 @@ public abstract class Task {
     public void setState(TaskState state) {
         this.state = state;
     }
-    public Timetable getTimetable() {
+    public Set<Timetable> getTimetable() {
         return timetable;
     }
-    public void setTimetable(Timetable timetable) {}
+    public void setTimetable(Set<Timetable> timetable) {}
     public Set<DefaultStrategy> getStrategies() {
         return strategies;
     }
@@ -119,6 +125,9 @@ public abstract class Task {
     }
     public ArrayList<Subtask> getSubtasks() {
         return subtasks;
+    }
+    public User getUser() {
+        return admin;
     }
     public void setTotalTime(int totalTime) {
         this.totalTime = totalTime;
@@ -134,6 +143,9 @@ public abstract class Task {
     }
     public ArrayList<Resource> getResources() {
         return resources;
+    }
+    public void setResources(ArrayList<Resource> resources) {
+        this.resources = resources;
     }
     public boolean isInProgress() {
         return isInProgress;
@@ -360,55 +372,6 @@ public abstract class Task {
 
     public abstract void forcedCompletion(User user);
 }
-
-
-
-
-
-
-
-// OSSERVAZIONE: I subtask da mettere nella fase di creazione del task saranno gestiti nel taskService
-/*
-@Service
-public class TaskService {
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    public Task createTaskWithSubtasks(Task task, List<Subtask> subtasks) {
-        task.getSubtasks().addAll(subtasks);
-        return taskRepository.save(task);
-    }
-
-    public Task updateTask(Task task, String name, String description, LocalDateTime deadline, List<Subtask> updatedSubtasks) {
-        task.setName(name);
-        task.setDescription(description);
-        task.setDeadline(deadline);
-
-        // Aggiorna i subtasks del task
-        task.getSubtasks().clear();
-        task.getSubtasks().addAll(updatedSubtasks);
-
-        return taskRepository.save(task);
-    }
-
-    public void addSubtask(Task task, Subtask subtask) {
-        task.getSubtasks().add(subtask);
-        taskRepository.save(task);
-    }
-
-    public void removeSubtask(Task task, Subtask subtask) {
-        task.getSubtasks().remove(subtask);
-        taskRepository.save(task);
-    }
-
-    public List<Subtask> getSubtasks(Task task) {
-        return new ArrayList<>(task.getSubtasks());
-    }
-}
-*/
-
-
 
 
 

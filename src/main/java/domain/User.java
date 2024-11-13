@@ -23,11 +23,11 @@ public class User {
     private String profession;
     @Embedded
     private Profile personalProfile;
-    @OneToOne(mappedBy="user")
+    @OneToOne(mappedBy="user",cascade = CascadeType.ALL,orphanRemoval = true)
     private Calendar calendar;
-    @OneToMany(mappedBy ="user")
+    @OneToMany(mappedBy ="user",cascade = CascadeType.ALL,orphanRemoval = true)
     private final ArrayList<Folder> folders = new ArrayList<>();
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     private final ArrayList<Task> tasks = new ArrayList<>();
 
     public User() {}
@@ -99,7 +99,7 @@ public class User {
     public void incrementTopicScore(Topic topic){
         personalProfile.getTopics().put(topic, personalProfile.getTopics().get(topic)+1);
     }
-    // FORSE DOVREMO FARE QUALCOSA CON IL FEED
+
     public void joinGroup(@NotNull Group group, Subtask subtask){
         if(group.getIsComplete()){
             group.addMember(this);

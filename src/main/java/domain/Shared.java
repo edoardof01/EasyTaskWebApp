@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-
+import java.util.Set;
 
 
 @Entity
@@ -22,10 +22,9 @@ public class Shared extends Task {
 
     public Shared(String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
                   String description, int percentageOfCompletion, int complexity, int priority,
-                  Timetable timeTable, int totalTime, DefaultStrategy strategy, ArrayList<Resource> resources) {
-        super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
+                  Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategies, ArrayList<Resource> resources) {
+        super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategies, resources);
         Feed.getInstance().addTask(this);
-
     }
 
     public LocalDateTime getDateOnFeed() {
@@ -58,6 +57,7 @@ public class Shared extends Task {
     @Override
     public void toCalendar(User user) {
         commonToCalendarLogic(user);
+        this.dateOnFeed = LocalDateTime.now(); // NON SONO SICUROOOOOOOOOOOOOOOOOOOOOOOOOO
     } // LA GESTIONE DEL CAMPO USERGUIDANCE È AFFIDATA A ENDPPOINT E SERVICE (vedi *1)
 
     @Override
@@ -151,43 +151,4 @@ public class Shared extends Task {
 
 
 
-
-//*1
-//@RestController
-//@RequestMapping("/tasks")
-//public class TaskEndpoint {
-//
-//    @Autowired
-//    private TaskService taskService;
-//
-//    @PostMapping("/{taskId}/toCalendar")
-//    public ResponseEntity<String> addToCalendar(
-//            @PathVariable Long taskId,
-//            @RequestParam String guidance,
-//            @RequestBody User user) {
-//        try {
-//            taskService.addTaskToCalendar(taskId, guidance, user);
-//            return ResponseEntity.ok("Task added to calendar successfully.");
-//        } catch (UnsupportedOperationException e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
-//}
-//@Service
-//public class TaskService {
-//
-//    public void addTaskToCalendar(Long taskId, String guidance, User user) {
-//        Task task = findById(taskId);
-//        if (task instanceof Shared) {
-//            ((Shared) task).updateUserGuidance(guidance);
-//            ((Shared) task).toCalendar(new Calendar(), user);
-//        } else {
-//            throw new UnsupportedOperationException("Task type not supported for this operation.");
-//        }
-//    }
-//
-//    public Task findById(Long taskId) {
-//        // Logica per trovare il task nel repository
-//    }
-//}
 
