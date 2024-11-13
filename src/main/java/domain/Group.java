@@ -5,10 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -38,7 +35,7 @@ public class Group extends Task {
 
     public Group(int numUsers, LocalDateTime dateOnFeed, User admin, String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
                  String description, int percentageOfCompletion, int complexity, int priority,
-                 ArrayList<Timetable> timeTable, int totalTime, DefaultStrategy strategy, ArrayList<Resource> resources) {
+                 Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategy, ArrayList<Resource> resources) {
         super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
         this.numUsers = numUsers;
         this.dateOnFeed = dateOnFeed;
@@ -103,7 +100,7 @@ public class Group extends Task {
     }
 
     public void assignSubtaskToUser(User user, Subtask subtask) {
-        if (subtasks.contains(subtask) && !takenSubtasks.containsKey(subtask)) {
+        if (subtasks.contains(subtask) && !takenSubtasks.containsValue(subtask)) {
             takenSubtasks.put(user, subtask);
             if (subtasks.size() == takenSubtasks.size()) {
                 isComplete = true;
