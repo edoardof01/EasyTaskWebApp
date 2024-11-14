@@ -15,7 +15,7 @@ public class SharedDTO {
     private LocalDateTime deadline;
     private boolean isInProgress = false;
     private int totalTime;
-    private ArrayList<SubtaskDTO> subtasks;
+    private ArrayList<Subtask> subtasks = new ArrayList<>();
     private final Topic topic;
     private TaskState taskState;
     private int complexity;
@@ -39,11 +39,8 @@ public class SharedDTO {
         this.totalTime = shared.getTotalTime();
         this.strategies.addAll(shared.getStrategies());
         this.timetable.addAll(shared.getTimetable());
-        this.resources.addAll(shared.getResources());
-        this.subtasks = (ArrayList<SubtaskDTO>) shared.getSubtasks().stream()
-                .map(SubtaskDTO::new)
-                .toList();
-        ;
+        this.resources = shared.getResources();
+        this.subtasks = shared.getSubtasks();
     }
 
     public long getId() {
@@ -98,10 +95,10 @@ public class SharedDTO {
         this.totalTime = totalTime;
     }
 
-    public ArrayList<SubtaskDTO> getSubtasks() {
+    public ArrayList<Subtask> getSubtasks() {
         return subtasks;
     }
-    public void setSubtasks(ArrayList<SubtaskDTO> subtasks) {
+    public void setSubtasks(ArrayList<Subtask> subtasks) {
         this.subtasks = subtasks;
     }
     public Topic getTopic() {
@@ -156,8 +153,4 @@ public class SharedDTO {
 
 
 }
-
-
-
-
 

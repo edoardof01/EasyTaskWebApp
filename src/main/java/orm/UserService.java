@@ -16,8 +16,10 @@ public class UserService {
     @Inject
     private UserDAO userDAO;
 
+
     @Inject
     private UserMapper userMapper;
+
 
     public List<UserDTO> getAllUsers() {
         return userDAO.findAll().stream()
@@ -25,10 +27,14 @@ public class UserService {
                 .toList();
     }
 
-    public Optional<UserDTO> getUserById(long id) {
-        return Optional.ofNullable(userDAO.findById(id))
-                .map(userMapper::toUserDTO);
+    public UserDTO getUserById(long id) {
+        User user = userDAO.findById(id);
+        if (user == null) {
+            throw new IllegalArgumentException("User with ID " + id + " not found.");
+        }
+        return userMapper.toUserDTO(user);
     }
+
 
     @Transactional
     public UserDTO createUser(UserDTO userDTO) {
@@ -56,28 +62,6 @@ public class UserService {
         }
         userDAO.delete(id);
         return true;
-    }
-
-    @Transactional
-    public void addTaskToUser(long userId, Task task) {
-        User user = userDAO.findById(userId);
-        if (user != null) {
-            user.addTask(task);
-            userDAO.update(user);
-        } else {
-            throw new IllegalArgumentException("User not found");
-        }
-    }
-
-    @Transactional
-    public void removeTaskFromUser(long userId, Task task) {
-        User user = userDAO.findById(userId);
-        if (user != null && user.getTasks().contains(task)) {
-            user.removeTask(task);
-            userDAO.update(user);
-        } else {
-            throw new IllegalArgumentException("Task or User not found");
-        }
     }
 
 

@@ -89,12 +89,7 @@ public class User {
         return tasks;
     }
 
-    public void addTask(Task task){
-        tasks.add(task);
-    }
-    public void removeTask(Task task){
-        tasks.remove(task);
-    }
+
     // DA COMPLETARE, METODO RICHIAMATO POI
     public void incrementTopicScore(Topic topic){
         personalProfile.getTopics().put(topic, personalProfile.getTopics().get(topic)+1);
@@ -112,7 +107,7 @@ public class User {
         if (group.getTakenSubtasks().containsKey(this)) {
             Subtask subtask = group.getTakenSubtasks().get(this);
             if (this.calendar != null) {
-                group.toCalendar(this);
+                group.toCalendar();
                 System.out.println("Subtask added to calendar for user: " + this.id);
             }
         } else {

@@ -18,6 +18,8 @@ public abstract class Task {
     private String name;
     @Lob
     private String description;
+    @ManyToOne
+    private User admin;
     private LocalDateTime deadline;
     private int percentageOfCompletion;
     private int priority;
@@ -26,8 +28,7 @@ public abstract class Task {
     private int skippedSessions = 0;
     private int consecutiveSkippedSessions = 0;
     private boolean isInProgress = false;
-    @ManyToOne
-    private User admin;
+
     @Enumerated(EnumType.STRING)
     private Set<Timetable> timetable;
     @Enumerated(EnumType.STRING)
@@ -36,7 +37,7 @@ public abstract class Task {
     private ArrayList<Subtask> subtasks = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private ArrayList<Session> sessions = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany( cascade = CascadeType.ALL)
     private ArrayList<Resource> resources = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     private Topic topic;
@@ -92,6 +93,9 @@ public abstract class Task {
     public void setPercentageOfCompletion(int percentageOfCompletion) {
         this.percentageOfCompletion = percentageOfCompletion;
     }
+    public User getUser(){
+        return admin;
+    }
     public int getPriority() {
         return priority;
     }
@@ -125,9 +129,6 @@ public abstract class Task {
     }
     public ArrayList<Subtask> getSubtasks() {
         return subtasks;
-    }
-    public User getUser() {
-        return admin;
     }
     public void setTotalTime(int totalTime) {
         this.totalTime = totalTime;
@@ -275,7 +276,7 @@ public abstract class Task {
     }
 
     // METODI PER LE SESSIONI SALTATE
-    public void skipSession(Session session, User user) {
+    public void skipSession(Session session) {
         if (!sessions.contains(session)) {
             throw new IllegalArgumentException("Session not found in task.");
         }
@@ -294,7 +295,7 @@ public abstract class Task {
 
         maxSkippedSessions.ifPresent(max -> {
             if (skippedSessions > max) {
-                handleLimitExceeded(user);
+                handleLimitExceeded();
             }
         });
 
@@ -306,15 +307,16 @@ public abstract class Task {
 
         maxConsecSkippedSessions.ifPresent(max -> {
             if (consecutiveSkippedSessions > max) {
-                handleLimitExceeded(user);
+                handleLimitExceeded();
             }
         });
     } // LA PIÙ COMPLESSA GESTIONE DELLE SESSIONI NEL CALENDARIO È NEL SERVICE
     public void resetConsecutiveSkippedSessions() {
         consecutiveSkippedSessions = 0;
     }
-    public abstract void handleLimitExceeded(User user);
-    public void autoSkipIfNotCompleted(Session session, User user) {
+    public abstract void handleLimitExceeded();
+
+    public void autoSkipIfNotCompleted(Session session) {
         if (!sessions.contains(session)) {
             throw new IllegalArgumentException("Session not found in task.");
         }
@@ -326,7 +328,7 @@ public abstract class Task {
         if (nextSession != null && LocalDateTime.now().isAfter(nextSession.getStartDate())
                 && session.getState() != SessionState.COMPLETED) {
             // Chiama skipSession per marcare la sessione come SKIPPED
-            skipSession(session, user);
+            skipSession(session);
         }
     }
     private Session findNextSession(Session currentSession) {
@@ -358,19 +360,19 @@ public abstract class Task {
     }
 
 
-    public abstract void toCalendar(User user);
+    public abstract void toCalendar();
 
     protected void updateIsInProgress(boolean b) {
         this.isInProgress = b;
         this.state = TaskState.INPROGRESS;
     }
 
-    public abstract void deleteTask(User user);
-    public abstract void modifyTask(User user);
+    public abstract void deleteTask();
+    public abstract void modifyTask();
 
-    public abstract void completeTaskBySessions(User user);
+    public abstract void completeTaskBySessions();
 
-    public abstract void forcedCompletion(User user);
+    public abstract void forcedCompletion();
 }
 
 

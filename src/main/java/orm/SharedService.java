@@ -13,54 +13,62 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.eclipse.persistence.expressions.ExpressionOperator.sum;
-
 @ApplicationScoped
 public class SharedService {
 
     @Inject
     private SharedDAO sharedDAO;
 
-    // Restituisce un task Shared per ID
-    public Shared getSharedById(long id) {
-        if(sharedDAO.findById(id)==null){
+    @Inject
+    private SharedMapper sharedMapper;
+
+    @Inject
+
+    private SessionDAO sessionDAO;
+
+    @Inject
+    private SessionMapper sessionMapper;
+
+    @Inject
+    private CommentDAO commentDAO;
+    @Inject
+    private CommentMapper commentMapper;
+
+    // Restituisce un SharedDTO per ID
+    public SharedDTO getSharedById(long id) {
+        Shared shared = sharedDAO.findById(id);
+        if (shared == null) {
             throw new EntityNotFoundException("Shared with id " + id + " not found");
         }
-        return sharedDAO.findById(id);
+        return sharedMapper.toSharedDTO(shared);
     }
 
-    // Restituisce tutti i task Shared
-    public List<Shared> getAllShared() {
-        return sharedDAO.findAll();
+    // Restituisce tutti i task Shared come DTO
+    public List<SharedDTO> getAllShared() {
+        return sharedDAO.findAll().stream()
+                .map(sharedMapper::toSharedDTO)
+                .toList();
     }
-
 
     @Transactional
     public void addTaskToFeed(Shared sharedTask, String guidance) {
-        // Imposta la guida dell'utente
         sharedTask.updateUserGuidance(guidance);
-
-        // Cambia lo stato del task a INPROGRESS se non lo è già
         sharedTask.setState(TaskState.INPROGRESS);
-
-        // Aggiungi il task al feed
         Feed.getInstance().addTask(sharedTask);
-
-        // Salva le modifiche nel database
         sharedDAO.update(sharedTask);
     }
 
-    public Shared createShared(String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
-                               Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
-                               String description, ArrayList<Resource> resources,@Nullable List<Subtask> subtasks,
-                               @Nullable Integer requiredUsers, @Nullable String userGuidance) {
+    public SharedDTO createShared(String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
+                                  Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
+                                  String description, ArrayList<Resource> resources, @Nullable ArrayList<Subtask> subtasks,
+                                  @Nullable Integer requiredUsers, @Nullable String userGuidance) {
 
         if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null) {
-            throw new IllegalArgumentException("Campi obbligatori mancanti o non validi.");
+            throw new IllegalArgumentException("mandatory fields missing or invalid fields");
         }
 
         if (requiredUsers != null) {
-            throw new IllegalArgumentException("Il numero utenti può essere impostato solo per task di gruppo.");
+            throw new IllegalArgumentException("Users number can be set only for group tasks");
         }
 
         if (strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
@@ -72,18 +80,17 @@ public class SharedService {
             if(strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)){
                 throw new IllegalArgumentException("if a deadline is set, this strategy can't be selected");
             }
-
         }
+
         if(subtasks != null){
             int totalMoney = 0;
             for(Subtask subtask : subtasks){
                 for(Resource resource : subtask.getResources()){
-                    if(resource.getType()!=ResourceType.MONEY){
+                    if(resource.getType() != ResourceType.MONEY){
                         if(!resources.contains(resource)){
                             throw new IllegalArgumentException("subtasks can't contain resource " + resource);
                         }
-                    }
-                    else{
+                    } else {
                         totalMoney += resource.getMoney();
                         Optional<Resource> moneyResource = resources.stream()
                                 .filter(resourceMoney -> resourceMoney.getMoney() != null)
@@ -96,16 +103,12 @@ public class SharedService {
                             throw new IllegalArgumentException("the sum of the money of the subtasks can't exceed the task one");
                         }
                     }
-
                 }
             }
         }
 
-
-        assert subtasks != null;
         int complexity = calculateComplexity(subtasks, resources);
 
-        // 6. Creazione e salvataggio del task Shared
         Shared sharedTask = new Shared(name, topic, TaskState.INPROGRESS, deadline, description,
                 0, complexity, priority, timeSlots, totalTime, strategies, resources);
 
@@ -113,12 +116,12 @@ public class SharedService {
             sharedTask.updateUserGuidance(userGuidance);
         }
 
-        // Aggiunta del task al feed e ritorno dell'istanza
         Feed.getInstance().addTask(sharedTask);
-        return sharedTask;
+        sharedDAO.save(sharedTask);
+
+        return sharedMapper.toSharedDTO(sharedTask);
     }
 
-    // Metodo per calcolare la complessità in base ai subtask e alle risorse
     private int calculateComplexity(List<Subtask> subtasks, List<Resource> resources) {
         int subtaskScore = 0;
         if (subtasks.size() <= 3) subtaskScore = 1;
@@ -140,14 +143,12 @@ public class SharedService {
         else return 5;
     }
 
+    public SharedDTO modifyShared(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
+                                  Set<Timetable> timeSlots, DefaultStrategy strategy, int priority, String description,
+                                  ArrayList<Resource> resources, List<Subtask> subtasks, @Nullable String userGuidance) {
 
-    public Shared modifyShared(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
-                               Set<Timetable> timeSlots, DefaultStrategy strategy, int priority, String description,
-                               ArrayList<Resource> resources, List<Subtask> subtasks, @Nullable String userGuidance) {
-
-        // Recupero il task esistente dal feed o dal database
-        Shared sharedTask = getSharedById(taskId);
-        if (sharedTask== null) {
+        Shared sharedTask = sharedDAO.findById(taskId);
+        if (sharedTask == null) {
             throw new IllegalArgumentException("Task con ID " + taskId + " non trovato.");
         }
 
@@ -155,12 +156,10 @@ public class SharedService {
         if (user == null) {
             throw new IllegalStateException("Nessun utente associato al task.");
         }
-        // 1. Cambiare lo stato del task a FREEZED e spostarlo nell'apposita sottoCartella
-        sharedTask.setState(TaskState.FREEZED);
-        // Presumibilmente spostiamo il task nelle sottocartelle appropriate (questa logica dipende dalla tua implementazione)
-        sharedTask.modifyTask(user);
 
-        // 2. Modificare i campi del task
+        sharedTask.setState(TaskState.FREEZED);
+        sharedTask.modifyTask();
+
         if (name != null) sharedTask.setName(name);
         if (topic != null) sharedTask.setTopic(topic);
         if (deadline != null) sharedTask.setDeadline(deadline);
@@ -170,48 +169,85 @@ public class SharedService {
         if (description != null) sharedTask.setDescription(description);
         if (resources != null) sharedTask.setResources(resources);
 
-        // Ricalcolare la complessità
-        assert subtasks != null;
         int complexity = calculateComplexity(subtasks, resources);
         sharedTask.setComplexity(complexity);
 
-        // Aggiornamento di userGuidance (se presente)
         if (userGuidance != null) {
             sharedTask.updateUserGuidance(userGuidance);
         }
 
-        // 3. Aggiungere di nuovo il task al feed
         Feed.getInstance().addTask(sharedTask);
+        sharedDAO.update(sharedTask);
 
-        // 4. Ritorno del task modificato
-        return sharedTask;
+        return sharedMapper.toSharedDTO(sharedTask);
     }
+
     @Transactional
     public void deleteShared(Long taskId) {
-        // Recupero del task Shared esistente
-        Shared sharedTask = getSharedById(taskId);
+        Shared sharedTask = sharedDAO.findById(taskId);
         if (sharedTask == null) {
             throw new IllegalArgumentException("Task con ID " + taskId + " non trovato.");
         }
 
-        // Recupero dell'utente associato
-        User user = sharedTask.getUser();
-        if (user == null) {
-            throw new IllegalStateException("Nessun utente associato al task.");
-        }
-
-
-        sharedTask.deleteTask(user);  // Chiama il metodo per rimuovere il task dalle sottocartelle, dal calendario e dal feed
-
+        sharedTask.deleteTask();
         sharedDAO.delete(sharedTask.getId());
     }
 
+    @Transactional
+    public void moveToCalendar(SharedDTO sharedDTO) {
+        Shared shared = sharedDAO.findById(sharedDTO.getId());
+        if (shared == null) {
+            throw new IllegalArgumentException("Task con ID " + sharedDTO.getId() + " not found.");
+        }
+        shared.toCalendar();
+        sharedDAO.update(shared);
+    }
 
+    @Transactional
+    public void removeSharedFromFeed(long sharedId){
+        Shared shared = sharedDAO.findById(sharedId);
+        shared.removeTaskJustFromFeed();
+        sharedDAO.update(shared);
+    }
 
+    @Transactional
+    public Comment getBestComment(long commentId, long sharedId) {
+        Shared shared = sharedDAO.findById(sharedId);
+        Comment comment = commentDAO.findById(commentId);
+        if (comment == null) {
+            throw new IllegalArgumentException("Comment con ID " + commentId + " not found.");
+        }
+        shared.bestComment(comment);
+        return comment;
+    }
 
+    @Transactional
+    public void completeSharedBySessions(@Nullable CommentDTO commentDTO, long sharedId) {
+        Shared shared = sharedDAO.findById(sharedId);
+        if (commentDTO != null) {
+            Comment comment = commentMapper.toCommentEntity(commentDTO);
+            if (comment != null) {
+                shared.completeBySessionsAndChooseBestComment(comment);
+                commentDAO.save(comment);
+            } else {
+                shared.completeTaskBySessions();
+            }
+            sharedDAO.update(shared);
+        }
+    }
 
-
-
-
+    @Transactional
+    public void handleLimitExceeded(SessionDTO sessionDTO, long sharedId) {
+        Shared shared = sharedDAO.findById(sharedId);
+        if (shared == null) {
+            throw new IllegalArgumentException("Shared task con ID " + sharedId + " non trovato.");
+        }
+        Session session = sessionMapper.toSessionEntity(sessionDTO);
+        if (session == null) {
+            throw new IllegalArgumentException("Session with ID " + sharedId + " not found.");
+        }
+        shared.autoSkipIfNotCompleted(session);
+        sessionDAO.update(session);
+        sharedDAO.update(shared);
+    }
 }
-

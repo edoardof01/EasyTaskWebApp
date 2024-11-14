@@ -27,9 +27,9 @@ public class UserEndpoint {
     @GET
     @Path("/{id}")
     public Response getUserById(@PathParam("id") long id) {
-        Optional<UserDTO> userDTO = userService.getUserById(id);
-        if (userDTO.isPresent()) {
-            return Response.ok(userDTO.get()).build();
+        UserDTO userDTO = userService.getUserById(id);
+        if (userDTO != null) {
+            return Response.ok(userDTO).build();
         }
         return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
     }

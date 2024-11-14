@@ -6,11 +6,13 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
 @ApplicationScoped
 public class UserDAO {
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -25,14 +27,17 @@ public class UserDAO {
         return query.getResultList();
     }
 
+    @Transactional
     public void save(User user) {
         entityManager.persist(user);
     }
 
+    @Transactional
     public void update(User user) {
         entityManager.merge(user);
     }
 
+    @Transactional
     public void delete(long id) {
         User user = findById(id);
         if (user != null) {

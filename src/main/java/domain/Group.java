@@ -17,8 +17,6 @@ public class Group extends Task {
     private ArrayList<User> members = new ArrayList<>();
     @ElementCollection
     private ArrayList<Integer> skippedSessionPerUser;
-    @ManyToOne
-    private User admin;
     private LocalDateTime dateOnFeed;
     private boolean isComplete = false;
     @OneToMany
@@ -33,16 +31,16 @@ public class Group extends Task {
     public Group() {
     }
 
-    public Group(int numUsers, LocalDateTime dateOnFeed, User admin, String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
+    public Group(int numUsers, LocalDateTime dateOnFeed, String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
                  String description, int percentageOfCompletion, int complexity, int priority,
                  Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategy, ArrayList<Resource> resources) {
         super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
         this.numUsers = numUsers;
         this.dateOnFeed = dateOnFeed;
-        this.members.add(admin);
+        this.members.add(this.getUser());
         this.calendar = new TaskCalendar();
         Feed.getInstance().addTask(this);
-        Feed.getInstance().getContributors().add(admin);
+        Feed.getInstance().getContributors().add(this.getUser());
     }
 
 
@@ -54,9 +52,6 @@ public class Group extends Task {
     }
     public int getNumUsers() {
         return numUsers;
-    }
-    public User getAdmin() {
-        return admin;
     }
     public LocalDateTime getDateOnFeed() {
         return dateOnFeed;
@@ -111,12 +106,12 @@ public class Group extends Task {
     }
 
     @Override
-    public void handleLimitExceeded(User user) {
+    public void handleLimitExceeded() {
         // Rimuovo il subtask di competenza dal calendario di ogni membro e sposto il task dal loro subfolder INPROGRESS a quello FREEZED
         for (User member : this.getMembers()) {
             Subtask subtaskOfCompetence = takenSubtasks.get(member);
             member.getCalendar().removeSessions(this);
-            this.getCalendar().removeSessions(user);
+            this.getCalendar().removeSessions(member);
             ArrayList<Folder> folders = member.getFolders();
             boolean taskRemoved = false;
             for (Folder folder : folders) {
@@ -134,7 +129,7 @@ public class Group extends Task {
     }
 
     @Override
-    public void toCalendar(User user) {
+    public void toCalendar() {
         if (this.isInProgress()) {
             throw new UnsupportedOperationException("It's already in calendar");
         }
@@ -144,9 +139,9 @@ public class Group extends Task {
         if (!isComplete) {
             throw new UnsupportedOperationException("the group is not complete");
         }
-        Subtask subtask = takenSubtasks.get(user);
+        Subtask subtask = takenSubtasks.get(this.getUser());
         if (subtask != null) {
-            this.getCalendar().addSessions(user, subtask);  // Aggiunge le sessioni al calendario del gruppo
+            this.getCalendar().addSessions(this.getUser(), subtask);  // Aggiunge le sessioni al calendario del gruppo
         } else {
             throw new IllegalArgumentException("No subtask assigned to the user");
         }
@@ -155,13 +150,12 @@ public class Group extends Task {
             this.updateIsInProgress(true);
         }
 
-        user.getCalendar().addSessions(takenSubtasks.get(user).getSessions());
+        this.getUser().getCalendar().addSessions(takenSubtasks.get(this.getUser()).getSessions());
         Feed.getInstance().getGroup().remove(this);
     }
 
     @Override
-    public void deleteTask(User user) {
-        if (user == admin) {
+    public void deleteTask() {
             for (User member : this.getMembers()) {
                 Subtask subtaskOfCompetence = takenSubtasks.get(member);
                 member.getCalendar().removeSessions(this);
@@ -178,25 +172,19 @@ public class Group extends Task {
                 }
                 Feed.getInstance().getGroup().remove(this);
             }
-        } else {
-            throw new IllegalArgumentException("user not authorized to delete task");
         }
-    }
+
 
     @Override
-    public void modifyTask(User user) {
-        if (user == admin) {
+    public void modifyTask() {
             for (User member : this.getMembers()) {
                 commonModifyLogic(member);
                 this.getCalendar().removeSessions(member);
             }
-        } else {
-            throw new IllegalArgumentException("user not authorized to modify task");
-        }
     }
 
     @Override
-    public void completeTaskBySessions(User user) {
+    public void completeTaskBySessions() {
         for (User member : this.getMembers()) {
             Subtask subtaskOfCompetence = takenSubtasks.get(member);
             this.getCalendar().removeSessions(member);
@@ -228,8 +216,7 @@ public class Group extends Task {
     }
 
     @Override
-    public void forcedCompletion(User user) {
-        if (user == admin) {
+    public void forcedCompletion() {
             for (User member : this.getMembers()) {
                 Subtask subtaskOfCompetence = takenSubtasks.get(member);
                 member.getCalendar().removeSessions(this);
@@ -240,8 +227,8 @@ public class Group extends Task {
                 }
             }
             this.setState(TaskState.FINISHED);
-            user.getCalendar().removeSessions(this);
-            ArrayList<Folder> folders = user.getFolders();
+            this.getUser().getCalendar().removeSessions(this);
+            ArrayList<Folder> folders = this.getUser().getFolders();
             boolean taskRemoved = false;
             for (Folder folder : folders) {
                 for (Subfolder subfolder : folder.getSubfolders()) {
@@ -254,9 +241,6 @@ public class Group extends Task {
                     }
                 }
             }
-
-            }
-        else{throw new IllegalArgumentException("user not authorized to forcedCompletion");}
     }
 
     public void leaveGroupTask(User user) {
