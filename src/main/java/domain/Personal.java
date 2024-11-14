@@ -6,16 +6,16 @@ import jakarta.persistence.Entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-
+import java.util.Set;
 
 
 @Entity
 @DiscriminatorValue("personal")
 public class Personal extends Task {
 
-    public Personal(String name, Topic topic, TaskState state,@Nullable LocalDateTime deadline,
+    public Personal(String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
                     String description, int percentageOfCompletion, int complexity, int priority,
-                    ArrayList<Timetable> timeTable, int totalTime, DefaultStrategy strategy, ArrayList<Resource> resources) {
+                    Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategy, ArrayList<Resource> resources) {
         super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
     }
 
@@ -23,20 +23,20 @@ public class Personal extends Task {
     }
 
     @Override
-    public void handleLimitExceeded(User user) {
+    public void handleLimitExceeded() {
         // Rimuovo il task dal calendario, sposto il task dalla cartella InProgress a quella Freezed
-        removeAndFreezeTask(user, this);
+        removeAndFreezeTask(this.getUser(), this);
     }
 
     @Override
-    public void toCalendar(User user) {
-        commonToCalendarLogic(user);
+    public void toCalendar() {
+        commonToCalendarLogic(this.getUser());
     }
 
     @Override
-    public void deleteTask(User user) {
-        user.getCalendar().removeSessions(this);
-        ArrayList<Folder> folders = user.getFolders();
+    public void deleteTask() {
+        this.getUser().getCalendar().removeSessions(this);
+        ArrayList<Folder> folders = this.getUser().getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {
             for (Subfolder subfolder : folder.getSubfolders()) {
@@ -50,17 +50,17 @@ public class Personal extends Task {
     }
 
     @Override
-    public void modifyTask(User user) {
-        commonModifyLogic(user);
+    public void modifyTask( ) {
+        commonModifyLogic(this.getUser());
     }
     @Override
-    public void completeTaskBySessions(User user) {
-        commonCompleteBySessionsLogic(user);
+    public void completeTaskBySessions() {
+        commonCompleteBySessionsLogic(this.getUser());
     }
 
     @Override
-    public void forcedCompletion(User user) {
-        commonForcedCompletionLogic(user);
+    public void forcedCompletion() {
+        commonForcedCompletionLogic(this.getUser());
     }
 }
 

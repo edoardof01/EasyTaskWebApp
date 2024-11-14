@@ -23,7 +23,6 @@ public class SharedService {
     private SharedMapper sharedMapper;
 
     @Inject
-
     private SessionDAO sessionDAO;
 
     @Inject
@@ -107,6 +106,7 @@ public class SharedService {
             }
         }
 
+        assert subtasks != null;
         int complexity = calculateComplexity(subtasks, resources);
 
         Shared sharedTask = new Shared(name, topic, TaskState.INPROGRESS, deadline, description,

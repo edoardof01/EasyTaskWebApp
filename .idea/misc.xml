@@ -2,6 +2,7 @@
 <project version="4">
   <component name="EntryPointsManager">
     <writeAnnotations>
+      <writeAnnotation name="jakarta.persistence.Enumerated" />
       <writeAnnotation name="jakarta.persistence.ManyToMany" />
       <writeAnnotation name="jakarta.persistence.OneToMany" />
     </writeAnnotations>

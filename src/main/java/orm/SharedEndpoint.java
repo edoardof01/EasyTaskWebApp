@@ -37,11 +37,17 @@ public class SharedEndpoint {
     @GET
     @Path("/{id}")
     public Response getSharedById(@PathParam("id") long id) {
-        SharedDTO sharedDTO = sharedService.getSharedById(id);  // Ora restituisce direttamente SharedDTO
-        return Response.status(Response.Status.NOT_FOUND)
-                .entity("Task with ID " + id + " not found.")
-                .build();
+        SharedDTO sharedDTO = sharedService.getSharedById(id);
+
+        if (sharedDTO == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Task with ID " + id + " not found.")
+                    .build();
+        }
+
+        return Response.ok(sharedDTO).build();
     }
+
 
     @POST
     @Transactional

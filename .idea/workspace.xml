@@ -9,22 +9,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="User an Shared endpoints">
+    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="User and Shared endpoints">
       <change afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalDAO.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/ResourceDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalEndpoint.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Group.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Group.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/Personal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Personal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Shared.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Shared.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SharedDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SharedDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/orm/SharedEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SharedEndpoint.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/orm/SharedService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SharedService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -219,7 +214,7 @@
       <workItem from="1731503019956" duration="2232000" />
       <workItem from="1731505279585" duration="17271000" />
       <workItem from="1731572520716" duration="5096000" />
-      <workItem from="1731577672661" duration="280000" />
+      <workItem from="1731577672661" duration="3886000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -325,7 +320,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731510560868</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="User and Shared endpoints">
+      <option name="closed" value="true" />
+      <created>1731578332009</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1731578332009</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -351,6 +354,7 @@
     <MESSAGE value="a little more of update" />
     <MESSAGE value="User Enddpoint,Service,Mapper,DAO,DTO" />
     <MESSAGE value="User an Shared endpoints" />
-    <option name="LAST_COMMIT_MESSAGE" value="User an Shared endpoints" />
+    <MESSAGE value="User and Shared endpoints" />
+    <option name="LAST_COMMIT_MESSAGE" value="User and Shared endpoints" />
   </component>
 </project>
