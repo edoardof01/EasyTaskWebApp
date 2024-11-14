@@ -45,9 +45,9 @@ public class UserEndpoint {
     @PUT
     @Path("/{id}")
     public Response updateUser(@PathParam("id") long id, UserDTO userDTO) {
-        Optional<UserDTO> updatedUser = userService.updateUser(id, userDTO);
-        if (updatedUser.isPresent()) {
-            return Response.ok(updatedUser.get()).build();
+        UserDTO updatedUser = userService.updateUser(id, userDTO);
+        if (updatedUser != null) {
+            return Response.ok(updatedUser).build();
         }
         return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
     }
@@ -62,6 +62,25 @@ public class UserEndpoint {
         }
         return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
     }
+
+    @POST
+    @Path("/{userId}/groups/{groupId}/subtasks/{subtaskId}")
+    public Response joinGroup(
+            @PathParam("userId") long userId,
+            @PathParam("groupId") long groupId,
+            @PathParam("subtaskId") long subtaskId) {
+        try {
+            UserDTO updatedUser = userService.joinGroup(userId, groupId, subtaskId);
+            return Response.ok(updatedUser).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An unexpected error occurred").build();
+        }
+    }
+
+
+
 
 }
 

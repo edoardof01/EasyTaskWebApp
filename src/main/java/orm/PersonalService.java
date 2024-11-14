@@ -88,7 +88,7 @@ public class PersonalService {
         assert subtasks != null;
         int complexity = calculateComplexity(subtasks, resources);
 
-        Personal personalTask = new Personal(name, topic, TaskState.INPROGRESS, deadline, description,
+        Personal personalTask = new Personal(name, topic, TaskState.TODO, deadline, description,
                 0, complexity, priority, timeSlots, totalTime, strategies, resources);
 
 
@@ -124,12 +124,12 @@ public class PersonalService {
 
         Personal personalTask = personalDAO.findById(taskId);
         if (personalTask == null) {
-            throw new IllegalArgumentException("Task con ID " + taskId + " non trovato.");
+            throw new IllegalArgumentException("Task with ID " + taskId + " not found.");
         }
 
         User user = personalTask.getUser();
         if (user == null) {
-            throw new IllegalStateException("Nessun utente associato al task.");
+            throw new IllegalStateException("no user associated to this task");
         }
 
         personalTask.setState(TaskState.FREEZED);
@@ -156,7 +156,7 @@ public class PersonalService {
     public void deleteShared(Long taskId) {
         Personal personalTask = personalDAO.findById(taskId);
         if (personalTask == null) {
-            throw new IllegalArgumentException("Task con ID " + taskId + " non trovato.");
+            throw new IllegalArgumentException("Task with ID " + taskId + " not found.");
         }
 
         personalTask.deleteTask();
@@ -167,7 +167,7 @@ public class PersonalService {
     public void moveToCalendar(PersonalDTO personalDTO) {
         Personal personal = personalDAO.findById(personalDTO.getId());
         if (personal == null) {
-            throw new IllegalArgumentException("Task con ID " + personalDTO.getId() + " not found.");
+            throw new IllegalArgumentException("Task with ID " + personalDTO.getId() + " not found.");
         }
         personal.toCalendar();
         personalDAO.update(personal);
@@ -184,7 +184,7 @@ public class PersonalService {
     public void handleLimitExceeded(SessionDTO sessionDTO, long personalId) {
         Personal personal = personalDAO.findById(personalId);
         if (personal == null) {
-            throw new IllegalArgumentException("Personal task con ID " + personalId + " non trovato.");
+            throw new IllegalArgumentException("Personal task with ID " + personalId + " not found.");
 
             Session session = sessionMapper.toSessionEntity(sessionDTO);
             if (session == null) {

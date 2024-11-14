@@ -96,25 +96,13 @@ public class User {
     }
 
     public void joinGroup(@NotNull Group group, Subtask subtask){
+        if(!group.getSubtasks().contains(subtask) || (group.getSubtasks().contains(subtask) && group.getTakenSubtasks().containsValue(subtask)) ){
+            throw new IllegalArgumentException("Subtask does not exist or is already taken");
+        }
         if(group.getIsComplete()){
             group.addMember(this);
             group.assignSubtaskToUser(this, subtask);
             group.getCalendar().addSessions(this, subtask);
         }
     }
-
-    public void addSubtaskToCalendar(Group group) {
-        if (group.getTakenSubtasks().containsKey(this)) {
-            Subtask subtask = group.getTakenSubtasks().get(this);
-            if (this.calendar != null) {
-                group.toCalendar();
-                System.out.println("Subtask added to calendar for user: " + this.id);
-            }
-        } else {
-            throw new IllegalArgumentException("No subtask assigned to this user in the group");
-        }
-    }
-
-
-
 }

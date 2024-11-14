@@ -9,17 +9,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="User and Shared endpoints">
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalEndpoint.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="personal endpoint,...">
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/GroupDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/GroupDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/GroupEndpoint.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/GroupMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/GroupService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Personal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Personal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SharedEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SharedEndpoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Group.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Group.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/PersonalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/orm/SharedService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SharedService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserEndpoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,33 +62,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JBoss/WildFly Server.JBoss/WildFly 34.0.0.Final1.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "extract.method.default.visibility": "private",
-    "git-widget-placeholder": "master",
-    "jdk.selected.JAVA_MODULE": "corretto-21",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/ApplicationServers/wildfly-34.0.0.Final/modules/system/layers/base/com/mysql/main/mysql-connector-j-9.1.0.jar",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "SDKs",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "inlay.hints",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JBoss/WildFly Server.JBoss/WildFly 34.0.0.Final1.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;corretto-21&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/ApplicationServers/wildfly-34.0.0.Final/modules/system/layers/base/com/mysql/main/mysql-connector-j-9.1.0.jar&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;inlay.hints&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="domain" />
@@ -215,6 +217,9 @@
       <workItem from="1731505279585" duration="17271000" />
       <workItem from="1731572520716" duration="5096000" />
       <workItem from="1731577672661" duration="3886000" />
+      <workItem from="1731583895349" duration="2255000" />
+      <workItem from="1731597146764" duration="11154000" />
+      <workItem from="1731612700088" duration="941000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -328,7 +333,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731578332009</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="personal endpoint,...">
+      <option name="closed" value="true" />
+      <created>1731584261868</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1731584261868</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -355,6 +368,7 @@
     <MESSAGE value="User Enddpoint,Service,Mapper,DAO,DTO" />
     <MESSAGE value="User an Shared endpoints" />
     <MESSAGE value="User and Shared endpoints" />
-    <option name="LAST_COMMIT_MESSAGE" value="User and Shared endpoints" />
+    <MESSAGE value="personal endpoint,..." />
+    <option name="LAST_COMMIT_MESSAGE" value="personal endpoint,..." />
   </component>
 </project>

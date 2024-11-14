@@ -109,7 +109,7 @@ public class SharedService {
         assert subtasks != null;
         int complexity = calculateComplexity(subtasks, resources);
 
-        Shared sharedTask = new Shared(name, topic, TaskState.INPROGRESS, deadline, description,
+        Shared sharedTask = new Shared(name, topic, TaskState.TODO, deadline, description,
                 0, complexity, priority, timeSlots, totalTime, strategies, resources);
 
         if (userGuidance != null) {
@@ -144,17 +144,17 @@ public class SharedService {
     }
 
     public SharedDTO modifyShared(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
-                                  Set<Timetable> timeSlots, DefaultStrategy strategy, int priority, String description,
+                                  Set<Timetable> timeSlots, DefaultStrategy strategy, Integer priority, String description,
                                   ArrayList<Resource> resources, List<Subtask> subtasks, @Nullable String userGuidance) {
 
         Shared sharedTask = sharedDAO.findById(taskId);
         if (sharedTask == null) {
-            throw new IllegalArgumentException("Task con ID " + taskId + " non trovato.");
+            throw new IllegalArgumentException("Task with ID " + taskId + " not found.");
         }
 
         User user = sharedTask.getUser();
         if (user == null) {
-            throw new IllegalStateException("Nessun utente associato al task.");
+            throw new IllegalStateException("no user associated to this task.");
         }
 
         sharedTask.setState(TaskState.FREEZED);
@@ -168,6 +168,8 @@ public class SharedService {
         sharedTask.setPriority(priority);
         if (description != null) sharedTask.setDescription(description);
         if (resources != null) sharedTask.setResources(resources);
+
+
 
         int complexity = calculateComplexity(subtasks, resources);
         sharedTask.setComplexity(complexity);
@@ -186,7 +188,7 @@ public class SharedService {
     public void deleteShared(Long taskId) {
         Shared sharedTask = sharedDAO.findById(taskId);
         if (sharedTask == null) {
-            throw new IllegalArgumentException("Task con ID " + taskId + " non trovato.");
+            throw new IllegalArgumentException("Task with ID " + taskId + " not found.");
         }
 
         sharedTask.deleteTask();
@@ -215,7 +217,7 @@ public class SharedService {
         Shared shared = sharedDAO.findById(sharedId);
         Comment comment = commentDAO.findById(commentId);
         if (comment == null) {
-            throw new IllegalArgumentException("Comment con ID " + commentId + " not found.");
+            throw new IllegalArgumentException("Comment with ID " + commentId + " not found.");
         }
         shared.bestComment(comment);
         return comment;
@@ -240,7 +242,7 @@ public class SharedService {
     public void handleLimitExceeded(SessionDTO sessionDTO, long sharedId) {
         Shared shared = sharedDAO.findById(sharedId);
         if (shared == null) {
-            throw new IllegalArgumentException("Shared task con ID " + sharedId + " non trovato.");
+            throw new IllegalArgumentException("Shared task with ID " + sharedId + " not found.");
         }
         Session session = sessionMapper.toSessionEntity(sessionDTO);
         if (session == null) {
@@ -250,4 +252,5 @@ public class SharedService {
         sessionDAO.update(session);
         sharedDAO.update(shared);
     }
+
 }

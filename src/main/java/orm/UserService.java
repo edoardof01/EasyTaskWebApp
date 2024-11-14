@@ -16,9 +16,17 @@ public class UserService {
     @Inject
     private UserDAO userDAO;
 
-
     @Inject
     private UserMapper userMapper;
+
+    @Inject
+    GroupDAO groupDAO;
+
+    @Inject
+    GroupMapper groupMapper;
+
+    @Inject
+    SubtaskDAO subtaskDAO;
 
 
     public List<UserDTO> getAllUsers() {
@@ -44,15 +52,14 @@ public class UserService {
     }
 
     @Transactional
-    public Optional<UserDTO> updateUser(long id, UserDTO userDTO) {
-        Optional<User> userOptional = Optional.ofNullable(userDAO.findById(id));
-        if (userOptional.isEmpty()) {
-            return Optional.empty();
+    public UserDTO updateUser(long id, UserDTO userDTO) {
+        User user = userDAO.findById(id);
+        if (user == null) {
+            throw new IllegalArgumentException("User with ID " + id + " not found.");
         }
-        User user = userOptional.get();
-        userMapper.updateUserFromDTO(userDTO, user);
+        userMapper.updateUserFromDTO(userDTO,user);
         userDAO.update(user);
-        return Optional.of(userMapper.toUserDTO(user));
+        return userMapper.toUserDTO(user);
     }
 
     @Transactional
@@ -62,6 +69,33 @@ public class UserService {
         }
         userDAO.delete(id);
         return true;
+    }
+
+    @Transactional
+    public UserDTO joinGroup( long userId,long groupId, long subtaskId ) {
+        User user = userDAO.findById(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("User with ID " + userId + " not found.");
+        }
+        Group group = groupDAO.findById(groupId);
+        if (group == null) {
+            throw new IllegalArgumentException("Group with ID " + groupId + " not found.");
+        }
+        Subtask subtask = subtaskDAO.findById(subtaskId);
+        if (subtask == null){
+            throw new IllegalArgumentException("Subtask with ID " + subtaskId + " not found.");
+        }
+        user.joinGroup(group, subtask);
+        subtaskDAO.update(subtask);
+        groupDAO.update(group);
+        userDAO.update(user);
+        return userMapper.toUserDTO(user);
+
+    }
+
+    @Transactional
+    public UserDTO addSubtaskToCalendar(){
+
     }
 
 

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @DiscriminatorValue("group")
 public class Group extends Task {
     private int numUsers;
+    private int actualMembers = 1;
     @ManyToMany
     private ArrayList<User> members = new ArrayList<>();
     @ElementCollection
@@ -28,8 +29,8 @@ public class Group extends Task {
     @OneToMany
     private Map<@NotNull User, @NotNull Subtask> takenSubtasks = new HashMap<>();
 
-    public Group() {
-    }
+
+    public Group() {}
 
     public Group(int numUsers, LocalDateTime dateOnFeed, String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
                  String description, int percentageOfCompletion, int complexity, int priority,
@@ -52,6 +53,12 @@ public class Group extends Task {
     }
     public int getNumUsers() {
         return numUsers;
+    }
+    public int getActualMembers() {
+        return actualMembers;
+    }
+    public void setNumUsers(int numUsers) {
+        this.numUsers = numUsers;
     }
     public LocalDateTime getDateOnFeed() {
         return dateOnFeed;
@@ -92,6 +99,7 @@ public class Group extends Task {
 
     public void addMember(User member) {
         members.add(member);
+        actualMembers++;
     }
 
     public void assignSubtaskToUser(User user, Subtask subtask) {
@@ -247,6 +255,7 @@ public class Group extends Task {
         if (!members.contains(user)) {
             throw new IllegalArgumentException("the user is not part of the group");
         }
+        actualMembers--;
         user.getCalendar().removeSessions(this);
         this.getCalendar().removeSessions(user);
         ArrayList<Folder> folders = user.getFolders();
@@ -283,13 +292,11 @@ public class Group extends Task {
         Feed.getInstance().getGroup().add(this);
     }
 
-    public void sendExchangeRequest(User sender, User receiver, Subtask reqSubtask) {
+    public void sendExchangeRequest(User sender, User receiver) {
         if (!members.contains(sender) || !members.contains(receiver)) {
             throw new IllegalArgumentException("both the users must be members of the group ");
         }
-        if (!takenSubtasks.get(receiver).equals(reqSubtask)) {
-            throw new IllegalArgumentException("the requested subtask is not assigned to the receiver");
-        }
+
 
         // Verifica che il sender abbia un subtask da offrire
         Subtask givenSubtask = takenSubtasks.get(sender);
@@ -298,7 +305,8 @@ public class Group extends Task {
         }
 
         // Crea e salva una nuova richiesta di scambio
-        Request exchangeRequest = new Request(sender, receiver, this, givenSubtask, reqSubtask);
+        Subtask receiverSubtask = takenSubtasks.get(receiver);
+        Request exchangeRequest = new Request(sender, receiver, this, givenSubtask, receiverSubtask );
         if (pendingRequest == null) {
             pendingRequest = new ArrayList<>();
         }
@@ -332,17 +340,13 @@ public class Group extends Task {
         }
     }
 
-    public void removeMember(User admin, User member, boolean substitute){
-        if (!members.contains(admin)) {
-            throw new IllegalArgumentException("The admin is not part of the group");
-        }
+    public void removeMember( User member, boolean substitute){
         if (!members.contains(member)) {
             throw new IllegalArgumentException("The member is not part of the group");
         }
         this.getMembers().remove(member);
-
-
-        if(substitute && !Feed.getInstance().getGroup().contains(member)){
+        actualMembers--;
+        if(substitute && !Feed.getInstance().getGroup().contains(this)){
             Feed.getInstance().getGroup().add(this);
             getAvailableSubtasks().add(takenSubtasks.get(member));
             takenSubtasks.remove(member);
@@ -373,7 +377,6 @@ public class Group extends Task {
             takenSubtasks.remove(member);
         }
     }
-
 }
 
 
