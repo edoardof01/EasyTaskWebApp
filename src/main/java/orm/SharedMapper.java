@@ -35,7 +35,7 @@ public class SharedMapper {
     }
     public void updateSharedFromDTO(SharedDTO sharedDTO, Shared shared) {
         if (sharedDTO == null || shared == null) {
-            return;
+            throw new NullPointerException();
         }
 
         // Aggiornamento delle proprietà principali

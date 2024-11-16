@@ -79,6 +79,32 @@ public class UserEndpoint {
         }
     }
 
+    @POST
+    @Path("/{sharedId}/comments")
+    public Response makeComment(
+            @PathParam("sharedId") long sharedId,
+            CommentDTO commentDTO) {
+        try {
+            // Chiamata al servizio per creare il commento
+            CommentDTO createdComment = userService.makeComment(sharedId, commentDTO);
+
+            return Response.status(Response.Status.CREATED)
+                    .entity(createdComment)
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (Exception e) {
+            // Gestisce errori imprevisti
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An error occurred while processing the request.")
+                    .build();
+        }
+    }
+
+
+
 
 
 

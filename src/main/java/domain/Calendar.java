@@ -13,7 +13,7 @@ public class Calendar {
     @OneToOne
     private User user;
     @OneToMany
-    private ArrayList<Session> sessions = new ArrayList<>();
+    private List<Session> sessions = new ArrayList<>();
 
     public Calendar(){}
 
@@ -23,14 +23,17 @@ public class Calendar {
     public long getId() {
         return id;
     }
-    public ArrayList<Session> getSessions() {
+    public List<Session> getSessions() {
         return sessions;
     }
-    public void addSessions(ArrayList<Session> newSessions) {
+    public User getUser() {
+        return user;
+    }
+    public void addSessions(List<Session> newSessions) {
         sessions.addAll(newSessions);
     }
     public void removeSessions(Task task) {
-        if(!sessions.containsAll(task.getSessions())){
+        if(!new HashSet<>(sessions).containsAll(task.getSessions())){
             throw new IllegalArgumentException("the task isn't in the calendar");
         }
         sessions.removeAll(task.getSessions());

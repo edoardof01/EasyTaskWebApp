@@ -35,7 +35,10 @@ public class GroupService {
     SubtaskDAO subtaskDAO;
 
     @Inject
-    RequestMapper requestMapper;
+    RequestDAO requestDAO;
+
+    @Inject
+    CalendarDAO calendarDAO;
 
 
     public GroupDTO getGroupById(long id) {
@@ -55,7 +58,7 @@ public class GroupService {
 
     public GroupDTO createGroup(String name, Topic topic, @Nullable LocalDateTime deadline, LocalDateTime dateOnFeed, int totalTime,
                                 Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
-                                String description, ArrayList<Resource> resources, @Nullable ArrayList<Subtask> subtasks,
+                                String description, List<Resource> resources, @Nullable List<Subtask> subtasks,
                                 int numUsers, @Nullable String userGuidance) {
         if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null || numUsers <= 0) {
             throw new IllegalArgumentException("mandatory fields missing or invalid fields");
@@ -103,8 +106,8 @@ public class GroupService {
         int complexity = calculateComplexity(subtasks, resources);
         Group group = new Group(numUsers, dateOnFeed, name, topic, TaskState.TODO, deadline, description, 0, complexity, priority, timeSlots,
                 totalTime, strategies, resources);
-
-        Feed.getInstance().addTask(group);
+        Feed.getInstance().getGroup().add(group);
+        for(User member : group.getMembers())  Feed.getInstance().getContributors().add(member);
         groupDAO.save(group);
         return groupMapper.toGroupDTO(group);
     }
@@ -138,6 +141,11 @@ public class GroupService {
         if (group == null) {
             throw new IllegalArgumentException("Task con ID " + taskId + " non trovato.");
         }
+        if(numUsers!=null) {
+            if (numUsers < group.getNumUsers()) {
+                throw new IllegalArgumentException("the new numUsers must be more than or equal to the old numUsers");
+            }
+        }
 
         User user = group.getUser();
         if (user == null) {
@@ -146,7 +154,9 @@ public class GroupService {
 
         group.setState(TaskState.FREEZED);
         group.modifyTask();
-
+        for (User member : group.getMembers()) {
+            calendarDAO.update(member.getCalendar());
+        }
         if (name != null) group.setName(name);
         if (topic != null) group.setTopic(topic);
         if (deadline != null) group.setDeadline(deadline);
@@ -161,8 +171,10 @@ public class GroupService {
         int complexity = calculateComplexity(subtasks, resources);
         group.setComplexity(complexity);
 
-
-        Feed.getInstance().addTask(group);
+        Feed.getInstance().getGroup().add(group);
+        for(User member: group.getMembers()) {
+            Feed.getInstance().getContributors().add(member);
+        }
         groupDAO.update(group);
 
         return groupMapper.toGroupDTO(group);
@@ -176,38 +188,64 @@ public class GroupService {
         }
         groupTask.deleteTask();
         groupDAO.delete(groupTask.getId());
+        for (User member : groupTask.getMembers()) {
+            calendarDAO.update(member.getCalendar());
+        }
     }
 
     @Transactional
-    public void moveToCalendar(GroupDTO groupDTO) {
+    public void moveToCalendar(GroupDTO groupDTO, Long userId) {
         Group group = groupDAO.findById(groupDTO.getId());
         if (group == null) {
-            throw new IllegalArgumentException("Task con ID " + groupDTO.getId() + " not found.");
+            throw new IllegalArgumentException("Task con ID " + groupDTO.getId() + " non trovato.");
         }
-        group.toCalendar();
+
+        User user = userDAO.findById(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("User con ID " + userId + " non trovato.");
+        }
+
+        // Verifica se l'utente è l'amministratore del gruppo
+        if (group.getUser().equals(user)) {
+            group.toCalendar(); // Metodo per l'amministratore
+            calendarDAO.update(group.getUser().getCalendar());
+        } else if (group.getMembers().contains(user)) {
+            group.toCalendarForUser(user); // Metodo per altri membri
+            calendarDAO.update(user.getCalendar());
+        } else {
+            throw new IllegalArgumentException("L'utente non è membro di questo gruppo.");
+        }
+
         groupDAO.update(group);
     }
+
 
     @Transactional
     public void completeSharedBySessions(long groupId) {
         Group group = groupDAO.findById(groupId);
         group.completeTaskBySessions();
         groupDAO.update(group);
+        for (User member : group.getMembers()) {
+            calendarDAO.update(member.getCalendar());
+        }
     }
 
     @Transactional
     public void handleLimitExceeded(SessionDTO sessionDTO, long groupId) {
-        Group shared = groupDAO.findById(groupId);
-        if (shared == null) {
+        Group group = groupDAO.findById(groupId);
+        if (group == null) {
             throw new IllegalArgumentException("Group task with ID " + groupId + " not found.");
         }
         Session session = sessionMapper.toSessionEntity(sessionDTO);
         if (session == null) {
             throw new IllegalArgumentException("Session with ID " + groupId + " not found.");
         }
-        shared.autoSkipIfNotCompleted(session);
+        group.autoSkipIfNotCompleted(session);
         sessionDAO.update(session);
-        groupDAO.update(shared);
+        groupDAO.update(group);
+        for (User member : group.getMembers()) {
+            calendarDAO.update(member.getCalendar());
+        }
     }
 
     @Transactional
@@ -223,6 +261,9 @@ public class GroupService {
         group.leaveGroupTask(user);
         groupDAO.update(group);
         userDAO.update(user);
+        for (User member : group.getMembers()) {
+            calendarDAO.update(member.getCalendar());
+        }
     }
 
 
@@ -239,8 +280,9 @@ public class GroupService {
         }
         group.sendExchangeRequest(sender, receiver);
     }
+
     @Transactional
-    public void processExchangeRequest(long groupId, long receiverId, RequestDTO requestDTO,  boolean accept) {
+    public void processExchangeRequest(long groupId, long receiverId, long requestId, boolean accept) {
         Group group = groupDAO.findById(groupId);
         if (group == null) {
             throw new IllegalArgumentException("Group with ID " + groupId + " not found.");
@@ -250,17 +292,17 @@ public class GroupService {
         if (receiver == null) {
             throw new IllegalArgumentException("User with ID " + receiverId + " not found.");
         }
-
-        if (requestDTO == null) {
+        Request request = requestDAO.findById(requestId);
+        if (request == null) {
             throw new IllegalArgumentException("Request data is missing.");
         }
-
-        Request request = requestMapper.toRequestEntity(requestDTO);
-        if (request == null) {
-            throw new IllegalArgumentException("Request conversion failed.");
+        group.processExchangeRequest(receiver, request, accept);
+        groupDAO.update(group);
+        if (accept) {
+            calendarDAO.update(request.getSender().getCalendar());
+            calendarDAO.update(receiver.getCalendar());
         }
 
-        group.processExchangeRequest(receiver, request, accept);
     }
 
     public void removeMemberFromGroup(long groupId, long userId, boolean substitute) {
@@ -272,14 +314,15 @@ public class GroupService {
         if (user == null || !group.getMembers().contains(user)) {
             throw new IllegalArgumentException("User with ID " + userId + " not found.");
         }
-        group.removeMember(user,substitute);
+        group.removeMember(user, substitute);
         groupDAO.update(group);
         userDAO.update(user);
+        calendarDAO.update(user.getCalendar());
     }
 
-
-
 }
+
+
 
 
 

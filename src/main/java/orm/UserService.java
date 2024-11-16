@@ -1,9 +1,6 @@
 package orm;
 
-import domain.Group;
-import domain.Subtask;
-import domain.Task;
-import domain.User;
+import domain.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -27,6 +24,20 @@ public class UserService {
 
     @Inject
     SubtaskDAO subtaskDAO;
+
+    @Inject
+    CommentMapper commentMapper;
+
+    @Inject
+    SharedDAO sharedDAO;
+
+    @Inject
+    CommentDAO commentDAO;
+
+    @Inject
+    CommentedFolderDAO commentedFolderDAO;
+
+
 
 
     public List<UserDTO> getAllUsers() {
@@ -90,14 +101,24 @@ public class UserService {
         groupDAO.update(group);
         userDAO.update(user);
         return userMapper.toUserDTO(user);
-
     }
 
     @Transactional
-    public UserDTO addSubtaskToCalendar(){
+    public CommentDTO makeComment(long sharedId, CommentDTO commentDTO) {
+        User user = userDAO.findById(commentDTO.getAuthor().getId());
+        Shared shared = sharedDAO.findById(sharedId);
+        if (user == null) {
+            throw new IllegalArgumentException("User with the ID specified not found.");
+        }
+        Comment comment = commentMapper.toCommentEntity(commentDTO);
+        user.makeComment(comment.getContent(),shared);
+        sharedDAO.update(shared);
+        userDAO.update(user);
+        commentDAO.save(comment);
+        commentedFolderDAO.update(user.getCommentedFolder());
 
+        return commentMapper.toCommentDTO(comment);
     }
-
 
 
 }

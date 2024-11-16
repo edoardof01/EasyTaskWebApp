@@ -3,6 +3,7 @@ package domain;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class CommentedFolder {
@@ -10,7 +11,6 @@ public class CommentedFolder {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Long id;
-    private boolean isCompleted;
     @OneToMany
     private ArrayList<Shared> shared;
     @OneToOne
@@ -20,11 +20,8 @@ public class CommentedFolder {
 
     public CommentedFolder() {}
 
-    public CommentedFolder(User user, ArrayList<Shared> shared, ArrayList<Comment> comment) {
+    public CommentedFolder(User user) {
         this.user = user;
-        this.shared = shared;
-        this.comment = comment;
-        this.isCompleted = false;
     }
 
     public ArrayList<Comment> getComment() {
@@ -35,6 +32,12 @@ public class CommentedFolder {
     }
     public Long getId() {
         return id;
+    }
+    public User getUser() {
+        return user;
+    }
+    public List<Shared> getShared() {
+        return shared;
     }
 
 }

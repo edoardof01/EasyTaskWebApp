@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -15,7 +16,7 @@ public class Personal extends Task {
 
     public Personal(String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
                     String description, int percentageOfCompletion, int complexity, int priority,
-                    Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategy, ArrayList<Resource> resources) {
+                    Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategy, List<Resource> resources) {
         super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
     }
 
@@ -36,7 +37,7 @@ public class Personal extends Task {
     @Override
     public void deleteTask() {
         this.getUser().getCalendar().removeSessions(this);
-        ArrayList<Folder> folders = this.getUser().getFolders();
+        List<Folder> folders = this.getUser().getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {
             for (Subfolder subfolder : folder.getSubfolders()) {

@@ -26,17 +26,13 @@ public class Session {
 
     public Session() {}
 
-    public Session(long id, LocalDateTime startDate, LocalDateTime endDate, User user,Task task,@Nullable Subtask subtask) {
-        this.id = id;
+    public Session( LocalDateTime startDate, LocalDateTime endDate, User user,Task task,@Nullable Subtask subtask) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.user = user;
         this.task = task;
         this.subtask = subtask;
         this.sessionDuration =  Duration.between(startDate,endDate).toHours();
-    }
-    public Session(long id, LocalDateTime startDate, LocalDateTime endDate, User user, Task task) {
-        this(id, startDate, endDate, user, task, null);
     }
 
 

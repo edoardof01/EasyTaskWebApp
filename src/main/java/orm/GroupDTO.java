@@ -5,7 +5,9 @@ import domain.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GroupDTO {
     private final long id;
@@ -16,14 +18,14 @@ public class GroupDTO {
     private final LocalDateTime dateOnFeed;
     private boolean isInProgress = false;
     private int totalTime;
-    private ArrayList<Subtask> subtasks = new ArrayList<>();
+    private List<SubtaskDTO> subtasks = new ArrayList<>();
     private final Topic topic;
     private TaskState taskState;
     private int complexity;
     private int priority;
     private Set<Timetable> timetable = new HashSet<>();
     private Set<DefaultStrategy> strategies = new HashSet<>();
-    private ArrayList<Resource> resources = new ArrayList<>();
+    private List<ResourceDTO> resources = new ArrayList<>();
     private int numUser;
     private int actualMembers;
 
@@ -42,8 +44,8 @@ public class GroupDTO {
         this.totalTime = group.getTotalTime();
         this.strategies.addAll(group.getStrategies());
         this.timetable.addAll(group.getTimetable());
-        this.resources = group.getResources();
-        this.subtasks = group.getSubtasks();
+        this.resources = group.getResources().stream().map(ResourceDTO::new).collect(Collectors.toList());
+        this.subtasks = group.getSubtasks().stream().map(SubtaskDTO::new).collect(Collectors.toList());
         this.numUser = group.getNumUsers();
         this.actualMembers = group.getActualMembers();
     }
@@ -100,10 +102,10 @@ public class GroupDTO {
         this.totalTime = totalTime;
     }
 
-    public ArrayList<Subtask> getSubtasks() {
+    public List<SubtaskDTO> getSubtasks() {
         return subtasks;
     }
-    public void setSubtasks(ArrayList<Subtask> subtasks) {
+    public void setSubtasks(List<SubtaskDTO> subtasks) {
         this.subtasks = subtasks;
     }
     public Topic getTopic() {
@@ -143,10 +145,10 @@ public class GroupDTO {
     public void setStrategies(Set<DefaultStrategy> strategies) {
         this.strategies = strategies;
     }
-    public ArrayList<Resource> getResources() {
+    public List<ResourceDTO> getResources() {
         return resources;
     }
-    public void setResources(ArrayList<Resource> resources) {
+    public void setResources(List<ResourceDTO> resources) {
         this.resources = resources;
     }
     public int getNumUser() {

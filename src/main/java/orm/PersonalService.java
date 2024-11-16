@@ -17,6 +17,9 @@ public class PersonalService {
     private PersonalDAO personalDAO;
 
     @Inject
+    CalendarDAO calendarDAO;
+
+    @Inject
     private PersonalMapper personalMapper;
 
     @Inject
@@ -24,6 +27,7 @@ public class PersonalService {
 
     @Inject
     private SessionMapper sessionMapper;
+
 
     public PersonalDTO getPersonalById(long id) {
         Personal personal = personalDAO.findById(id);
@@ -41,7 +45,7 @@ public class PersonalService {
 
     public PersonalDTO createPersonal(String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
                                       Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
-                                      String description, ArrayList<Resource> resources, @Nullable ArrayList<Subtask> subtasks,
+                                      String description, List<Resource> resources, @Nullable List<Subtask> subtasks,
                                       @Nullable Integer requiredUsers, @Nullable String userGuidance) {
         if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null) {
             throw new IllegalArgumentException("mandatory fields missing or invalid fields");
@@ -148,7 +152,7 @@ public class PersonalService {
         personalTask.setComplexity(complexity);
 
         personalDAO.update(personalTask);
-
+        calendarDAO.update(personalTask.getUser().getCalendar());
         return personalMapper.toPersonalDTO(personalTask);
     }
 
@@ -158,9 +162,9 @@ public class PersonalService {
         if (personalTask == null) {
             throw new IllegalArgumentException("Task with ID " + taskId + " not found.");
         }
-
         personalTask.deleteTask();
         personalDAO.delete(personalTask.getId());
+        calendarDAO.update(personalTask.getUser().getCalendar());
     }
 
     @Transactional
@@ -171,12 +175,14 @@ public class PersonalService {
         }
         personal.toCalendar();
         personalDAO.update(personal);
+        calendarDAO.update(personal.getUser().getCalendar());
     }
 
     @Transactional
     public void completePersonalBySessions(long personalId) {
         Personal personal = personalDAO.findById(personalId);
         personal.completeTaskBySessions();
+        calendarDAO.update(personal.getUser().getCalendar());
         personalDAO.update(personal);
     }
 
@@ -185,16 +191,17 @@ public class PersonalService {
         Personal personal = personalDAO.findById(personalId);
         if (personal == null) {
             throw new IllegalArgumentException("Personal task with ID " + personalId + " not found.");
-
-            Session session = sessionMapper.toSessionEntity(sessionDTO);
-            if (session == null) {
-                throw new IllegalArgumentException("Session with ID " + personalId + " not found.");
-            }
-            personal.autoSkipIfNotCompleted(session);
-            sessionDAO.update(session);
-            personalDAO.update(personal);
         }
-
+        Session session = sessionMapper.toSessionEntity(sessionDTO);
+        if (session == null) {
+            throw new IllegalArgumentException("Session with ID " + personalId + " not found.");
+        }
+        personal.autoSkipIfNotCompleted(session);
+        sessionDAO.update(session);
+        personalDAO.update(personal);
+        calendarDAO.update(personal.getUser().getCalendar());
     }
+
 }
+
 

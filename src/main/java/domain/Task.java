@@ -34,11 +34,11 @@ public abstract class Task {
     @Enumerated(EnumType.STRING)
     private SubfolderType currentSubfolderType;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<Subtask> subtasks = new ArrayList<>();
+    private List<Subtask> subtasks = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<Session> sessions = new ArrayList<>();
+    private List<Session> sessions = new ArrayList<>();
     @OneToMany( cascade = CascadeType.ALL)
-    private ArrayList<Resource> resources = new ArrayList<>();
+    private List<Resource> resources = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     private Topic topic;
     @Enumerated(EnumType.STRING)
@@ -51,7 +51,7 @@ public abstract class Task {
 
     public Task(String name, int complexity, String description,
                 @Nullable LocalDateTime deadline, int percentageOfCompletion, int priority, int totalTime, Topic topic,
-                TaskState state, Set<Timetable> timetable, Set<DefaultStrategy> strategies, ArrayList<Resource> resources) {
+                TaskState state, Set<Timetable> timetable, Set<DefaultStrategy> strategies, List<Resource> resources) {
         this.name = name;
         this.description = description;
         this.deadline = deadline;
@@ -127,7 +127,7 @@ public abstract class Task {
     public int getConsecutiveSkippedSessions() {
         return consecutiveSkippedSessions;
     }
-    public ArrayList<Subtask> getSubtasks() {
+    public List<Subtask> getSubtasks() {
         return subtasks;
     }
     public void setTotalTime(int totalTime) {
@@ -139,13 +139,13 @@ public abstract class Task {
     public void setComplexity(int complexity) {
         this.complexity = complexity;
     }
-    public ArrayList<Session> getSessions() {
+    public List<Session> getSessions() {
         return sessions;
     }
-    public ArrayList<Resource> getResources() {
+    public List<Resource> getResources() {
         return resources;
     }
-    public void setResources(ArrayList<Resource> resources) {
+    public void setResources(List<Resource> resources) {
         this.resources = resources;
     }
     public boolean isInProgress() {
@@ -192,7 +192,7 @@ public abstract class Task {
         this.updateIsInProgress(true);
         user.getCalendar().addSessions(this.getSessions());
 
-        ArrayList<Folder> folders = user.getFolders();
+        List<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {
             for (Subfolder subfolder : folder.getSubfolders()) {
@@ -215,7 +215,7 @@ public abstract class Task {
         }
         this.setState(TaskState.FREEZED);
         user.getCalendar().removeSessions(this);
-        ArrayList<Folder> folders = user.getFolders();
+        List<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {
             for (Subfolder subfolder : folder.getSubfolders()) {
@@ -238,7 +238,7 @@ public abstract class Task {
         }
         user.getCalendar().removeSessions(this);
         this.setState(TaskState.FINISHED);
-        ArrayList<Folder> folders = user.getFolders();
+        List<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {
             for (Subfolder subfolder : folder.getSubfolders()) {
@@ -260,7 +260,7 @@ public abstract class Task {
         }
         this.setState(TaskState.FINISHED);
         user.getCalendar().removeSessions(this);
-        ArrayList<Folder> folders = user.getFolders();
+        List<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {
             for (Subfolder subfolder : folder.getSubfolders()) {
@@ -344,7 +344,7 @@ public abstract class Task {
     protected void removeAndFreezeTask(User user, Task task) {
         user.getCalendar().removeSessions(task);
         this.setState(TaskState.FREEZED);
-        ArrayList<Folder> folders = user.getFolders();
+        List<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {
             for (Subfolder subfolder : folder.getSubfolders()) {

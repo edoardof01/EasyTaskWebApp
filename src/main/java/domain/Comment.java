@@ -24,11 +24,11 @@ public class Comment {
     public Long getId() {
       return id;
     }
-    public String getDescription() {
-      return content;
+    public String getContent() {
+        return content;
     }
-    public void setDescription(String content) {
-      this.content = content;
+    public void setContent(String content) {
+        this.content = content;
     }
     public User getAuthor() {
       return author;
@@ -41,7 +41,6 @@ public class Comment {
     public boolean getIsBest() {
         return isBest;
     }
-
     public void setIsBest(boolean best) {
         isBest = best;
     }

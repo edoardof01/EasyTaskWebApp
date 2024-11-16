@@ -33,6 +33,9 @@ public class SharedService {
     @Inject
     private CommentMapper commentMapper;
 
+    @Inject
+    private CalendarDAO calendarDAO;
+
     // Restituisce un SharedDTO per ID
     public SharedDTO getSharedById(long id) {
         Shared shared = sharedDAO.findById(id);
@@ -53,7 +56,8 @@ public class SharedService {
     public void addTaskToFeed(Shared sharedTask, String guidance) {
         sharedTask.updateUserGuidance(guidance);
         sharedTask.setState(TaskState.INPROGRESS);
-        Feed.getInstance().addTask(sharedTask);
+        Feed.getInstance().getShared().add(sharedTask);
+        Feed.getInstance().getContributors().add(sharedTask.getUser());
         sharedDAO.update(sharedTask);
     }
 
@@ -115,8 +119,6 @@ public class SharedService {
         if (userGuidance != null) {
             sharedTask.updateUserGuidance(userGuidance);
         }
-
-        Feed.getInstance().addTask(sharedTask);
         sharedDAO.save(sharedTask);
 
         return sharedMapper.toSharedDTO(sharedTask);
@@ -177,8 +179,10 @@ public class SharedService {
         if (userGuidance != null) {
             sharedTask.updateUserGuidance(userGuidance);
         }
+        calendarDAO.update(sharedTask.getUser().getCalendar());
 
-        Feed.getInstance().addTask(sharedTask);
+        Feed.getInstance().getShared().add(sharedTask);
+        Feed.getInstance().getContributors().remove(sharedTask.getUser());
         sharedDAO.update(sharedTask);
 
         return sharedMapper.toSharedDTO(sharedTask);
@@ -190,9 +194,9 @@ public class SharedService {
         if (sharedTask == null) {
             throw new IllegalArgumentException("Task with ID " + taskId + " not found.");
         }
-
         sharedTask.deleteTask();
         sharedDAO.delete(sharedTask.getId());
+        calendarDAO.update(sharedTask.getUser().getCalendar());
     }
 
     @Transactional
@@ -203,6 +207,7 @@ public class SharedService {
         }
         shared.toCalendar();
         sharedDAO.update(shared);
+        calendarDAO.update(shared.getUser().getCalendar());
     }
 
     @Transactional
@@ -213,14 +218,14 @@ public class SharedService {
     }
 
     @Transactional
-    public Comment getBestComment(long commentId, long sharedId) {
+    public CommentDTO getBestComment(long commentId, long sharedId) {
         Shared shared = sharedDAO.findById(sharedId);
         Comment comment = commentDAO.findById(commentId);
         if (comment == null) {
             throw new IllegalArgumentException("Comment with ID " + commentId + " not found.");
         }
         shared.bestComment(comment);
-        return comment;
+        return commentMapper.toCommentDTO(comment);
     }
 
     @Transactional
@@ -235,6 +240,7 @@ public class SharedService {
                 shared.completeTaskBySessions();
             }
             sharedDAO.update(shared);
+            calendarDAO.update(shared.getUser().getCalendar());
         }
     }
 
@@ -251,6 +257,7 @@ public class SharedService {
         shared.autoSkipIfNotCompleted(session);
         sessionDAO.update(session);
         sharedDAO.update(shared);
+        calendarDAO.update(shared.getUser().getCalendar());
     }
 
 }

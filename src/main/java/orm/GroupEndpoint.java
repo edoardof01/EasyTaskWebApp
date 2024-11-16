@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Path("/shared")
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,6 +21,14 @@ public class GroupEndpoint {
 
     @Inject
     private GroupService groupService;
+
+    @Inject
+    private ResourceMapper resourceMapper;
+
+    @Inject
+    private SubtaskMapper subtaskMapper;
+
+
 
     @GET
     public Response getAllGroupTasks() {
@@ -57,12 +66,18 @@ public class GroupEndpoint {
             Set<DefaultStrategy> strategies = groupDTO.getStrategies();
             int priority = groupDTO.getPriority();
             String description = groupDTO.getDescription();
-            ArrayList<Resource> resources = groupDTO.getResources();
-            ArrayList<Subtask> subtasks = groupDTO.getSubtasks();
 
-            // Passa i campi estratti
+            // Mappa i DTO a entità
+            List<Resource> resources = groupDTO.getResources().stream()
+                    .map(resourceMapper::toResourceEntity)
+                    .collect(Collectors.toList());
+            List<Subtask> subtasks = groupDTO.getSubtasks().stream()
+                    .map(subtaskMapper::toSubtaskEntity)
+                    .collect(Collectors.toList());
+
+            // Passa i campi estratti e le entità al servizio
             GroupDTO createdGroup = groupService.createGroup(
-                    name, topic ,dateOnFeed, deadline, totalTime, timeSlots, strategies, priority,
+                    name, topic, dateOnFeed, deadline, totalTime, timeSlots, strategies, priority,
                     description, resources, subtasks, numUsers, null);
 
             return Response.status(Response.Status.CREATED)
@@ -74,6 +89,9 @@ public class GroupEndpoint {
                     .build();
         }
     }
+
+
+
     @POST
     @Path("/moveToCalendar")
     @Transactional
@@ -142,20 +160,21 @@ public class GroupEndpoint {
     }
 
     @POST
-    @Path("/{groupId}/exchangeRequest/process")
+    @Path("/{groupId}/exchangeRequest/{requestId}/process/{receiverId}")
     @Transactional
     public Response processExchangeRequest(
             @PathParam("groupId") long groupId,
-            @QueryParam("receiverId") long receiverId,
-            RequestDTO requestDTO,
+            @PathParam("receiverId") long receiverId,
+            @PathParam("requestId") long requestId,
             @QueryParam("accept") boolean accept) {
         try {
-            groupService.processExchangeRequest(groupId, receiverId, requestDTO, accept);
+            groupService.processExchangeRequest(groupId, receiverId, requestId, accept);
             return Response.ok().build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
+
 
     @DELETE
     @Path("/{groupId}/remove/{userId}")

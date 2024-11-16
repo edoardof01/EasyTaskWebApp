@@ -25,10 +25,12 @@ public class User {
     private Profile personalProfile;
     @OneToOne(mappedBy="user",cascade = CascadeType.ALL,orphanRemoval = true)
     private Calendar calendar;
+    @OneToOne
+    private CommentedFolder commentedFolder;
     @OneToMany(mappedBy ="user",cascade = CascadeType.ALL,orphanRemoval = true)
-    private final ArrayList<Folder> folders = new ArrayList<>();
+    private final List<Folder> folders = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
-    private final ArrayList<Task> tasks = new ArrayList<>();
+    private final List<Task> tasks = new ArrayList<>();
 
     public User() {}
 
@@ -44,6 +46,7 @@ public class User {
         this.folders.add(new Folder(FolderType.SHARED, this));
         this.folders.add(new Folder(FolderType.GROUP,this));
         this.calendar = new Calendar();
+        this.commentedFolder = new CommentedFolder();
     }
 
     public long getId() {
@@ -82,11 +85,14 @@ public class User {
     public Calendar getCalendar() {
         return calendar;
     }
-    public ArrayList<Folder> getFolders() {
+    public List<Folder> getFolders() {
         return folders;
     }
-    public ArrayList<Task> getTasks() {
+    public List<Task> getTasks() {
         return tasks;
+    }
+    public CommentedFolder getCommentedFolder() {
+        return commentedFolder;
     }
 
 
@@ -105,4 +111,17 @@ public class User {
             group.getCalendar().addSessions(this, subtask);
         }
     }
+
+    public void makeComment(String content , Shared shared){
+        if(content.isEmpty()){
+            throw new IllegalArgumentException("Content cannot be empty");
+        }
+        if(shared == null || !Feed.getInstance().getShared().contains(shared)){
+            return;
+        }
+        Comment comment = new Comment(content,this);
+        shared.getComments().add(comment);
+        this.getCommentedFolder().getShared().add(shared);
+    }
 }
+

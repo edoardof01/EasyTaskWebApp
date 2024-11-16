@@ -55,8 +55,8 @@ public class PersonalEndpoint {
             Set<DefaultStrategy> strategies = personalDTO.getStrategies();
             int priority = personalDTO.getPriority();
             String description = personalDTO.getDescription();
-            ArrayList<Resource> resources = personalDTO.getResources();
-            ArrayList<Subtask> subtasks = personalDTO.getSubtasks();
+            List<Resource> resources = personalDTO.getResources();
+            List<Subtask> subtasks = personalDTO.getSubtasks();
 
             // Passa i campi estratti
             PersonalDTO createdPersonal = personalService.createPersonal(

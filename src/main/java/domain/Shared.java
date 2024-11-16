@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -24,7 +25,7 @@ public class Shared extends Task {
                   String description, int percentageOfCompletion, int complexity, int priority,
                   Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategies, ArrayList<Resource> resources) {
         super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategies, resources);
-        Feed.getInstance().addTask(this);
+        Feed.getInstance().getShared().add(this);
     }
 
     public LocalDateTime getDateOnFeed() {
@@ -62,20 +63,23 @@ public class Shared extends Task {
     @Override
     public void toCalendar() {
         commonToCalendarLogic(this.getUser());
-        this.dateOnFeed = LocalDateTime.now(); // NON SONO SICUROOOOOOOOOOOOOOOOOOOOOOOOOO
-    } // LA GESTIONE DEL CAMPO USERGUIDANCE È AFFIDATA A ENDPPOINT E SERVICE (vedi *1)
+        Feed.getInstance().getShared().add(this);
+        Feed.getInstance().getContributors().add((this.getUser()));
+        this.dateOnFeed = LocalDateTime.now();
+    }
 
     @Override
     public void handleLimitExceeded() {
         // Rimuovo il task dal calendario, sposto il task dalla cartella InProgress a quella Freezed e lo rimuovo dal feed
         removeAndFreezeTask(this.getUser(), this);
         Feed.getInstance().getShared().remove(this);
+        Feed.getInstance().getContributors().add((this.getUser()));
     }
 
     @Override
     public void deleteTask() {
         this.getUser().getCalendar().removeSessions(this);
-        ArrayList<Folder> folders = this.getUser().getFolders();
+        List<Folder> folders = this.getUser().getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {
             for (Subfolder subfolder : folder.getSubfolders()) {
@@ -86,24 +90,29 @@ public class Shared extends Task {
             }
         }
         Feed.getInstance().getShared().remove(this);
+        Feed.getInstance().getContributors().add((this.getUser()));
+
     }
 
     @Override
     public void modifyTask() {
         commonModifyLogic(this.getUser());
         Feed.getInstance().getShared().remove(this);
+        Feed.getInstance().getContributors().add((this.getUser()));
     }
 
     @Override
     public void completeTaskBySessions() {
         commonCompleteBySessionsLogic(this.getUser());
         Feed.getInstance().getShared().remove(this);
+        Feed.getInstance().getContributors().add((this.getUser()));
     }
 
     public void completeBySessionsAndChooseBestComment(Comment comment) {
         if (comments.contains(comment)) {
             commonCompleteBySessionsLogic(getUser());
             Feed.getInstance().getShared().remove(this);
+            Feed.getInstance().getContributors().add((this.getUser()));
             bestComment(comment);
         }
     }
@@ -112,14 +121,16 @@ public class Shared extends Task {
     public void forcedCompletion() {
         commonForcedCompletionLogic(this.getUser());
         Feed.getInstance().getShared().remove(this);
+        Feed.getInstance().getContributors().add((this.getUser()));
     }
 
 
     public void removeTaskJustFromFeed() {
         // Rimuovi il task dal feed
         Feed.getInstance().getShared().remove(this);
+        Feed.getInstance().getContributors().add((this.getUser()));
 
-        ArrayList<Folder> folders = this.getUser().getFolders();
+        List<Folder> folders = this.getUser().getFolders();
         boolean taskRemovedFromShared = false;
 
         for (Folder folder : folders) {
