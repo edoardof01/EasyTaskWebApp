@@ -12,8 +12,9 @@ public class UserDTO {
     private String description;
     private final Sex sex;
     private final Profile personalProfile;
+    private final Role userRole;
 
-    public UserDTO(long id, int age, String profession, List<String> qualifications, String description, Sex sex, Profile personalProfile) {
+    public UserDTO(long id, int age, String profession, List<String> qualifications, String description, Sex sex, Profile personalProfile, Role userRole) {
         this.id = id;
         this.age = age;
         this.profession = profession;
@@ -21,6 +22,7 @@ public class UserDTO {
         this.description = description;
         this.sex = sex;
         this.personalProfile = personalProfile;
+        this.userRole = userRole;
     }
 
     public UserDTO(User user) {
@@ -31,10 +33,15 @@ public class UserDTO {
         this.description = user.getDescription();
         this.sex = user.getSex();
         this.personalProfile = user.getPersonalProfile();
+        this.userRole = user.getUserRole();
     }
     public long getId() {
         return id;
     }
+    public Role getUserRole() {
+        return userRole;
+    }
+
     public int getAge() {
         return age;
     }

@@ -24,7 +24,8 @@ public class UserMapper {
                 userDTO.getDescription(),
                 userDTO.getQualifications(),
                 userDTO.getProfession(),
-                userDTO.getPersonalProfile()
+                userDTO.getPersonalProfile(),
+                userDTO.getUserRole()
         );
     }
 
