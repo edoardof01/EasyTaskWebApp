@@ -16,6 +16,8 @@ public class Group extends Task {
     private int actualMembers = 1;
     @ManyToMany
     private ArrayList<User> members = new ArrayList<>();
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserRole> userRoles = new ArrayList<>();
     @ElementCollection
     private ArrayList<Integer> skippedSessionPerUser;
     private LocalDateTime dateOnFeed;
@@ -32,10 +34,10 @@ public class Group extends Task {
 
     public Group() {}
 
-    public Group(int numUsers, LocalDateTime dateOnFeed, String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
-                 String description, int percentageOfCompletion, int complexity, int priority,
+    public Group(int numUsers, User user, LocalDateTime dateOnFeed, String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
+                 String description, int percentageOfCompletion, int priority,
                  Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategy, List<Resource> resources) {
-        super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
+        super(name,user,description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
         this.numUsers = numUsers;
         this.dateOnFeed = dateOnFeed;
         this.members.add(this.getUser());
@@ -75,7 +77,8 @@ public class Group extends Task {
     public ArrayList<User> getMembers() {
         return members;
     }
-    public void setMembers(ArrayList<User> members) {
+    public List<UserRole> getUserRoles() {
+        return userRoles;
     }
     public ArrayList<Integer> getSkippedSessionPerUser() {
         return skippedSessionPerUser;
@@ -118,7 +121,7 @@ public class Group extends Task {
         // Rimuovo il subtask di competenza dal calendario di ogni membro e sposto il task dal loro subfolder INPROGRESS a quello FREEZED
         for (User member : this.getMembers()) {
             Subtask subtaskOfCompetence = takenSubtasks.get(member);
-            member.getCalendar().removeSessions(this);
+            member.getCalendar().removeSubtaskSessionsForGroups(subtaskOfCompetence);
             this.getCalendar().removeSessions(member);
             List<Folder> folders = member.getFolders();
             boolean taskRemoved = false;
@@ -155,7 +158,7 @@ public class Group extends Task {
         }
         // Controlla e aggiorna lo stato del task di gruppo
         if (!this.isInProgress()) {
-            this.updateIsInProgress(true);
+            this.updateIsInProgress();
         }
 
         this.getUser().getCalendar().addSessions(takenSubtasks.get(this.getUser()).getSessions());
@@ -180,7 +183,7 @@ public class Group extends Task {
 
         // Controlla e aggiorna lo stato del task di gruppo se necessario
         if (!this.isInProgress()) {
-            this.updateIsInProgress(true);
+            this.updateIsInProgress();
         }
     }
 
@@ -189,7 +192,7 @@ public class Group extends Task {
     public void deleteTask() {
             for (User member : this.getMembers()) {
                 Subtask subtaskOfCompetence = takenSubtasks.get(member);
-                member.getCalendar().removeSessions(this);
+                member.getCalendar().removeSubtaskSessionsForGroups(subtaskOfCompetence);
                 this.getCalendar().removeSessions(member);
                 List<Folder> folders = member.getFolders();
                 boolean taskRemoved = false;
@@ -228,6 +231,7 @@ public class Group extends Task {
         this.setState(TaskState.FINISHED);
         for (User member : this.getMembers()) {
             Subtask subtaskOfCompetence = takenSubtasks.get(member);
+            member.getCalendar().removeSubtaskSessionsForGroups(subtaskOfCompetence);
             member.getCalendar().removeSessions(this);
             List<Folder> folders = member.getFolders();
             boolean taskRemoved = false;
@@ -274,6 +278,26 @@ public class Group extends Task {
             }
     }
 
+    public void joinGroup(@NotNull User user, Subtask subtask) {
+        if (!subtasks.contains(subtask) || takenSubtasks.containsValue(subtask)) {
+            throw new IllegalArgumentException("Subtask does not exist or is already taken.");
+        }
+        if (isComplete) {
+            throw new UnsupportedOperationException("The group is already complete.");
+        }
+        if (members.contains(user)) {
+            throw new IllegalArgumentException("User is already member of this group.");
+        }
+        assignSubtaskToUser(user, subtask);
+        calendar.addSessions(user, subtask);
+        user.getCalendar().addSessions(subtask.getSessions());
+        this.addMember(user);
+        if (subtasks.size() == takenSubtasks.size()) {
+            isComplete = true;
+        }
+    }
+
+
     public void leaveGroupTask(User user) {
         if (!members.contains(user)) {
             throw new IllegalArgumentException("the user is not part of the group");
@@ -297,7 +321,7 @@ public class Group extends Task {
 
         for (User member : this.getMembers()) {
             Subtask subtaskOfCompetence = takenSubtasks.get(member);
-            member.getCalendar().removeSessions(this);
+            member.getCalendar().removeSubtaskSessionsForGroups(subtaskOfCompetence);
             List<Folder> memberFolders = member.getFolders();
             boolean memberTaskRemoved = false;
             for (Folder folder : memberFolders) {
@@ -379,7 +403,7 @@ public class Group extends Task {
             for (User user : this.getMembers()) {
                 this.getCalendar().removeSessions(user);
                 Subtask subtaskOfCompetence = takenSubtasks.get(user);
-                user.getCalendar().removeSessions(this);
+                user.getCalendar().removeSubtaskSessionsForGroups(subtaskOfCompetence);
                 List<Folder> folders = user.getFolders();
                 boolean taskRemoved = false;
                 for (Folder folder : folders) {
@@ -399,6 +423,23 @@ public class Group extends Task {
             this.getSubtasks().remove(takenSubtasks.get(member));
             takenSubtasks.remove(member);
         }
+    }
+
+    // Metodo per convertire i ruoli in stringhe
+    public List<String> getRolesNamesForUser(User user) {
+        return userRoles.stream()
+                .filter(userRole -> userRole.getUser().equals(user)) // Filtra per utente
+                .map(userRole -> userRole.getRole().name()) // Converte il ruolo in stringa
+                .collect(Collectors.toList());
+    }
+
+    public void addUserRole(User user, Role role) {
+        UserRole userRole = new UserRole(user, this, role);
+        userRoles.add(userRole);
+    }
+
+    public void setSubtasks(List<Subtask> subtasks) {
+        this.subtasks = subtasks;
     }
 }
 

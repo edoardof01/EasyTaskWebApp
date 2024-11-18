@@ -21,10 +21,10 @@ public class Shared extends Task {
     public Shared() {
     }
 
-    public Shared(String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
-                  String description, int percentageOfCompletion, int complexity, int priority,
-                  Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategies, ArrayList<Resource> resources) {
-        super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategies, resources);
+    public Shared(String name, User user, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
+                  String description, int percentageOfCompletion, int priority,
+                  Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategies, List<Resource> resources) {
+        super(name,user, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategies, resources);
         Feed.getInstance().getShared().add(this);
     }
 
@@ -44,7 +44,7 @@ public class Shared extends Task {
         this.userGuidance = text;
     }
 
-    public ArrayList<Comment> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 

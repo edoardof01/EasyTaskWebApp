@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class User {
@@ -95,7 +97,6 @@ public class User {
         return commentedFolder;
     }
 
-
     // DA COMPLETARE, METODO RICHIAMATO POI
     public void incrementTopicScore(Topic topic){
         personalProfile.getTopics().put(topic, personalProfile.getTopics().get(topic)+1);
@@ -119,7 +120,7 @@ public class User {
         if(shared == null || !Feed.getInstance().getShared().contains(shared)){
             return;
         }
-        Comment comment = new Comment(content,this);
+        Comment comment = new Comment(content,this,shared);
         shared.getComments().add(comment);
         this.getCommentedFolder().getShared().add(shared);
     }

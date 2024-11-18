@@ -1,7 +1,6 @@
-package orm;
+package Endpoints;
 
 import domain.Feed;
-import domain.Task;
 import domain.Topic;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;

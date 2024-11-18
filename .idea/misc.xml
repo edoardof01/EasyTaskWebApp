@@ -4,6 +4,7 @@
     <writeAnnotations>
       <writeAnnotation name="jakarta.persistence.Enumerated" />
       <writeAnnotation name="jakarta.persistence.ManyToMany" />
+      <writeAnnotation name="jakarta.persistence.ManyToOne" />
       <writeAnnotation name="jakarta.persistence.OneToMany" />
     </writeAnnotations>
   </component>

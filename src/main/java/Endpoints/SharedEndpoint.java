@@ -1,18 +1,18 @@
-package orm;
+package Endpoints;
 
 import domain.*;
-import orm.SharedDTO;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import orm.*;
+import service.SharedService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Path("/shared")
 @Produces(MediaType.APPLICATION_JSON)
@@ -21,6 +21,19 @@ public class SharedEndpoint {
 
     @Inject
     private SharedService sharedService;
+
+
+    @Inject
+    private ResourceMapper resourceMapper;
+
+    @Inject
+    private SubtaskMapper subtaskMapper;
+
+    @Inject
+    private UserMapper userMapper;
+
+    @Inject
+    SharedDAO sharedDAO;
 
     /**
      * Ottieni tutti i task Shared.
@@ -55,6 +68,7 @@ public class SharedEndpoint {
         try {
             // Estrai i campi da sharedDTO
             String name = sharedDTO.getName();
+
             Topic topic = sharedDTO.getTopic();
             LocalDateTime deadline = sharedDTO.getDeadline();
             int totalTime = sharedDTO.getTotalTime();
@@ -62,13 +76,18 @@ public class SharedEndpoint {
             Set<DefaultStrategy> strategies = sharedDTO.getStrategies();
             int priority = sharedDTO.getPriority();
             String description = sharedDTO.getDescription();
-            ArrayList<Resource> resources = sharedDTO.getResources();
-            ArrayList<Subtask> subtasks = sharedDTO.getSubtasks();
             String userGuidance = sharedDTO.getUserGuidance();
+            List<Resource> resources = sharedDTO.getResources().stream()
+                    .map(resourceMapper::toResourceEntity)
+                    .collect(Collectors.toList());
+            List<Subtask> subtasks = sharedDTO.getSubtasks().stream()
+                    .map(subtaskMapper::toSubtaskEntity)
+                    .collect(Collectors.toList());
+            User user = userMapper.toUserEntity(sharedDTO.getUser());
 
             // Passa i campi estratti
             SharedDTO createdShared = sharedService.createShared(
-                    name, topic, deadline, totalTime, timeSlots, strategies, priority,
+                    name, user, topic, deadline, totalTime, timeSlots, strategies, priority,
                     description, resources, subtasks, null, userGuidance
             );
 
@@ -77,6 +96,60 @@ public class SharedEndpoint {
                     .build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    @PUT
+    @Path("/addToFeed/{sharedId}")
+    @Transactional
+    public Response addToFeed(@PathParam("sharedId") long sharedId, String guidance ) {
+        try {
+            Shared shared = sharedDAO.findById(sharedId);
+            sharedService.addTaskToFeed(shared,guidance);
+            return Response.ok().build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+
+    @PUT
+    @Path("/{sharedId}")
+    @Transactional
+    public Response updateShared(@PathParam("sharedId") long sharedId, SharedDTO sharedDTO) {
+        try {
+            SharedDTO updatedShared = sharedService.modifyShared(
+                    sharedId,
+                    sharedDTO.getName(),
+                    sharedDTO.getTopic(),
+                    sharedDTO.getDeadline(),
+                    sharedDTO.getTotalTime(),
+                    sharedDTO.getTimetable(),
+                    sharedDTO.getStrategies(), // Seleziona una strategia
+                    sharedDTO.getPriority(),
+                    sharedDTO.getDescription(),
+                    sharedDTO.getResources().stream().map(resourceMapper::toResourceEntity).collect(Collectors.toList()),
+                    sharedDTO.getSubtasks().stream().map(subtaskMapper::toSubtaskEntity).collect(Collectors.toList()),
+                    sharedDTO.getUserGuidance()
+            );
+            return Response.ok(updatedShared).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    public Response deleteShared(@PathParam("id") long id) {
+        try {
+            sharedService.deleteShared(id);
+            return Response.status(Response.Status.NO_CONTENT).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND)
                     .entity(e.getMessage())
                     .build();
         }
@@ -129,6 +202,35 @@ public class SharedEndpoint {
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    @POST
+    @Path("/forceCompletion/{sharedId}")
+    @Transactional
+    public Response forceCompletion(@PathParam("sharedId") long sharedId) {
+        try {
+            sharedService.forceCompletion(sharedId);
+            return Response.status(Response.Status.OK).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+
+    @POST
+    @Path("/completeSession/{sharedId}")
+    @Transactional
+    public Response completeSession(@PathParam("sharedId") long sharedId, @QueryParam("sessionId") long sessionId) {
+        try {
+            sharedService.completeSession(sharedId, sessionId);
+            return Response.status(Response.Status.OK).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND)
                     .entity(e.getMessage())
                     .build();
         }

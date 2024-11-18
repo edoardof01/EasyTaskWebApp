@@ -16,7 +16,8 @@ public class CommentMapper {
         }
         return new Comment(
                 commentDTO.getContent(),
-                commentDTO.getAuthor()
+                commentDTO.getAuthor(),
+                commentDTO.getSharedTask()
         );
     }
     public void updateCommentFromDTO(CommentDTO commentDTO, Comment comment) {

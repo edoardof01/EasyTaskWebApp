@@ -18,8 +18,6 @@ public abstract class Task {
     private String name;
     @Lob
     private String description;
-    @ManyToOne
-    private User admin;
     private LocalDateTime deadline;
     private int percentageOfCompletion;
     private int priority;
@@ -28,11 +26,10 @@ public abstract class Task {
     private int skippedSessions = 0;
     private int consecutiveSkippedSessions = 0;
     private boolean isInProgress = false;
-
+    @ManyToOne
+    private User user;
     @Enumerated(EnumType.STRING)
     private Set<Timetable> timetable;
-    @Enumerated(EnumType.STRING)
-    private SubfolderType currentSubfolderType;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subtask> subtasks = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -49,7 +46,7 @@ public abstract class Task {
 
     public Task() {}
 
-    public Task(String name, int complexity, String description,
+    public Task(String name, User user, String description,
                 @Nullable LocalDateTime deadline, int percentageOfCompletion, int priority, int totalTime, Topic topic,
                 TaskState state, Set<Timetable> timetable, Set<DefaultStrategy> strategies, List<Resource> resources) {
         this.name = name;
@@ -61,14 +58,17 @@ public abstract class Task {
         this.topic = topic;
         this.state = state;
         this.timetable = timetable;
+        this.user = user;
+        this.resources = resources;
         setStrategies(strategies);
+        complexity = calculateComplexity();
+
     }
 
 
     public Long getId() {
         return id;
     }
-    public void setId(Long id) {}
     public String getName() {
         return name;
     }
@@ -92,9 +92,6 @@ public abstract class Task {
     }
     public void setPercentageOfCompletion(int percentageOfCompletion) {
         this.percentageOfCompletion = percentageOfCompletion;
-    }
-    public User getUser(){
-        return admin;
     }
     public int getPriority() {
         return priority;
@@ -120,12 +117,14 @@ public abstract class Task {
     public Set<Timetable> getTimetable() {
         return timetable;
     }
-    public void setTimetable(Set<Timetable> timetable) {}
     public Set<DefaultStrategy> getStrategies() {
         return strategies;
     }
-    public int getConsecutiveSkippedSessions() {
-        return consecutiveSkippedSessions;
+    public void setTimetable(Set<Timetable> timetable) {
+        this.timetable = timetable;
+    }
+    public User getUser() {
+        return user;
     }
     public List<Subtask> getSubtasks() {
         return subtasks;
@@ -158,6 +157,35 @@ public abstract class Task {
             throw new IllegalStateException("Only sessions programmed can be completed.");
         }
         session.setState(SessionState.COMPLETED);
+        resetConsecutiveSkippedSessions();
+        int completedCounter = 0;
+        for(Session taskSession : sessions) {
+            if(taskSession.getState() != SessionState.COMPLETED) {
+                completedCounter += 1;
+            }
+        }
+        percentageOfCompletion = (completedCounter / sessions.size())*100;
+    }
+
+    public int calculateComplexity() {
+        int subtaskScore;
+        if (subtasks.size() <= 3) subtaskScore = 1;
+        else if (subtasks.size() <= 5) subtaskScore = 2;
+        else if (subtasks.size() <= 10) subtaskScore = 3;
+        else if (subtasks.size() <= 20) subtaskScore = 4;
+        else subtaskScore = 5;
+
+        int resourceScore = calculateResourceScore();
+        return (subtaskScore + resourceScore) / 2;
+    }
+
+    public int calculateResourceScore() {
+        int score = resources.stream().mapToInt(Resource::getValue).sum();
+        if (score <= 10) return 1;
+        else if (score <= 20) return 2;
+        else if (score <= 30) return 3;
+        else if (score <= 40) return 4;
+        else return 5;
     }
 
 
@@ -189,7 +217,7 @@ public abstract class Task {
         if (this.getState() == TaskState.FINISHED || this.getState() == TaskState.FREEZED) { // FORSE ANCHE LO STATO FREEZED VA BENE???
             throw new UnsupportedOperationException("It can't be brought to inProgress");
         }
-        this.updateIsInProgress(true);
+        this.updateIsInProgress();
         user.getCalendar().addSessions(this.getSessions());
 
         List<Folder> folders = user.getFolders();
@@ -214,6 +242,7 @@ public abstract class Task {
             throw new UnsupportedOperationException("It's already freezed");
         }
         this.setState(TaskState.FREEZED);
+        this.isInProgress = false;
         user.getCalendar().removeSessions(this);
         List<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
@@ -237,6 +266,7 @@ public abstract class Task {
             }
         }
         user.getCalendar().removeSessions(this);
+        this.percentageOfCompletion = 100;
         this.setState(TaskState.FINISHED);
         List<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
@@ -259,6 +289,7 @@ public abstract class Task {
             }
         }
         this.setState(TaskState.FINISHED);
+        this.percentageOfCompletion = 100;
         user.getCalendar().removeSessions(this);
         List<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
@@ -310,7 +341,7 @@ public abstract class Task {
                 handleLimitExceeded();
             }
         });
-    } // LA PIÙ COMPLESSA GESTIONE DELLE SESSIONI NEL CALENDARIO È NEL SERVICE
+    }
     public void resetConsecutiveSkippedSessions() {
         consecutiveSkippedSessions = 0;
     }
@@ -344,6 +375,7 @@ public abstract class Task {
     protected void removeAndFreezeTask(User user, Task task) {
         user.getCalendar().removeSessions(task);
         this.setState(TaskState.FREEZED);
+        isInProgress = false;
         List<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {
@@ -362,8 +394,8 @@ public abstract class Task {
 
     public abstract void toCalendar();
 
-    protected void updateIsInProgress(boolean b) {
-        this.isInProgress = b;
+    protected void updateIsInProgress() {
+        this.isInProgress = true;
         this.state = TaskState.INPROGRESS;
     }
 

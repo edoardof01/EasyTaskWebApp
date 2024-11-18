@@ -1,4 +1,4 @@
-package orm;
+package service;
 
 import domain.*;
 import jakarta.annotation.Nullable;
@@ -6,9 +6,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-
+import orm.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -32,13 +31,13 @@ public class GroupService {
     SessionMapper sessionMapper;
 
     @Inject
-    SubtaskDAO subtaskDAO;
-
-    @Inject
     RequestDAO requestDAO;
 
     @Inject
     CalendarDAO calendarDAO;
+
+    @Inject
+    SubtaskDAO subtaskDAO;
 
 
     public GroupDTO getGroupById(long id) {
@@ -56,7 +55,7 @@ public class GroupService {
                 toList();
     }
 
-    public GroupDTO createGroup(String name, Topic topic, @Nullable LocalDateTime deadline, LocalDateTime dateOnFeed, int totalTime,
+    public GroupDTO createGroup(String name, User user, Topic topic, @Nullable LocalDateTime deadline, LocalDateTime dateOnFeed, int totalTime,
                                 Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
                                 String description, List<Resource> resources, @Nullable List<Subtask> subtasks,
                                 int numUsers, @Nullable String userGuidance) {
@@ -103,39 +102,20 @@ public class GroupService {
         }
 
         assert subtasks != null;
-        int complexity = calculateComplexity(subtasks, resources);
-        Group group = new Group(numUsers, dateOnFeed, name, topic, TaskState.TODO, deadline, description, 0, complexity, priority, timeSlots,
+
+        Group group = new Group(numUsers, user, dateOnFeed, name, topic, TaskState.TODO, deadline, description, 0, priority, timeSlots,
                 totalTime, strategies, resources);
+        group.addUserRole(group.getUser(), Role.ADMIN);
         Feed.getInstance().getGroup().add(group);
         for(User member : group.getMembers())  Feed.getInstance().getContributors().add(member);
         groupDAO.save(group);
         return groupMapper.toGroupDTO(group);
     }
 
-    private int calculateComplexity(List<Subtask> subtasks, List<Resource> resources) {
-        int subtaskScore = 0;
-        if (subtasks.size() <= 3) subtaskScore = 1;
-        else if (subtasks.size() <= 5) subtaskScore = 2;
-        else if (subtasks.size() <= 10) subtaskScore = 3;
-        else if (subtasks.size() <= 20) subtaskScore = 4;
-        else subtaskScore = 5;
-
-        int resourceScore = calculateResourceScore(resources);
-        return (subtaskScore + resourceScore) / 2;
-    }
-
-    private int calculateResourceScore(List<Resource> resources) {
-        int score = resources.stream().mapToInt(Resource::getValue).sum();
-        if (score <= 10) return 1;
-        else if (score <= 20) return 2;
-        else if (score <= 30) return 3;
-        else if (score <= 40) return 4;
-        else return 5;
-    }
 
     public GroupDTO modifyGroup(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
-                                Set<Timetable> timeSlots, DefaultStrategy strategy, int priority, String description,
-                                ArrayList<Resource> resources, List<Subtask> subtasks, Integer numUsers, @Nullable String userGuidance) {
+                                Set<Timetable> timeSlots, Set<DefaultStrategy> strategy, int priority, String description,
+                                List<Resource> resources, List<Subtask> subtasks, Integer numUsers) {
 
         Group group = groupDAO.findById(taskId);
         if (group == null) {
@@ -159,6 +139,7 @@ public class GroupService {
         }
         if (name != null) group.setName(name);
         if (topic != null) group.setTopic(topic);
+        if(strategy != null) group.setStrategies(strategy);
         if (deadline != null) group.setDeadline(deadline);
         group.setTotalTime(totalTime);
         if (timeSlots != null) group.setTimetable(timeSlots);
@@ -166,10 +147,11 @@ public class GroupService {
         if (description != null) group.setDescription(description);
         if (resources != null) group.setResources(resources);
         if (numUsers != null) group.setNumUsers(numUsers);
+        if (subtasks != null)  group.setSubtasks(subtasks);
 
 
-        int complexity = calculateComplexity(subtasks, resources);
-        group.setComplexity(complexity);
+
+        group.setComplexity(group.calculateComplexity());
 
         Feed.getInstance().getGroup().add(group);
         for(User member: group.getMembers()) {
@@ -231,6 +213,29 @@ public class GroupService {
     }
 
     @Transactional
+    public void forceCompletion(long groupId) {
+        Group group = groupDAO.findById(groupId);
+        if(group == null) return;
+        group.forcedCompletion();
+        groupDAO.update(group);
+        calendarDAO.update(group.getUser().getCalendar());
+        for(Session session : group.getSessions()) {
+            sessionDAO.update(session);
+        }
+    }
+
+    @Transactional
+    public void completeSession(long groupId, long sessionId) {
+        Group group = groupDAO.findById(groupId);
+        Session session = sessionDAO.findById(sessionId);
+        if (group == null || session == null) return;
+        group.completeSession(session);
+        sessionDAO.update(session);
+        groupDAO.update(group);
+    }
+
+
+    @Transactional
     public void handleLimitExceeded(SessionDTO sessionDTO, long groupId) {
         Group group = groupDAO.findById(groupId);
         if (group == null) {
@@ -247,6 +252,33 @@ public class GroupService {
             calendarDAO.update(member.getCalendar());
         }
     }
+
+    @Transactional
+    public GroupDTO joinGroup(long userId, long groupId, long subtaskId) {
+        // Trova il gruppo a cui si sta tentando di unire
+        Group group = groupDAO.findById(groupId);
+        if (group == null) {
+            throw new IllegalArgumentException("Group with ID " + groupId + " not found.");
+        }
+        // Trova l'utente che vuole unirsi al gruppo
+        User user = userDAO.findById(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("User with ID " + userId + " not found.");
+        }
+        // Trova il subtask a cui l'utente sarà assegnato
+        Subtask subtask = subtaskDAO.findById(subtaskId);
+        if (subtask == null) {
+            throw new IllegalArgumentException("Subtask with ID " + subtaskId + " not found.");
+        }
+        group.joinGroup(user, subtask);
+
+        subtaskDAO.update(subtask);
+        groupDAO.update(group);
+        userDAO.update(user);
+        // Restituisci il DTO del gruppo aggiornato
+        return groupMapper.toGroupDTO(group);
+    }
+
 
     @Transactional
     public void leaveGroup(long groupId, long userId) {

@@ -16,9 +16,10 @@ public class Comment {
     private boolean isBest = false;
 
     public Comment() {}
-    public Comment(String content, User author) {
+    public Comment(String content, User author, Shared commentedTask) {
       this.content = content;
       this.author = author;
+      this.commentedTask = commentedTask;
     }
 
     public Long getId() {
@@ -36,8 +37,6 @@ public class Comment {
     public Shared getCommentedTask() {
       return commentedTask;
     }
-
-
     public boolean getIsBest() {
         return isBest;
     }

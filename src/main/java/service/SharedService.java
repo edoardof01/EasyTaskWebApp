@@ -1,4 +1,4 @@
-package orm;
+package service;
 
 import domain.*;
 import jakarta.annotation.Nullable;
@@ -6,9 +6,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import orm.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -61,9 +61,9 @@ public class SharedService {
         sharedDAO.update(sharedTask);
     }
 
-    public SharedDTO createShared(String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
+    public SharedDTO createShared(String name, User user, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
                                   Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
-                                  String description, ArrayList<Resource> resources, @Nullable ArrayList<Subtask> subtasks,
+                                  String description, List<Resource> resources, @Nullable List<Subtask> subtasks,
                                   @Nullable Integer requiredUsers, @Nullable String userGuidance) {
 
         if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null) {
@@ -71,7 +71,7 @@ public class SharedService {
         }
 
         if (requiredUsers != null) {
-            throw new IllegalArgumentException("Users number can be set only for group tasks");
+            throw new IllegalArgumentException("Users number can be set only for shared tasks");
         }
 
         if (strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
@@ -111,10 +111,8 @@ public class SharedService {
         }
 
         assert subtasks != null;
-        int complexity = calculateComplexity(subtasks, resources);
-
-        Shared sharedTask = new Shared(name, topic, TaskState.TODO, deadline, description,
-                0, complexity, priority, timeSlots, totalTime, strategies, resources);
+        Shared sharedTask = new Shared(name, user, topic, TaskState.TODO, deadline, description,
+                0 , priority, timeSlots, totalTime, strategies, resources);
 
         if (userGuidance != null) {
             sharedTask.updateUserGuidance(userGuidance);
@@ -125,7 +123,7 @@ public class SharedService {
     }
 
     private int calculateComplexity(List<Subtask> subtasks, List<Resource> resources) {
-        int subtaskScore = 0;
+        int subtaskScore;
         if (subtasks.size() <= 3) subtaskScore = 1;
         else if (subtasks.size() <= 5) subtaskScore = 2;
         else if (subtasks.size() <= 10) subtaskScore = 3;
@@ -146,8 +144,8 @@ public class SharedService {
     }
 
     public SharedDTO modifyShared(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
-                                  Set<Timetable> timeSlots, DefaultStrategy strategy, Integer priority, String description,
-                                  ArrayList<Resource> resources, List<Subtask> subtasks, @Nullable String userGuidance) {
+                                  Set<Timetable> timeSlots, Set<DefaultStrategy> strategy, Integer priority, String description,
+                                  List<Resource> resources, List<Subtask> subtasks, @Nullable String userGuidance) {
 
         Shared sharedTask = sharedDAO.findById(taskId);
         if (sharedTask == null) {
@@ -165,6 +163,7 @@ public class SharedService {
         if (name != null) sharedTask.setName(name);
         if (topic != null) sharedTask.setTopic(topic);
         if (deadline != null) sharedTask.setDeadline(deadline);
+        if(strategy != null) sharedTask.setStrategies(strategy);
         sharedTask.setTotalTime(totalTime);
         if (timeSlots != null) sharedTask.setTimetable(timeSlots);
         sharedTask.setPriority(priority);
@@ -241,6 +240,28 @@ public class SharedService {
             }
             sharedDAO.update(shared);
             calendarDAO.update(shared.getUser().getCalendar());
+        }
+    }
+
+    @Transactional
+    public void completeSession(long sharedId, long sessionId) {
+        Shared shared = sharedDAO.findById(sharedId);
+        Session session = sessionDAO.findById(sessionId);
+        if (shared == null || session == null) return;
+        shared.completeSession(session);
+        sessionDAO.update(session);
+        sharedDAO.update(shared);
+    }
+
+    @Transactional
+    public void forceCompletion(long sharedId) {
+        Shared shared = sharedDAO.findById(sharedId);
+        if(shared == null) return;
+        shared.forcedCompletion();
+        sharedDAO.update(shared);
+        calendarDAO.update(shared.getUser().getCalendar());
+        for(Session session : shared.getSessions()) {
+            sessionDAO.update(session);
         }
     }
 

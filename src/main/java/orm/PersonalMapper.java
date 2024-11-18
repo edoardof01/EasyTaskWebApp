@@ -1,10 +1,23 @@
 package orm;
-import orm.*;
+import jakarta.inject.Inject;
 import domain.*;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @ApplicationScoped
 public class PersonalMapper {
+
+    @Inject
+    SubtaskMapper subtaskMapper;
+
+    @Inject
+    ResourceMapper resourceMapper;
+
+    @Inject
+    UserMapper userMapper;
+
     public PersonalDTO toPersonalDTO(Personal personal) {
         if(personal == null) {
             return null;
@@ -15,19 +28,30 @@ public class PersonalMapper {
         if(personalDTO == null) {
             return null;
         }
+        List<Subtask> subtasks = personalDTO.getSubtasks()
+                .stream()
+                .map(subtaskMapper::toSubtaskEntity)
+                .toList();
+
+        List<Resource> resources = personalDTO.getResources()
+                .stream()
+                .map(resourceMapper::toResourceEntity)
+                .toList();
+        User user = userMapper.toUserEntity(personalDTO.getUser());
+
         return new Personal(
                 personalDTO.getName(),
+                user,
                 personalDTO.getTopic(),
                 personalDTO.getTaskState(),
                 personalDTO.getDeadline(),
                 personalDTO.getDescription(),
                 personalDTO.getPercentageOfCompletion(),
-                personalDTO.getComplexity(),
                 personalDTO.getPriority(),
                 personalDTO.getTimetable(),
                 personalDTO.getTotalTime(),
                 personalDTO.getStrategies(),
-                personalDTO.getResources()
+                resources
         );
     }
     public void updateSharedFromDTO(PersonalDTO personalDTO, Personal personal) {
@@ -47,7 +71,11 @@ public class PersonalMapper {
         // Aggiornamento dello stato e delle strategie
         personal.setState(personalDTO.getTaskState());
         personal.setStrategies(personalDTO.getStrategies());
-        personal.setResources(personalDTO.getResources());
+        List<Resource> resources = personalDTO.getResources()
+                .stream()
+                .map(resourceMapper::toResourceEntity)
+                .collect(Collectors.toList());
+        personal.setResources(resources);
     }
 
 

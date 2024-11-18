@@ -1,13 +1,13 @@
-package orm;
+package service;
 
 import domain.*;
 import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import orm.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -43,7 +43,7 @@ public class PersonalService {
                 .toList();
     }
 
-    public PersonalDTO createPersonal(String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
+    public PersonalDTO createPersonal(String name, User user, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
                                       Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
                                       String description, List<Resource> resources, @Nullable List<Subtask> subtasks,
                                       @Nullable Integer requiredUsers, @Nullable String userGuidance) {
@@ -52,7 +52,7 @@ public class PersonalService {
         }
 
         if (requiredUsers != null || userGuidance != null) {
-            throw new IllegalArgumentException("Users number can be set only for group tasks");
+            throw new IllegalArgumentException("Users number can be set only for shared tasks");
         }
 
         if (strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
@@ -90,10 +90,8 @@ public class PersonalService {
             }
         }
         assert subtasks != null;
-        int complexity = calculateComplexity(subtasks, resources);
-
-        Personal personalTask = new Personal(name, topic, TaskState.TODO, deadline, description,
-                0, complexity, priority, timeSlots, totalTime, strategies, resources);
+        Personal personalTask = new Personal(name, user, topic, TaskState.TODO, deadline, description,
+                0, priority, timeSlots, totalTime, strategies, resources);
 
 
         personalDAO.save(personalTask);
@@ -102,7 +100,7 @@ public class PersonalService {
     }
 
     private int calculateComplexity(List<Subtask> subtasks, List<Resource> resources) {
-        int subtaskScore = 0;
+        int subtaskScore;
         if (subtasks.size() <= 3) subtaskScore = 1;
         else if (subtasks.size() <= 5) subtaskScore = 2;
         else if (subtasks.size() <= 10) subtaskScore = 3;
@@ -122,9 +120,9 @@ public class PersonalService {
         else return 5;
     }
 
-    public PersonalDTO modifyShared(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
-                                    Set<Timetable> timeSlots, DefaultStrategy strategy, int priority, String description,
-                                    ArrayList<Resource> resources, List<Subtask> subtasks) {
+    public PersonalDTO modifyPersonal(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
+                                    Set<Timetable> timeSlots, Set<DefaultStrategy> strategy, int priority, String description,
+                                    List<Resource> resources, List<Subtask> subtasks) {
 
         Personal personalTask = personalDAO.findById(taskId);
         if (personalTask == null) {
@@ -145,6 +143,7 @@ public class PersonalService {
         personalTask.setTotalTime(totalTime);
         if (timeSlots != null) personalTask.setTimetable(timeSlots);
         personalTask.setPriority(priority);
+        if(strategy != null) personalTask.setStrategies(strategy);
         if (description != null) personalTask.setDescription(description);
         if (resources != null) personalTask.setResources(resources);
 
@@ -157,7 +156,7 @@ public class PersonalService {
     }
 
     @Transactional
-    public void deleteShared(Long taskId) {
+    public void deletePersonal(Long taskId) {
         Personal personalTask = personalDAO.findById(taskId);
         if (personalTask == null) {
             throw new IllegalArgumentException("Task with ID " + taskId + " not found.");
@@ -168,22 +167,45 @@ public class PersonalService {
     }
 
     @Transactional
-    public void moveToCalendar(PersonalDTO personalDTO) {
-        Personal personal = personalDAO.findById(personalDTO.getId());
+    public void moveToCalendar(long personalId) {
+        Personal personal = personalDAO.findById(personalId);
         if (personal == null) {
-            throw new IllegalArgumentException("Task with ID " + personalDTO.getId() + " not found.");
+            throw new IllegalArgumentException("Task with ID " + personalId + " not found.");
         }
         personal.toCalendar();
         personalDAO.update(personal);
         calendarDAO.update(personal.getUser().getCalendar());
+        personalDAO.update(personal);
+    }
+
+    @Transactional
+    public void completeSession(long personalId, long sessionId) {
+        Personal personal = personalDAO.findById(personalId);
+        Session session = sessionDAO.findById(sessionId);
+        if (personal == null || session == null) return;
+        personal.completeSession(session);
+        sessionDAO.update(session);
+        personalDAO.update(personal);
     }
 
     @Transactional
     public void completePersonalBySessions(long personalId) {
         Personal personal = personalDAO.findById(personalId);
+        if (personal == null) return;
         personal.completeTaskBySessions();
         calendarDAO.update(personal.getUser().getCalendar());
         personalDAO.update(personal);
+    }
+
+    public void forceCompletion(long personalId) {
+        Personal personal = personalDAO.findById(personalId);
+        if(personal == null) return;
+        personal.forcedCompletion();
+        personalDAO.update(personal);
+        calendarDAO.update(personal.getUser().getCalendar());
+        for(Session session : personal.getSessions()) {
+            sessionDAO.update(session);
+        }
     }
 
     @Transactional

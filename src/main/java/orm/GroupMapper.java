@@ -3,8 +3,6 @@ package orm;
 import domain.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +14,9 @@ public class GroupMapper {
 
     @Inject
     private ResourceMapper resourceMapper;
+
+    @Inject
+    UserMapper userMapper;
 
     public GroupDTO toGroupDTO(Group group) {
         if (group == null) return null;
@@ -34,10 +35,13 @@ public class GroupMapper {
         List<Resource> resources = groupDTO.getResources()
                 .stream()
                 .map(resourceMapper::toResourceEntity)
-                .collect(Collectors.toList());
+                .toList();
+
+        User user = userMapper.toUserEntity(groupDTO.getUser());
 
         return new Group(
                 groupDTO.getNumUser(),
+                user,
                 groupDTO.getDateOnFeed(),
                 groupDTO.getName(),
                 groupDTO.getTopic(),
@@ -45,7 +49,6 @@ public class GroupMapper {
                 groupDTO.getDeadline(),
                 groupDTO.getDescription(),
                 groupDTO.getPercentageOfCompletion(),
-                groupDTO.getComplexity(),
                 groupDTO.getPriority(),
                 groupDTO.getTimetable(),
                 groupDTO.getTotalTime(),

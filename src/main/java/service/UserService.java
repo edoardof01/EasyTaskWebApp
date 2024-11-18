@@ -1,11 +1,12 @@
-package orm;
+package service;
 
 import domain.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import orm.*;
+
 import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class UserService {
@@ -19,8 +20,6 @@ public class UserService {
     @Inject
     GroupDAO groupDAO;
 
-    @Inject
-    GroupMapper groupMapper;
 
     @Inject
     SubtaskDAO subtaskDAO;
@@ -82,26 +81,6 @@ public class UserService {
         return true;
     }
 
-    @Transactional
-    public UserDTO joinGroup( long userId,long groupId, long subtaskId ) {
-        User user = userDAO.findById(userId);
-        if (user == null) {
-            throw new IllegalArgumentException("User with ID " + userId + " not found.");
-        }
-        Group group = groupDAO.findById(groupId);
-        if (group == null) {
-            throw new IllegalArgumentException("Group with ID " + groupId + " not found.");
-        }
-        Subtask subtask = subtaskDAO.findById(subtaskId);
-        if (subtask == null){
-            throw new IllegalArgumentException("Subtask with ID " + subtaskId + " not found.");
-        }
-        user.joinGroup(group, subtask);
-        subtaskDAO.update(subtask);
-        groupDAO.update(group);
-        userDAO.update(user);
-        return userMapper.toUserDTO(user);
-    }
 
     @Transactional
     public CommentDTO makeComment(long sharedId, CommentDTO commentDTO) {

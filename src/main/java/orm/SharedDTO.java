@@ -1,32 +1,36 @@
 package orm;
 
 import domain.*;
-
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SharedDTO {
     private final long id;
+    @ManyToOne
+    private final UserDTO user;
     private String name;
     private String description;
     private int percentageOfCompletion;
     private LocalDateTime deadline;
-    private boolean isInProgress = false;
+    private boolean isInProgress;
     private int totalTime;
-    private ArrayList<Subtask> subtasks = new ArrayList<>();
+    private List<SubtaskDTO> subtasks;
     private final Topic topic;
     private TaskState taskState;
     private int complexity;
     private int priority;
     private Set<Timetable> timetable = new HashSet<>();
     private Set<DefaultStrategy> strategies = new HashSet<>();
-    private ArrayList<Resource> resources = new ArrayList<>();
+    private List<ResourceDTO> resources;
     private String UserGuidance;
 
     public SharedDTO(Shared shared) {
         this.id = shared.getId();
+        this.user = new UserDTO(shared.getUser());
         this.name = shared.getName();
         this.topic = shared.getTopic();
         this.taskState = shared.getState();
@@ -39,12 +43,16 @@ public class SharedDTO {
         this.totalTime = shared.getTotalTime();
         this.strategies.addAll(shared.getStrategies());
         this.timetable.addAll(shared.getTimetable());
-        this.resources = shared.getResources();
-        this.subtasks = shared.getSubtasks();
+        this.resources = shared.getResources().stream().map(ResourceDTO::new).collect(Collectors.toList());
+        this.subtasks = shared.getSubtasks().stream().map(SubtaskDTO::new).collect(Collectors.toList());
     }
 
     public long getId() {
         return id;
+    }
+
+    public UserDTO getUser() {
+        return user;
     }
 
     public String getName() {
@@ -66,11 +74,9 @@ public class SharedDTO {
     public int getPercentageOfCompletion() {
         return percentageOfCompletion;
     }
-
     public void setPercentageOfCompletion(int percentageOfCompletion) {
         this.percentageOfCompletion = percentageOfCompletion;
     }
-
     public LocalDateTime getDeadline() {
         return deadline;
     }
@@ -95,18 +101,22 @@ public class SharedDTO {
         this.totalTime = totalTime;
     }
 
-    public ArrayList<Subtask> getSubtasks() {
+    public List<SubtaskDTO> getSubtasks() {
         return subtasks;
     }
-    public void setSubtasks(ArrayList<Subtask> subtasks) {
+
+    public void setSubtasks(List<SubtaskDTO> subtasks) {
         this.subtasks = subtasks;
     }
+
     public Topic getTopic() {
         return topic;
     }
+
     public TaskState getTaskState() {
         return taskState;
     }
+
     public void setTaskState(TaskState taskState) {
         this.taskState = taskState;
     }
@@ -126,31 +136,36 @@ public class SharedDTO {
     public void setPriority(int priority) {
         this.priority = priority;
     }
+
     public Set<Timetable> getTimetable() {
         return timetable;
     }
+
     public void setTimetable(Set<Timetable> timetable) {
         this.timetable = timetable;
     }
+
     public Set<DefaultStrategy> getStrategies() {
         return strategies;
     }
+
     public void setStrategies(Set<DefaultStrategy> strategies) {
         this.strategies = strategies;
     }
-    public ArrayList<Resource> getResources() {
+
+    public List<ResourceDTO> getResources() {
         return resources;
     }
-    public void setResources(ArrayList<Resource> resources) {
+
+    public void setResources(List<ResourceDTO> resources) {
         this.resources = resources;
     }
-    public String getUserGuidance(){
+
+    public String getUserGuidance() {
         return UserGuidance;
     }
-    public void setUserGuidance(String userGuidance){
+
+    public void setUserGuidance(String userGuidance) {
         UserGuidance = userGuidance;
     }
-
-
 }
-

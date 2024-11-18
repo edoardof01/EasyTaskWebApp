@@ -2,10 +2,7 @@ package orm;
 import domain.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
@@ -20,6 +17,17 @@ public class UserDAO {
 
     public User findById(long userId) {
         return entityManager.find(User.class, userId);
+    }
+
+    public User findByUsername(String username) {
+        try {
+            return entityManager.createQuery(
+                            "SELECT u FROM User u WHERE u.personalProfile.username = :username", User.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Nessun utente trovato
+        }
     }
 
     public List<User> findAll() {

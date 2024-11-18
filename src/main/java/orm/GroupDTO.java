@@ -3,7 +3,6 @@ package orm;
 import domain.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,21 +15,23 @@ public class GroupDTO {
     private int percentageOfCompletion;
     private LocalDateTime deadline;
     private final LocalDateTime dateOnFeed;
-    private boolean isInProgress = false;
+    private boolean isInProgress;
     private int totalTime;
-    private List<SubtaskDTO> subtasks = new ArrayList<>();
+    private List<SubtaskDTO> subtasks;
     private final Topic topic;
     private TaskState taskState;
     private int complexity;
     private int priority;
     private Set<Timetable> timetable = new HashSet<>();
     private Set<DefaultStrategy> strategies = new HashSet<>();
-    private List<ResourceDTO> resources = new ArrayList<>();
+    private List<ResourceDTO> resources;
     private int numUser;
     private int actualMembers;
+    private final UserDTO user;
 
     public GroupDTO(Group group) {
         this.id = group.getId();
+        this.user = new UserDTO(group.getUser());
         this.name = group.getName();
         this.topic = group.getTopic();
         this.taskState = group.getState();
@@ -52,6 +53,10 @@ public class GroupDTO {
 
     public long getId() {
         return id;
+    }
+
+    public UserDTO getUser() {
+        return user;
     }
 
     public String getName() {

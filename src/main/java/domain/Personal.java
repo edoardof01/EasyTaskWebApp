@@ -5,7 +5,6 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,10 +13,10 @@ import java.util.Set;
 @DiscriminatorValue("personal")
 public class Personal extends Task {
 
-    public Personal(String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
-                    String description, int percentageOfCompletion, int complexity, int priority,
+    public Personal(String name, User user, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
+                    String description, int percentageOfCompletion, int priority,
                     Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategy, List<Resource> resources) {
-        super(name, complexity, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
+        super(name, user, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
     }
 
     public Personal() {

@@ -2,11 +2,23 @@ package orm;
 
 import domain.*;
 import jakarta.enterprise.context.ApplicationScoped;
-
-import java.util.ArrayList;
+import jakarta.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class SharedMapper {
+
+    @Inject
+    private SubtaskMapper subtaskMapper;
+
+    @Inject
+    private ResourceMapper resourceMapper;
+
+    @Inject
+    private UserMapper userMapper;
+
+
     public SharedDTO toSharedDTO(Shared shared) {
         if (shared == null) {
             return null;
@@ -18,19 +30,31 @@ public class SharedMapper {
         if (sharedDTO == null) {
             return null;
         }
+        // Usa gli altri mapper per convertire subtasks e resources
+        List<Subtask> subtasks = sharedDTO.getSubtasks()
+                .stream()
+                .map(subtaskMapper::toSubtaskEntity)
+                .toList();
+
+        List<Resource> resources = sharedDTO.getResources()
+                .stream()
+                .map(resourceMapper::toResourceEntity)
+                .toList();
+        User user = userMapper.toUserEntity(sharedDTO.getUser());
+
         return new Shared(
                 sharedDTO.getName(),
+                user,
                 sharedDTO.getTopic(),
                 sharedDTO.getTaskState(),
                 sharedDTO.getDeadline(),
                 sharedDTO.getDescription(),
                 sharedDTO.getPercentageOfCompletion(),
-                sharedDTO.getComplexity(),
                 sharedDTO.getPriority(),
                 sharedDTO.getTimetable(),
                 sharedDTO.getTotalTime(),
                 sharedDTO.getStrategies(),
-                sharedDTO.getResources()
+                resources
         );
     }
     public void updateSharedFromDTO(SharedDTO sharedDTO, Shared shared) {
@@ -51,7 +75,11 @@ public class SharedMapper {
         // Aggiornamento dello stato e delle strategie
         shared.setState(sharedDTO.getTaskState());
         shared.setStrategies(sharedDTO.getStrategies());
-        shared.setResources(sharedDTO.getResources());
+        List<Resource> resources = sharedDTO.getResources()
+                .stream()
+                .map(resourceMapper::toResourceEntity)
+                .collect(Collectors.toList());
+        shared.setResources(resources);
 
         // Se c'è una proprietà che rappresenta la guida dell'utente, aggiornarla (facoltativo)
         if (sharedDTO.getUserGuidance() != null) {

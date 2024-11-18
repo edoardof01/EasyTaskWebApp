@@ -1,5 +1,4 @@
 package domain;
-import domain.User;
 import jakarta.persistence.*;
 
 import java.util.*;

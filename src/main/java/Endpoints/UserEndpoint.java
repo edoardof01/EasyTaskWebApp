@@ -1,12 +1,15 @@
-package orm;
+package Endpoints;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import orm.CommentDTO;
+import orm.UserDTO;
+import service.UserService;
+
 import java.util.List;
-import java.util.Optional;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -61,22 +64,6 @@ public class UserEndpoint {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
         return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
-    }
-
-    @POST
-    @Path("/{userId}/groups/{groupId}/subtasks/{subtaskId}")
-    public Response joinGroup(
-            @PathParam("userId") long userId,
-            @PathParam("groupId") long groupId,
-            @PathParam("subtaskId") long subtaskId) {
-        try {
-            UserDTO updatedUser = userService.joinGroup(userId, groupId, subtaskId);
-            return Response.ok(updatedUser).build();
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An unexpected error occurred").build();
-        }
     }
 
     @POST

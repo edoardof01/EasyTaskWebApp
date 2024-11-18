@@ -10,6 +10,7 @@ import java.util.Map;
 
 @Embeddable
 public class Profile {
+    private String username;
     private String password;
     @ElementCollection
     private Map<Topic,Integer> topics;
@@ -18,9 +19,10 @@ public class Profile {
 
     public Profile() {}
 
-    public Profile(String password, Map<Topic,Integer> topics) {
+    public Profile(String username,String password, Map<Topic,Integer> topics) {
         this.password = password;
         this.topics = topics;
+        this.username = username;
     }
 
     public String getPassword(){
@@ -37,5 +39,8 @@ public class Profile {
     }
     public User getOwner() {
         return owner;
+    }
+    public String getUsername() {
+        return username;
     }
 }
