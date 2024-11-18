@@ -16,8 +16,6 @@ public class Group extends Task {
     private int actualMembers = 1;
     @ManyToMany
     private ArrayList<User> members = new ArrayList<>();
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserRole> userRoles = new ArrayList<>();
     @ElementCollection
     private ArrayList<Integer> skippedSessionPerUser;
     private LocalDateTime dateOnFeed;
@@ -77,9 +75,7 @@ public class Group extends Task {
     public ArrayList<User> getMembers() {
         return members;
     }
-    public List<UserRole> getUserRoles() {
-        return userRoles;
-    }
+
     public ArrayList<Integer> getSkippedSessionPerUser() {
         return skippedSessionPerUser;
     }
@@ -141,6 +137,7 @@ public class Group extends Task {
 
     @Override
     public void toCalendar() {
+
         if (this.isInProgress()) {
             throw new UnsupportedOperationException("It's already in calendar");
         }
@@ -425,18 +422,6 @@ public class Group extends Task {
         }
     }
 
-    // Metodo per convertire i ruoli in stringhe
-    public List<String> getRolesNamesForUser(User user) {
-        return userRoles.stream()
-                .filter(userRole -> userRole.getUser().equals(user)) // Filtra per utente
-                .map(userRole -> userRole.getRole().name()) // Converte il ruolo in stringa
-                .collect(Collectors.toList());
-    }
-
-    public void addUserRole(User user, Role role) {
-        UserRole userRole = new UserRole(user, this, role);
-        userRoles.add(userRole);
-    }
 
     public void setSubtasks(List<Subtask> subtasks) {
         this.subtasks = subtasks;

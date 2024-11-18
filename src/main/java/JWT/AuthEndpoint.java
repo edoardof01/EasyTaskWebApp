@@ -20,17 +20,10 @@ public class AuthEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(CredentialsDTO credentials) {
         try {
-            // Richiama il metodo login con username, password e groupId
-            String token = authService.login(
-                    credentials.getUsername(),
-                    credentials.getPassword(),
-                    credentials.getGroupId() // Aggiungi il groupId
-            );
+            String token = authService.login(credentials.getUsername(), credentials.getPassword());
             return Response.ok(new TokenResponse(token)).build();
         } catch (SecurityException e) {
             return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Unexpected error").build();
         }
     }
 }

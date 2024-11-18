@@ -105,10 +105,11 @@ public class GroupService {
 
         Group group = new Group(numUsers, user, dateOnFeed, name, topic, TaskState.TODO, deadline, description, 0, priority, timeSlots,
                 totalTime, strategies, resources);
-        group.addUserRole(group.getUser(), Role.ADMIN);
+        user.setUserRole(Role.ADMIN);
         Feed.getInstance().getGroup().add(group);
         for(User member : group.getMembers())  Feed.getInstance().getContributors().add(member);
         groupDAO.save(group);
+        userDAO.update(user);
         return groupMapper.toGroupDTO(group);
     }
 
@@ -188,14 +189,14 @@ public class GroupService {
         }
 
         // Verifica se l'utente è l'amministratore del gruppo
-        if (group.getUser().equals(user)) {
+        if (group.getUser().equals(user) && user.getUserRole() == Role.ADMIN) {
             group.toCalendar(); // Metodo per l'amministratore
             calendarDAO.update(group.getUser().getCalendar());
         } else if (group.getMembers().contains(user)) {
             group.toCalendarForUser(user); // Metodo per altri membri
             calendarDAO.update(user.getCalendar());
         } else {
-            throw new IllegalArgumentException("L'utente non è membro di questo gruppo.");
+            throw new IllegalArgumentException("the user is not a member of this group .");
         }
 
         groupDAO.update(group);
@@ -213,8 +214,12 @@ public class GroupService {
     }
 
     @Transactional
-    public void forceCompletion(long groupId) {
+    public void forceCompletion(long groupId,long userId) {
+        User user = userDAO.findById(userId);
         Group group = groupDAO.findById(groupId);
+        if(user.getUserRole() != Role.ADMIN) {
+            throw new IllegalArgumentException("a member can't do this operation.");
+        }
         if(group == null) return;
         group.forcedCompletion();
         groupDAO.update(group);
@@ -265,6 +270,9 @@ public class GroupService {
         if (user == null) {
             throw new IllegalArgumentException("User with ID " + userId + " not found.");
         }
+        if(group.getMembers().contains(user)) {
+            throw new IllegalArgumentException("the user is already a member of this group.");
+        }
         // Trova il subtask a cui l'utente sarà assegnato
         Subtask subtask = subtaskDAO.findById(subtaskId);
         if (subtask == null) {
@@ -288,7 +296,7 @@ public class GroupService {
         }
         User user = userDAO.findById(userId);
         if (user == null || !group.getMembers().contains(user)) {
-            throw new IllegalArgumentException("User with ID " + userId + " not found.");
+            throw new IllegalArgumentException("User with ID " + userId + " not found or not present in the group.");
         }
         group.leaveGroupTask(user);
         groupDAO.update(group);
@@ -343,7 +351,10 @@ public class GroupService {
             throw new IllegalArgumentException("Group with ID " + groupId + " not found.");
         }
         User user = userDAO.findById(userId);
-        if (user == null || !group.getMembers().contains(user)) {
+        if(user.getUserRole() != Role.ADMIN) {
+            throw new IllegalArgumentException("a member can't do this operation.");
+        }
+        if (!group.getMembers().contains(user)) {
             throw new IllegalArgumentException("User with ID " + userId + " not found.");
         }
         group.removeMember(user, substitute);

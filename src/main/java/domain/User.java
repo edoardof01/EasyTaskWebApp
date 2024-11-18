@@ -1,12 +1,8 @@
 package domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 public class User {
@@ -19,6 +15,8 @@ public class User {
     private Sex sex;
     @Lob
     private String description;
+    @Enumerated(EnumType.STRING)
+    private Role userRole;
     @ElementCollection
     //@CollectionTable(name="qualifications")
     private List<String> qualifications;
@@ -36,12 +34,14 @@ public class User {
 
     public User() {}
 
-    public User(int age, Sex sex, String description, List<String> qualifications, String profession, Profile personalProfile) {
+    public User(int age, Sex sex, String description, List<String> qualifications, String profession, Profile personalProfile, Role userRole) {
         this.age = age;
         this.description = description;
+        this.sex = sex;
         this.qualifications = qualifications;
         this.profession = profession;
         this.personalProfile = personalProfile;
+        this.userRole = userRole;
 
         // Creazione dei Folder per ciascun FolderType
         this.folders.add(new Folder(FolderType.PERSONAL,this));
@@ -51,6 +51,12 @@ public class User {
         this.commentedFolder = new CommentedFolder();
     }
 
+    public Role getUserRole() {
+        return userRole;
+    }
+    public void setUserRole(Role userRole) {
+        this.userRole = userRole;
+    }
     public long getId() {
         return id;
     }
@@ -102,25 +108,14 @@ public class User {
         personalProfile.getTopics().put(topic, personalProfile.getTopics().get(topic)+1);
     }
 
-    public void joinGroup(@NotNull Group group, Subtask subtask){
-        if(!group.getSubtasks().contains(subtask) || (group.getSubtasks().contains(subtask) && group.getTakenSubtasks().containsValue(subtask)) ){
-            throw new IllegalArgumentException("Subtask does not exist or is already taken");
-        }
-        if(group.getIsComplete()){
-            group.addMember(this);
-            group.assignSubtaskToUser(this, subtask);
-            group.getCalendar().addSessions(this, subtask);
-        }
-    }
-
-    public void makeComment(String content , Shared shared){
-        if(content.isEmpty()){
+    public void makeComment(String content , Shared shared) {
+        if (content.isEmpty()) {
             throw new IllegalArgumentException("Content cannot be empty");
         }
-        if(shared == null || !Feed.getInstance().getShared().contains(shared)){
+        if (shared == null || !Feed.getInstance().getShared().contains(shared)) {
             return;
         }
-        Comment comment = new Comment(content,this,shared);
+        Comment comment = new Comment(content, this, shared);
         shared.getComments().add(comment);
         this.getCommentedFolder().getShared().add(shared);
     }
