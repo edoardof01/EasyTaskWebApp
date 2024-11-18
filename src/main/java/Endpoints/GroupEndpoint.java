@@ -187,9 +187,9 @@ public class GroupEndpoint {
     @Path("/forceCompletion/{groupId}")
     @Transactional
     @RolesAllowed({"ADMIN"})
-    public Response forceCompletion(@PathParam("groupId") long groupId) {
+    public Response forceCompletion(@PathParam("groupId") long groupId, @QueryParam("userId") long userId) {
         try {
-            groupService.forceCompletion(groupId);
+            groupService.forceCompletion(groupId,userId);
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)

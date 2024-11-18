@@ -23,7 +23,7 @@ public class AuthService {
             throw new SecurityException("Invalid username or password");
         }
 
-        return jwtUtil.generateToken(user.getPersonalProfile().getUsername(), user.getRoleNames());
+        return jwtUtil.generateToken(user.getPersonalProfile().getUsername());
     }
 }
 
