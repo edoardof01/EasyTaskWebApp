@@ -20,7 +20,7 @@ public class AuthEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(CredentialsDTO credentials) {
         try {
-            String token = authService.login(credentials.getUsername(), credentials.getPassword());
+            String token = authService.login(credentials.username(), credentials.password());
             return Response.ok(new TokenResponse(token)).build();
         } catch (SecurityException e) {
             return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
