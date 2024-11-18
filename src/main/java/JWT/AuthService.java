@@ -1,29 +1,37 @@
 package JWT;
-
 import domain.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import orm.UserDAO;
-
-import java.util.List;
 
 @ApplicationScoped
 public class AuthService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+
     @Inject
-    private UserDAO userDAO; // DAO per accedere agli utenti
+    private UserDAO userDAO;
 
     @Inject
     private JwtUtil jwtUtil;
 
-    public String login(String username, String password) {
-        User user = userDAO.findByUsername(username);
+    public TokenResponse authenticate(CredentialsDTO credentials) {
+        // Log per tracciare l'inizio del processo di autenticazione
+        logger.info("Authenticating user: {}", credentials.getUsername());
 
-        if (user == null || !user.getPersonalProfile().getPassword().equals(password)) { // Usa hashing per password in produzione
-            throw new SecurityException("Invalid username or password");
+        User user = userDAO.findByUsername(credentials.getUsername());
+        if (user == null || !BCrypt.checkpw(credentials.getPassword(), user.getPersonalProfile().getPassword())) {
+            throw new IllegalArgumentException("Invalid username or password");
         }
 
-        return jwtUtil.generateToken(user.getPersonalProfile().getUsername());
+        if (!user.getPersonalProfile().isEmailVerified()) {
+            throw new IllegalArgumentException("Email not verified");
+        }
+
+        String token = jwtUtil.generateToken(user.getPersonalProfile().getUsername());
+        return new TokenResponse(token);
     }
 }
-

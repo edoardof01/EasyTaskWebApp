@@ -16,10 +16,13 @@ public class Profile {
     private Map<Topic,Integer> topics;
     @OneToOne(mappedBy="personalProfile",fetch= FetchType.EAGER)
     private User owner;
+    private String email;
+    private boolean emailVerified;
+    private String verificationToken;
 
     public Profile() {}
 
-    public Profile(String username,String password, Map<Topic,Integer> topics) {
+    public Profile(String username,String password, Map<Topic,Integer> topics, String email, boolean emailVerified, String verificationToken) {
         this.password = password;
         this.topics = topics;
         this.username = username;
@@ -42,5 +45,29 @@ public class Profile {
     }
     public String getUsername() {
         return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
     }
 }

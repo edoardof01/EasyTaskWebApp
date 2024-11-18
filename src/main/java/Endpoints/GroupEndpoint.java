@@ -40,7 +40,6 @@ public class GroupEndpoint {
 
     @GET
     @Path("/{id}")
-    @RolesAllowed({"USER","ADMIN"})
     public Response getGroupById(@PathParam("id") long id) {
         GroupDTO groupDTO = groupService.getGroupById(id);
 
@@ -56,7 +55,6 @@ public class GroupEndpoint {
 
     @POST
     @Transactional
-    @RolesAllowed({"USER","ADMIN"})
     public Response createGroup(GroupDTO groupDTO) {
         try {
             // Estrai i campi da groupDTO
@@ -98,7 +96,6 @@ public class GroupEndpoint {
     @DELETE
     @Path("/{id}")
     @Transactional
-    @RolesAllowed({"ADMIN"})
     public Response deleteGroup(@PathParam("id") long id) {
         try {
             groupService.deleteGroup(id);
@@ -113,7 +110,6 @@ public class GroupEndpoint {
     @PUT
     @Path("/{id}")
     @Transactional
-    @RolesAllowed({"USER", "ADMIN"})
     public Response updateGroup(@PathParam("id") long id, GroupDTO groupDTO) {
         try {
             GroupDTO updatedGroup = groupService.modifyGroup(
@@ -141,7 +137,6 @@ public class GroupEndpoint {
     @POST
     @Path("/moveToCalendar/")
     @Transactional
-    @RolesAllowed({"USER","ADMIN"})
     public Response moveToCalendar(GroupDTO groupDTO, @QueryParam("groupId") long groupId) {
         try {
             groupService.moveToCalendar(groupDTO, groupId);
@@ -156,7 +151,6 @@ public class GroupEndpoint {
     @POST
     @Path("/completeSession/{groupId}")
     @Transactional
-    @RolesAllowed({"USER","ADMIN"})
     public Response completeSession(@PathParam("groupId") long groupId, @QueryParam("sessionId") long sessionId) {
         try {
             groupService.completeSession(groupId, sessionId);
@@ -171,7 +165,6 @@ public class GroupEndpoint {
     @POST
     @Path("/completeBySessions/{groupId}")
     @Transactional
-    @RolesAllowed({"USER","ADMIN"})
     public Response completeSharedBySessions(@PathParam("groupId") long groupId) {
         try {
             groupService.completeSharedBySessions(groupId);
@@ -186,7 +179,6 @@ public class GroupEndpoint {
     @POST
     @Path("/forceCompletion/{groupId}")
     @Transactional
-    @RolesAllowed({"ADMIN"})
     public Response forceCompletion(@PathParam("groupId") long groupId, @QueryParam("userId") long userId) {
         try {
             groupService.forceCompletion(groupId,userId);
@@ -201,7 +193,6 @@ public class GroupEndpoint {
     @POST
     @Path("/handleLimitExceeded/{groupId}")
     @Transactional
-    @RolesAllowed({"USER","ADMIN"})
     public Response handleLimitExceeded(@PathParam("groupId") long groupId, SessionDTO sessionDTO) {
         try {
             groupService.handleLimitExceeded(sessionDTO, groupId);
@@ -214,7 +205,6 @@ public class GroupEndpoint {
     }
     @POST
     @Path("/{groupId}/users/{userId}/subtasks/{subtaskId}")
-    @RolesAllowed({"USER"})
     public Response joinGroup(
             @PathParam("groupId") long groupId,
             @PathParam("userId") long userId,
@@ -237,8 +227,7 @@ public class GroupEndpoint {
     @RolesAllowed({"USER"})
     public Response leaveGroup(@PathParam("groupId") long groupId, @PathParam("userId") long userId) {
         try {
-            groupService.leaveGroup(groupId, userId);
-            return Response.ok().build();
+            groupService.leaveGroup(groupId, userId);return Response.ok().build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
@@ -247,7 +236,6 @@ public class GroupEndpoint {
     @POST
     @Path("/{groupId}/exchangeRequest")
     @Transactional
-    @RolesAllowed({"USER","ADMIN"})
     public Response sendExchangeRequest(
             @PathParam("groupId") long groupId,
             @QueryParam("senderId") long senderId,
@@ -263,7 +251,6 @@ public class GroupEndpoint {
     @POST
     @Path("/{groupId}/exchangeRequest/{requestId}/process/{receiverId}")
     @Transactional
-    @RolesAllowed({"USER","ADMIN"})
     public Response processExchangeRequest(
             @PathParam("groupId") long groupId,
             @PathParam("receiverId") long receiverId,
@@ -280,7 +267,6 @@ public class GroupEndpoint {
     @DELETE
     @Path("/{groupId}/remove/{userId}")
     @Transactional
-    @RolesAllowed({"ADMIN"})
     public Response removeMemberFromGroup(
             @PathParam("groupId") long groupId,
             @PathParam("userId") long userId,

@@ -1,38 +1,34 @@
 package JWT;
-
 import jakarta.ws.rs.core.SecurityContext;
-
 import java.security.Principal;
-import java.util.List;
 
 public class JwtSecurityContext implements SecurityContext {
 
     private final String username;
-    private final List<String> roles;
 
-    public JwtSecurityContext(String username, List<String> roles) {
+    public JwtSecurityContext(String username) {
         this.username = username;
-        this.roles = roles;
     }
 
     @Override
     public Principal getUserPrincipal() {
-        return () -> username;
+        return () -> username; // Ritorna un Principal con il nome utente
     }
 
     @Override
     public boolean isUserInRole(String role) {
-        return roles.contains(role);
+        // Nessuna gestione dei ruoli nella tua applicazione
+        return false;
     }
 
     @Override
     public boolean isSecure() {
+        // Puoi personalizzare questa logica se hai HTTPS o altre misure di sicurezza
         return true;
     }
 
     @Override
     public String getAuthenticationScheme() {
-        return "Bearer";
+        return "Bearer"; // Schema standard per token JWT
     }
 }
-

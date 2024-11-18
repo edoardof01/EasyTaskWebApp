@@ -102,6 +102,9 @@ public class User {
     public CommentedFolder getCommentedFolder() {
         return commentedFolder;
     }
+    public void setPersonalProfile(Profile personalProfile) {
+        this.personalProfile = personalProfile;
+    }
 
     // DA COMPLETARE, METODO RICHIAMATO POI
     public void incrementTopicScore(Topic topic){

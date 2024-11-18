@@ -9,10 +9,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="A lot of changes">
+    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="little change">
+      <change afterPath="$PROJECT_DIR$/src/main/java/registration/EmailService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/registration/RegisterEndpoint.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/registration/RegisterService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/registration/RegistrationDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/GroupEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/GroupEndpoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/AuthEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/AuthEndpoint.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/JWT/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/ProfileDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/CredentialsDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/CredentialsDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/JwtFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/JwtSecurityContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/JwtSecurityContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/TokenResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/TokenResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Profile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserDAO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,8 +36,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="com.intellij.jpb.JpaEntity" />
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -219,7 +233,8 @@
       <workItem from="1731769867397" duration="14000" />
       <workItem from="1731851419439" duration="619000" />
       <workItem from="1731919986471" duration="8194000" />
-      <workItem from="1731934747417" duration="14392000" />
+      <workItem from="1731934747417" duration="16462000" />
+      <workItem from="1731961383072" duration="7352000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -357,7 +372,39 @@
       <option name="project" value="LOCAL" />
       <updated>1731947515458</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="A lot of changes">
+      <option name="closed" value="true" />
+      <created>1731951480142</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1731951480142</updated>
+    </task>
+    <task id="LOCAL-00019" summary="little changes">
+      <option name="closed" value="true" />
+      <created>1731951786185</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1731951786185</updated>
+    </task>
+    <task id="LOCAL-00020" summary="credentials brought to record">
+      <option name="closed" value="true" />
+      <created>1731951836899</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1731951836899</updated>
+    </task>
+    <task id="LOCAL-00021" summary="little change">
+      <option name="closed" value="true" />
+      <created>1731952009375</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1731952009375</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -387,6 +434,9 @@
     <MESSAGE value="personal endpoint,..." />
     <MESSAGE value="Group endpoint,..." />
     <MESSAGE value="A lot of changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="A lot of changes" />
+    <MESSAGE value="little changes" />
+    <MESSAGE value="credentials brought to record" />
+    <MESSAGE value="little change" />
+    <option name="LAST_COMMIT_MESSAGE" value="little change" />
   </component>
 </project>

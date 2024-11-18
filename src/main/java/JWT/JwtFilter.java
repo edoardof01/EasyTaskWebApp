@@ -1,20 +1,15 @@
 package JWT;
 
-import io.jsonwebtoken.Claims;
-import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
-import jakarta.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
+import io.jsonwebtoken.Claims;
 
-import java.util.List;
-
-@Provider
-@Priority(Priorities.AUTHENTICATION)
 @ApplicationScoped
+@Provider
 public class JwtFilter implements ContainerRequestFilter {
 
     @Inject
@@ -22,26 +17,26 @@ public class JwtFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
-        String authorizationHeader = requestContext.getHeaderString("Authorization");
+        // Recupera il token dalla header "Authorization"
+        String token = requestContext.getHeaderString("Authorization");
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            requestContext.abortWith(jakarta.ws.rs.core.Response.status(jakarta.ws.rs.core.Response.Status.UNAUTHORIZED).build());
+        // Controlla se il token è presente e valido
+        if (token == null || !jwtUtil.validateToken(token)) {
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("Invalid or missing token").build());
             return;
         }
 
-        String token = authorizationHeader.substring(7);
-
-        if (!jwtUtil.validateToken(token)) {
-            requestContext.abortWith(jakarta.ws.rs.core.Response.status(jakarta.ws.rs.core.Response.Status.UNAUTHORIZED).build());
-            return;
-        }
-
+        // Ottieni i claims dal token
         Claims claims = jwtUtil.getClaims(token);
-        String username = claims.getSubject();
-        List<String> roles = claims.get("roles", List.class);
 
-        // Configura il SecurityContext
-        SecurityContext securityContext = new JwtSecurityContext(username, roles);
-        requestContext.setSecurityContext(securityContext);
+        // Verifica se l' issuer del token è corretto
+        if (!claims.getIssuer().equals("your-application")) {
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("Invalid token issuer").build());
+            return;
+        }
+
+        // Imposta il SecurityContext con il nome utente
+        String username = claims.getSubject();
+        requestContext.setSecurityContext(new JwtSecurityContext(username));
     }
 }

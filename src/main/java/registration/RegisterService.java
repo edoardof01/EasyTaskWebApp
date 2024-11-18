@@ -1,0 +1,65 @@
+package registration;
+
+import domain.Profile;
+import domain.User;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import org.mindrot.jbcrypt.BCrypt;
+import orm.UserDAO;
+
+import java.util.UUID;
+
+@ApplicationScoped
+public class RegisterService {
+
+    @Inject
+    private UserDAO userDAO;
+
+    @Inject
+    private EmailService emailService;
+
+    public void register(RegistrationDTO registrationDTO) {
+        if (userDAO.findByUsername(registrationDTO.getUsername()) != null) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
+        String hashedPassword = BCrypt.hashpw(registrationDTO.getPassword(), BCrypt.gensalt());
+
+        // Crea il Profile
+        Profile profile = new Profile(
+                registrationDTO.getUsername(),
+                hashedPassword,
+                null,  // Non viene specificato topics nella registrazione (puoi modificarlo se necessario)
+                registrationDTO.getEmail(),
+                false, // email non verificata
+                UUID.randomUUID().toString()  // Token di verifica univoco
+        );
+
+        // Crea l'utente e imposta il profile
+        User newUser = new User();
+        newUser.setPersonalProfile(profile);
+
+        // Salva l'utente nel database
+        userDAO.save(newUser);
+
+        // Invia l'email di verifica
+        String verificationLink = "http://localhost:8080/register/confirm?token=" + profile.getVerificationToken();
+        emailService.sendEmail(profile.getEmail(), "Confirm your email",
+                "Click the following link to confirm your email: " + verificationLink);
+    }
+
+    public void confirmEmail(String token) {
+        User user = userDAO.findByVerificationToken(token);
+        if (user == null) {
+            throw new IllegalArgumentException("Invalid or expired token");
+        }
+
+        // Aggiorna lo stato dell'email dell'utente
+        Profile profile = user.getPersonalProfile();
+        profile.setEmailVerified(true);
+        profile.setVerificationToken(null); // Rimuove il token di verifica
+
+        // Salva le modifiche
+        userDAO.update(user);
+    }
+}
