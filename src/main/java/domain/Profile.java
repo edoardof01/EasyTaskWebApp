@@ -1,9 +1,7 @@
 package domain;
-import domain.Topic;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToOne;
+
 
 import java.util.Map;
 
@@ -14,8 +12,6 @@ public class Profile {
     private String password;
     @ElementCollection
     private Map<Topic,Integer> topics;
-    @OneToOne(mappedBy="personalProfile",fetch= FetchType.EAGER)
-    private User owner;
     private String email;
     private boolean emailVerified;
     private String verificationToken;
@@ -39,9 +35,6 @@ public class Profile {
     }
     public void setTopics(Map<Topic,Integer> topics){
         this.topics = topics;
-    }
-    public User getOwner() {
-        return owner;
     }
     public String getUsername() {
         return username;
