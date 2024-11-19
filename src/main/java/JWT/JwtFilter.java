@@ -17,7 +17,11 @@ public class JwtFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
-        // Recupera il token dalla header "Authorization"
+
+        String path = requestContext.getUriInfo().getPath();
+        if (path.equals("register")) {
+            return;
+        }
         String token = requestContext.getHeaderString("Authorization");
 
         // Controlla se il token è presente e valido

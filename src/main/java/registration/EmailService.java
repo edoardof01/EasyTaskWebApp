@@ -13,12 +13,12 @@ public class EmailService {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
-    private final String SMTP_USER = "your-email@example.com";
+    private final String SMTP_USER = "edoardofanciullacci01@gmail.com";
     private final String SMTP_PASSWORD = System.getenv("SMTP_PASSWORD");
 
     public void sendEmail(String recipient, String subject, String body) {
         Properties properties = new Properties();
-        String SMTP_HOST = "smtp.example.com";
+        String SMTP_HOST = "smtp.gmail.com";
         properties.put("mail.smtp.host", SMTP_HOST);
         String SMTP_PORT = "587";
         properties.put("mail.smtp.port", SMTP_PORT);

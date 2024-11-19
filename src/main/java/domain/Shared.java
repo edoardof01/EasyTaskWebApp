@@ -16,7 +16,7 @@ public class Shared extends Task {
     private LocalDateTime dateOnFeed;
     private String userGuidance;
     @OneToMany
-    private ArrayList<Comment> comments;
+    private List<Comment> comments;
 
     public Shared() {
     }

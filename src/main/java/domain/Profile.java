@@ -22,6 +22,9 @@ public class Profile {
         this.password = password;
         this.topics = topics;
         this.username = username;
+        this.email = email;
+        this.emailVerified = emailVerified;
+        this.verificationToken = verificationToken;
     }
 
     public String getPassword(){
@@ -51,15 +54,12 @@ public class Profile {
     public boolean isEmailVerified() {
         return emailVerified;
     }
-
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
     }
-
     public String getVerificationToken() {
         return verificationToken;
     }
-
     public void setVerificationToken(String verificationToken) {
         this.verificationToken = verificationToken;
     }
