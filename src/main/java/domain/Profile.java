@@ -1,13 +1,16 @@
 package domain;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 
 
 import java.util.Map;
 
 
-@Embeddable
+@Entity
 public class Profile {
+
+    @Id
+    @GeneratedValue
+    private Long id;
     private String username;
     private String password;
     @ElementCollection
@@ -15,6 +18,7 @@ public class Profile {
     private String email;
     private boolean emailVerified;
     private String verificationToken;
+
 
     public Profile() {}
 
@@ -62,5 +66,13 @@ public class Profile {
     }
     public void setVerificationToken(String verificationToken) {
         this.verificationToken = verificationToken;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

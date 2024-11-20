@@ -21,7 +21,7 @@ public class User {
     //@CollectionTable(name="qualifications")
     private List<String> qualifications;
     private String profession;
-    @Embedded
+    @OneToOne
     private Profile personalProfile;
     @OneToOne(mappedBy="user",cascade = CascadeType.ALL,orphanRemoval = true)
     private Calendar calendar;

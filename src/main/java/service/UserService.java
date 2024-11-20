@@ -55,11 +55,13 @@ public class UserService {
 
 
     @Transactional
-    public UserDTO createUser(UserDTO userDTO) {
-        User user = userMapper.toUserEntity(userDTO);
+    public UserDTO createUser(int age, Sex sex, String description, List<String> qualifications,
+                              String profession, Profile personalProfile, Role userRole) {
+        User user = new User(age, sex, description, qualifications, profession, personalProfile, userRole);
         userDAO.save(user);
         return userMapper.toUserDTO(user);
     }
+
 
     @Transactional
     public UserDTO updateUser(long id, UserDTO userDTO) {

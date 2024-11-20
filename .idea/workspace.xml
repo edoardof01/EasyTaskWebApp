@@ -10,9 +10,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="Pom change">
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Personal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Personal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/UserEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/UserEndpoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Profile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/ProfileDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,7 +230,7 @@
       <workItem from="1731961383072" duration="7793000" />
       <workItem from="1732006232238" duration="5327000" />
       <workItem from="1732028182833" duration="1628000" />
-      <workItem from="1732093732505" duration="3412000" />
+      <workItem from="1732093732505" duration="5677000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -425,7 +432,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732095615611</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Pom change">
+      <option name="closed" value="true" />
+      <created>1732097477032</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1732097477032</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

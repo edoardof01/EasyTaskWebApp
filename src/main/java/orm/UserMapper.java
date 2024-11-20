@@ -3,9 +3,13 @@ package orm;
 import domain.Profile;
 import domain.User;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class UserMapper {
+
+    @Inject
+    ProfileMapper profileMapper;
 
     public UserDTO toUserDTO(User user) {
         if (user == null) {
@@ -18,13 +22,14 @@ public class UserMapper {
         if (userDTO == null) {
             return null;
         }
+        Profile profile = profileMapper.toProfileEntity(userDTO.getPersonalProfile());
         return new User(
                 userDTO.getAge(),
                 userDTO.getSex(),
                 userDTO.getDescription(),
                 userDTO.getQualifications(),
                 userDTO.getProfession(),
-                userDTO.getPersonalProfile(),
+                profile,
                 userDTO.getUserRole()
         );
     }

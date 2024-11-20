@@ -11,18 +11,11 @@ public class UserDTO {
     private List<String> qualifications;
     private String description;
     private  Sex sex;
-    private  Profile personalProfile;
+    private  ProfileDTO personalProfile;
     private  Role userRole;
 
-    public UserDTO(long id, int age, String profession, List<String> qualifications, String description, Sex sex, Profile personalProfile, Role userRole) {
-        this.id = id;
-        this.age = age;
-        this.profession = profession;
-        this.qualifications = qualifications;
-        this.description = description;
-        this.sex = sex;
-        this.personalProfile = personalProfile;
-        this.userRole = userRole;
+    public UserDTO() {
+        this.id = 0;
     }
 
     public UserDTO(User user) {
@@ -32,7 +25,7 @@ public class UserDTO {
         this.qualifications = user.getQualifications();
         this.description = user.getDescription();
         this.sex = user.getSex();
-        this.personalProfile = user.getPersonalProfile();
+        this.personalProfile = new ProfileDTO(user.getPersonalProfile());
         this.userRole = user.getUserRole();
     }
     public long getId() {
@@ -74,10 +67,10 @@ public class UserDTO {
     public void setSex(Sex sex){
         this.sex = sex;
     }
-    public Profile getPersonalProfile(){
+    public ProfileDTO getPersonalProfile(){
         return personalProfile;
     }
-    public void setPersonalProfile(Profile personalProfile){
+    public void setPersonalProfile(ProfileDTO personalProfile){
         this.personalProfile = personalProfile;
     }
 

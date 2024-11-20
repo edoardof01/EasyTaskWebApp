@@ -1,12 +1,18 @@
 package Endpoints;
 
+import domain.Profile;
+import domain.Role;
+import domain.Sex;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import orm.CommentDTO;
+import orm.ProfileMapper;
 import orm.UserDTO;
+import orm.UserMapper;
 import service.UserService;
 
 import java.util.List;
@@ -18,6 +24,9 @@ public class UserEndpoint {
 
     @Inject
     private UserService userService;
+
+    @Inject
+    private ProfileMapper profileMapper;
 
     // Get all users
     @GET
@@ -40,9 +49,30 @@ public class UserEndpoint {
     // Create a new user
     @POST
     public Response createUser(UserDTO userDTO) {
-        UserDTO createdUser = userService.createUser(userDTO);
-        return Response.status(Response.Status.CREATED).entity(createdUser).build();
+        try {
+            // Estrai i campi da UserDTO
+            int age = userDTO.getAge();
+            Sex sex = userDTO.getSex();
+            String description = userDTO.getDescription();
+            List<String> qualifications = userDTO.getQualifications();
+            String profession = userDTO.getProfession();
+            Profile personalProfile = profileMapper.toProfileEntity(userDTO.getPersonalProfile()); // Se necessario, puoi usare un mapper
+            Role userRole = userDTO.getUserRole();
+
+            // Passa i campi estratti al servizio
+            UserDTO createdUser = userService.createUser(
+                    age, sex, description, qualifications, profession, personalProfile, userRole);
+
+            return Response.status(Response.Status.CREATED)
+                    .entity(createdUser)
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
     }
+
 
     // Update user by ID
     @PUT
