@@ -3,16 +3,22 @@ package domain;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Subfolder {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Enumerated(EnumType.STRING)
     private SubfolderType type;
-    @OneToMany
-    private ArrayList<Task> Tasks = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Folder folder;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Task> tasks = new ArrayList<>();
 
     public Subfolder() {}
 
@@ -26,7 +32,7 @@ public class Subfolder {
     public SubfolderType getType() {
         return type;
     }
-    public ArrayList<Task> getTasks() {
-        return Tasks;
+    public List<Task> getTasks() {
+        return tasks;
     }
 }

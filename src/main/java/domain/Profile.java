@@ -11,14 +11,19 @@ public class Profile {
     @Id
     @GeneratedValue
     private Long id;
+
     private String username;
     private String password;
+
     @ElementCollection
-    private Map<Topic,Integer> topics;
+    private Map<Topic, Integer> topics;
+
     private String email;
     private boolean emailVerified;
     private String verificationToken;
 
+    @OneToOne
+    private User user;
 
     public Profile() {}
 

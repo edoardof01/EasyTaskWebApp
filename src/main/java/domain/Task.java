@@ -12,35 +12,48 @@ import static domain.SubfolderType.*;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
+
     private String name;
+
     @Lob
     private String description;
+
     private LocalDateTime deadline;
     private int percentageOfCompletion;
     private int priority;
     private int totalTime;
     private int complexity;
+
     private int skippedSessions = 0;
     private int consecutiveSkippedSessions = 0;
     private boolean isInProgress = false;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    @ElementCollection(fetch = FetchType.EAGER, targetClass = Timetable.class)
     @Enumerated(EnumType.STRING)
     private Set<Timetable> timetable;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Subtask> subtasks = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Session> sessions = new ArrayList<>();
-    @OneToMany( cascade = CascadeType.ALL)
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Resource> resources = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private Topic topic;
+
     @Enumerated(EnumType.STRING)
     private TaskState state;
-    @ElementCollection(targetClass = DefaultStrategy.class, fetch = FetchType.EAGER)
+
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<DefaultStrategy> strategies = new HashSet<>();
 

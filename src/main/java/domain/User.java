@@ -5,33 +5,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private long id;
+
     private int age;
+
     @Enumerated(EnumType.STRING)
     private Sex sex;
+
     @Lob
     private String description;
+
     @Enumerated(EnumType.STRING)
     private Role userRole;
-    @ElementCollection
-    //@CollectionTable(name="qualifications")
-    private List<String> qualifications;
-    private String profession;
-    @OneToOne
-    private Profile personalProfile;
-    @OneToOne(mappedBy="user",cascade = CascadeType.ALL,orphanRemoval = true)
-    private Calendar calendar;
-    @OneToOne
-    private CommentedFolder commentedFolder;
-    @OneToMany(mappedBy ="user",cascade = CascadeType.ALL,orphanRemoval = true)
-    private final List<Folder> folders = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
-    private final List<Task> tasks = new ArrayList<>();
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<String> qualifications;
+
+    private String profession;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Profile personalProfile;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Calendar calendar;
+
+    @OneToOne(mappedBy = "user")
+    private CommentedFolder commentedFolder;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private final List<Folder> folders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private final List<Task> tasks = new ArrayList<>();
     public User() {}
 
     public User(int age, Sex sex, String description, List<String> qualifications, String profession, Profile personalProfile, Role userRole) {

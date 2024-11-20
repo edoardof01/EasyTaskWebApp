@@ -5,14 +5,18 @@ import jakarta.persistence.*;
 @Entity
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
+
     private String content;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private User author;
-    @OneToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Shared commentedTask;
+
     private boolean isBest = false;
 
     public Comment() {}

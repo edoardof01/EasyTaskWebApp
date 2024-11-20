@@ -11,10 +11,13 @@ public class CommentedFolder {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Long id;
+
     @OneToMany
     private ArrayList<Shared> shared;
+
     @OneToOne
     private User user;
+
     @OneToMany
     private ArrayList<Comment> comment;
 

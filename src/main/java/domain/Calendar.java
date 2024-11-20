@@ -6,12 +6,14 @@ import java.util.*;
 @Entity
 public class Calendar {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private long id;
+
     @OneToOne
     private User user;
-    @OneToMany
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Session> sessions = new ArrayList<>();
 
     public Calendar(){}

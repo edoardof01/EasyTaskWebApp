@@ -52,12 +52,12 @@ public class UserEndpoint {
         try {
             // Estrai i campi da UserDTO
             int age = userDTO.getAge();
-            Sex sex = userDTO.getSex();
+            Sex sex = Sex.valueOf(userDTO.getSex());
             String description = userDTO.getDescription();
             List<String> qualifications = userDTO.getQualifications();
             String profession = userDTO.getProfession();
-            Profile personalProfile = profileMapper.toProfileEntity(userDTO.getPersonalProfile()); // Se necessario, puoi usare un mapper
-            Role userRole = userDTO.getUserRole();
+            Profile personalProfile = profileMapper.toProfileEntity(userDTO.getPersonalProfile());
+            Role userRole = Role.valueOf(userDTO.getUserRole());
 
             // Passa i campi estratti al servizio
             UserDTO createdUser = userService.createUser(

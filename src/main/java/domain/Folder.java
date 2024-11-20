@@ -3,19 +3,24 @@ package domain;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
 public class Folder {
     @Id
-    @Column( nullable = false)
+    @GeneratedValue
+    @Column(nullable = false)
     private Long id;
+
     @Enumerated(EnumType.STRING)
     private FolderType folderType;
+
     @ManyToOne
     private User user;
-    @OneToMany
-    private final ArrayList<Subfolder> subfolders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "folder")
+    private final List<Subfolder> subfolders = new ArrayList<>();
 
     public Folder() {}
 
@@ -42,7 +47,7 @@ public class Folder {
     public void setUser(User user) {
       this.user = user;
     }
-    public ArrayList<Subfolder> getSubfolders() {
+    public List<Subfolder> getSubfolders() {
         return subfolders;
     }
 }

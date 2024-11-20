@@ -1,17 +1,13 @@
 package orm;
-
 import domain.Profile;
-import domain.Topic;
-import domain.User;
-
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ProfileDTO {
     private  String username;
     private  String password;
     private  String email;
-    private Map<Topic, Integer> topics = new HashMap<>();
+    private Map<String, Integer> topics;
     private boolean emailVerified;
     private String verificationToken;
 
@@ -19,7 +15,11 @@ public class ProfileDTO {
 
     public ProfileDTO(Profile profile) {
         this.password = profile.getPassword();
-        this.topics = profile.getTopics();
+        this.topics = profile.getTopics().entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey().name(), // Converti l' enum in stringa
+                        Map.Entry::getValue // Mantieni il valore intero
+                ));
         this.username = profile.getUsername();
         this.email = profile.getEmail();
         this.emailVerified = profile.isEmailVerified();
@@ -31,10 +31,10 @@ public class ProfileDTO {
     public void setPassword(String password) {
         this.password = password;
     }
-    public Map<Topic, Integer> getTopics() {
+    public Map<String, Integer> getTopics() {
         return topics;
     }
-    public void setTopics(Map<Topic, Integer> topics) {
+    public void setTopics(Map<String, Integer> topics) {
         this.topics = topics;
     }
     public String getUsername() {

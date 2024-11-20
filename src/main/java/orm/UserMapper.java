@@ -1,6 +1,8 @@
 package orm;
 
 import domain.Profile;
+import domain.Role;
+import domain.Sex;
 import domain.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -25,12 +27,12 @@ public class UserMapper {
         Profile profile = profileMapper.toProfileEntity(userDTO.getPersonalProfile());
         return new User(
                 userDTO.getAge(),
-                userDTO.getSex(),
+                Sex.valueOf(userDTO.getSex()),
                 userDTO.getDescription(),
                 userDTO.getQualifications(),
                 userDTO.getProfession(),
                 profile,
-                userDTO.getUserRole()
+                Role.valueOf(userDTO.getUserRole())
         );
     }
 

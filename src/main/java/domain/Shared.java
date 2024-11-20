@@ -15,8 +15,9 @@ public class Shared extends Task {
 
     private LocalDateTime dateOnFeed;
     private String userGuidance;
-    @OneToMany
-    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "commentedTask", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
 
     public Shared() {
     }
@@ -51,7 +52,7 @@ public class Shared extends Task {
     public void bestComment(Comment comment) {
         if (this.getUser().getTasks().contains(this)) {
             for(Comment c : this.getComments()) {
-                if(comment.getIsBest()){
+                if(c.getIsBest()){
                     throw new UnsupportedOperationException("The best comment has been already selected");
                 }
             }

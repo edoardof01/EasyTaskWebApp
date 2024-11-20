@@ -10,16 +10,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="Pom change">
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/UserEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/UserEndpoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Calendar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Calendar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Comment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/CommentedFolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/CommentedFolder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Folder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Profile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Resource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Resource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Session.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Session.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Shared.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Shared.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Subfolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Subfolder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Subtask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Subtask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Task.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/ProfileDAO.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/orm/ProfileDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/ProfileMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,33 +71,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JBoss/WildFly Server.JBoss/WildFly 34.0.0.Final1.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;corretto-21&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/ApplicationServers/wildfly-34.0.0.Final/modules/system/layers/base/com/mysql/main/mysql-connector-j-9.1.0.jar&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Facets&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JBoss/WildFly Server.JBoss/WildFly 34.0.0.Final1.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "extract.method.default.visibility": "private",
+    "git-widget-placeholder": "master",
+    "jdk.selected.JAVA_MODULE": "corretto-21",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/ApplicationServers/wildfly-34.0.0.Final/modules/system/layers/base/com/mysql/main/mysql-connector-j-9.1.0.jar",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Facets",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="domain" />
@@ -230,7 +241,8 @@
       <workItem from="1731961383072" duration="7793000" />
       <workItem from="1732006232238" duration="5327000" />
       <workItem from="1732028182833" duration="1628000" />
-      <workItem from="1732093732505" duration="5677000" />
+      <workItem from="1732093732505" duration="6857000" />
+      <workItem from="1732109760567" duration="10835000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -440,7 +452,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732097477032</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Pom change">
+      <option name="closed" value="true" />
+      <created>1732099699210</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1732099699210</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

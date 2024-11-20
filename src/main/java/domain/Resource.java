@@ -6,13 +6,16 @@ import jakarta.persistence.*;
 
 @Entity
 public class Resource {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
+
     private String name;
     private int value;
     private Integer money;
+
     @Enumerated(EnumType.STRING)
     private ResourceType type;
 

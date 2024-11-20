@@ -6,16 +6,41 @@
   <persistence-unit name="default">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <!-- inserisci quì le tue entità JPA quando pronte. esempio:  <class>com.example.EntityClass</class> -->
+    <!-- Elenco delle classi entità -->
+    <class>domain.User</class>
+    <class>domain.Calendar</class>
+    <class>domain.Session</class>
+    <class>domain.Task</class>
+    <class>domain.Shared</class>
+    <class>domain.Subtask</class>
+    <class>domain.Resource</class>
+    <class>domain.Subfolder</class>
+    <class>domain.Comment</class>
+    <class>domain.Group</class>
+    <class>domain.Profile</class>
+    <class>domain.Request</class>
+    <class>domain.CommentedFolder</class>
+    <class>domain.UserSession</class>
+    <class>domain.Folder</class>
+    <class>domain.Personal</class>
+    <class>domain.TaskCalendar</class>
 
     <properties>
+      <!-- Configurazione del database -->
       <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/easytaskdb"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/easytaskdb?useSSL=false&amp;serverTimezone=UTC"/>
       <property name="jakarta.persistence.jdbc.user" value="Edoardo"/>
       <property name="jakarta.persistence.jdbc.password" value="MyfirstSQLdb1"/>
+
+      <!-- Dialetto Hibernate -->
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+
+      <!-- Creazione e aggiornamento del database -->
       <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+      <!-- Debug delle query -->
+      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.format_sql" value="true"/>
     </properties>
   </persistence-unit>
 </persistence>
-

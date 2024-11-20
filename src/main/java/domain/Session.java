@@ -9,19 +9,25 @@ import java.time.LocalDateTime;
 @Entity
 public class Session {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    @OneToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    @Enumerated(EnumType.STRING)
     private SessionState state;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Task task;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Subtask subtask;
+
     private long sessionDuration;
 
     public Session() {}

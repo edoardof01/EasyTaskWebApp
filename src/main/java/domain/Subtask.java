@@ -3,21 +3,24 @@ package domain;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Subtask {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
+
     private String name;
     private int level;
     private String description;
-    @OneToMany
-    private ArrayList<Session> sessions = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL)
-    private ArrayList<Resource> resources = new ArrayList<>();
 
+    @OneToMany(mappedBy = "subtask", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Session> sessions = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Resource> resources = new ArrayList<>();
 
 
     public Subtask() {}
@@ -48,10 +51,10 @@ public class Subtask {
     public void setDescription(String description) {
         this.description = description;
     }
-    public ArrayList<Session> getSessions() {
+    public List<Session> getSessions() {
         return sessions;
     }
-    public ArrayList<Resource> getResources() {
+    public List<Resource> getResources() {
         return resources;
     }
 
