@@ -1,3 +1,4 @@
+/*
 package registration;
 
 import org.slf4j.Logger;
@@ -46,3 +47,4 @@ public class EmailService {
         }
     }
 }
+*/

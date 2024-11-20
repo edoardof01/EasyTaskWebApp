@@ -1,3 +1,4 @@
+/*
 package registration;
 
 import domain.Profile;
@@ -63,3 +64,4 @@ public class RegisterService {
         userDAO.update(user);
     }
 }
+*/

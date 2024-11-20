@@ -1,3 +1,4 @@
+/*
 package JWT;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -44,3 +45,4 @@ public class JwtFilter implements ContainerRequestFilter {
         requestContext.setSecurityContext(new JwtSecurityContext(username));
     }
 }
+*/

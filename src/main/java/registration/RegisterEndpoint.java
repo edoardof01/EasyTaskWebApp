@@ -1,3 +1,4 @@
+/*
 package registration;
 
 import jakarta.inject.Inject;
@@ -32,3 +33,4 @@ public class RegisterEndpoint {
         }
     }
 }
+*/

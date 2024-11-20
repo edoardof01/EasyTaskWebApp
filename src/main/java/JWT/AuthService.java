@@ -1,3 +1,4 @@
+/*
 package JWT;
 import domain.User;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -35,3 +36,4 @@ public class AuthService {
         return new TokenResponse(token);
     }
 }
+*/
