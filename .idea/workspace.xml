@@ -11,6 +11,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="Pom change">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Personal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Personal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserDTO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -221,7 +223,7 @@
       <workItem from="1731961383072" duration="7793000" />
       <workItem from="1732006232238" duration="5327000" />
       <workItem from="1732028182833" duration="1628000" />
-      <workItem from="1732093732505" duration="1709000" />
+      <workItem from="1732093732505" duration="3412000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -415,7 +417,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732093830650</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Pom change">
+      <option name="closed" value="true" />
+      <created>1732095615611</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1732095615611</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

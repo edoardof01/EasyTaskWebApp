@@ -19,8 +19,7 @@ public class Personal extends Task {
         super(name, user, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
     }
 
-    public Personal() {
-    }
+    public Personal() {}
 
     @Override
     public void handleLimitExceeded() {

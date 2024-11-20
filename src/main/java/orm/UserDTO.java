@@ -10,9 +10,9 @@ public class UserDTO {
     private String profession;
     private List<String> qualifications;
     private String description;
-    private final Sex sex;
-    private final Profile personalProfile;
-    private final Role userRole;
+    private  Sex sex;
+    private  Profile personalProfile;
+    private  Role userRole;
 
     public UserDTO(long id, int age, String profession, List<String> qualifications, String description, Sex sex, Profile personalProfile, Role userRole) {
         this.id = id;
@@ -41,7 +41,9 @@ public class UserDTO {
     public Role getUserRole() {
         return userRole;
     }
-
+    public void setUserRole(Role userRole) {
+        this.userRole = userRole;
+    }
     public int getAge() {
         return age;
     }
@@ -69,8 +71,14 @@ public class UserDTO {
     public Sex getSex(){
         return sex;
     }
+    public void setSex(Sex sex){
+        this.sex = sex;
+    }
     public Profile getPersonalProfile(){
         return personalProfile;
+    }
+    public void setPersonalProfile(Profile personalProfile){
+        this.personalProfile = personalProfile;
     }
 
 }
