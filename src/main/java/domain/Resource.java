@@ -30,9 +30,9 @@ public class Resource {
             if (money == null) {
                 throw new IllegalArgumentException("Money cannot be null for MONEY resources");
             }
-            if (value != null ) {
+            /*if (value != null ) {
                 throw new IllegalArgumentException("Value should not be set for MONEY resources");
-            }
+            }*/
         } else {
             if (money != null) {
                 throw new IllegalArgumentException("Money should not be set for non-MONEY resources");

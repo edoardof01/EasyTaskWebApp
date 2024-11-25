@@ -22,9 +22,8 @@ public class ResourceDTO {
 
         if (resource.getType() == ResourceType.MONEY) {
             this.money = resource.getMoney();
-            this.value = resource.calculateValueFromMoney(); // Calcolo dinamico
         } else {
-            this.value = resource.getValue(); // Usato per COMPETENCE e EQUIPMENT
+            this.value = resource.getValue();
         }
     }
 

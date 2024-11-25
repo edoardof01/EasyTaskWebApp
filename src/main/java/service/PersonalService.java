@@ -26,6 +26,9 @@ public class PersonalService {
     @Inject
     private SessionMapper sessionMapper;
 
+    @Inject
+    UserDAO userDAO;
+
 
     public PersonalDTO getPersonalById(long id) {
         Personal personal = personalDAO.findById(id);
@@ -108,8 +111,11 @@ public class PersonalService {
                 }
             }
         }
-
-        Personal personalTask = new Personal(name, user, topic, deadline, description, 0, priority, timeSlots, totalTime, strategies, resources);
+        User existingUser = userDAO.findById(user.getId());
+        /*if (existingUser == null) {
+            throw new IllegalArgumentException("User with ID " + user.getId() + " does not exist.");
+        }*/
+        Personal personalTask = new Personal(name, existingUser, topic, deadline, description, 0, priority, timeSlots, totalTime, strategies, resources);
         personalDAO.save(personalTask);
         return personalMapper.toPersonalDTO(personalTask);
     }
