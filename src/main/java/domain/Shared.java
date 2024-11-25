@@ -22,10 +22,10 @@ public class Shared extends Task {
     public Shared() {
     }
 
-    public Shared(String name, User user, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
+    public Shared(String name, User user, Topic topic, @Nullable LocalDateTime deadline,
                   String description, int percentageOfCompletion, int priority,
                   Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategies, List<Resource> resources) {
-        super(name,user, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategies, resources);
+        super(name,user, description, deadline, percentageOfCompletion, priority, totalTime, topic, timeTable, strategies, resources);
         Feed.getInstance().getShared().add(this);
     }
 

@@ -1,6 +1,6 @@
 package domain;
 
-
+import java.util.Objects;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
@@ -13,23 +13,35 @@ public class Resource {
     private Long id;
 
     private String name;
-    private int value;
+
+    // Per COMPETENCE e EQUIPMENT
+    private Integer value;
+
+    // Per MONEY
     private Integer money;
 
     @Enumerated(EnumType.STRING)
     private ResourceType type;
 
-
-
     public Resource() {}
 
-    public Resource(String name, int value, ResourceType type, @Nullable Integer money) {
-        if(type!=ResourceType.MONEY && !(value>0 && value<=5)){
-            throw new IllegalArgumentException("competences and equipment must be between 1 and 5");
+    public Resource(String name,ResourceType type, @Nullable Integer value,  @Nullable Integer money) {
+        if (type == ResourceType.MONEY) {
+            if (money == null) {
+                throw new IllegalArgumentException("Money cannot be null for MONEY resources");
+            }
+            if (value != null ) {
+                throw new IllegalArgumentException("Value should not be set for MONEY resources");
+            }
+        } else {
+            if (money != null) {
+                throw new IllegalArgumentException("Money should not be set for non-MONEY resources");
+            }
+            if (value == null || value <= 0 || value > 5) {
+                throw new IllegalArgumentException("Value for competences and equipment must be between 1 and 5");
+            }
         }
-        if(type!=ResourceType.MONEY && money!=null){
-            throw new IllegalArgumentException("an equipment or a competence can't have a price");
-        }
+
         this.name = name;
         this.value = value;
         this.type = type;
@@ -39,50 +51,75 @@ public class Resource {
     public Long getId() {
         return id;
     }
+
     public String getName() {
         return name;
     }
     public void setName(String name) {
         this.name = name;
     }
-    public int getValue() {
-        if (this.type == ResourceType.MONEY) {
-            if(value>0 && value<100){
-                value=1;
-                return value;
-            }
-            if (value>100 && value<500){
-                value=2;
-                return value;
-            }
-            if(value>500 && value<1000){
-                value=3;
-                return value;
-            }
-            if(value>1000 && value<3000){
-                value=4;
-            }
-            if(value>3000){
-                value=5;
-                return value;
-            }
+    public Integer getValue() {
+        if (type == ResourceType.MONEY) {
+            return calculateValueFromMoney();
         }
         return value;
     }
-
-    public void setValue(int value) {
+    public void setValue(Integer value) {
         this.value = value;
+    }
+
+    public Integer calculateValueFromMoney() {
+        if (money <= 100) {
+            return 1;
+        } else if (money <= 500) {
+            return 2;
+        } else if (money <= 1000) {
+            return 3;
+        } else if (money <= 3000) {
+            return 4;
+        } else {
+            return 5;
+        }
+    }
+
+    public Integer getMoney() {
+        return money;
+    }
+    public void setMoney(Integer money) {
+        this.money = money;
     }
     public ResourceType getType() {
         return type;
     }
-    public Integer getMoney() {
-        return money;
-    }
-    public void setMoney(int money) {
-        this.money = money;
+    public void setType(ResourceType type) {
+        this.type = type;
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Resource resource = (Resource) o;
+        return Objects.equals(name, resource.name) &&
+                type == resource.type &&
+                Objects.equals(value, resource.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type, value);
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+

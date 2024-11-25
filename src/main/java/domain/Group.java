@@ -32,10 +32,10 @@ public class Group extends Task {
 
     public Group() {}
 
-    public Group(int numUsers, User user, LocalDateTime dateOnFeed, String name, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
+    public Group(int numUsers, User user, LocalDateTime dateOnFeed, String name, Topic topic, @Nullable LocalDateTime deadline,
                  String description, int percentageOfCompletion, int priority,
-                 Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategy, List<Resource> resources) {
-        super(name,user,description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
+                 Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategies, List<Resource> resources) {
+        super(name,user,description, deadline, percentageOfCompletion, priority, totalTime, topic, timeTable, strategies, resources);
         this.numUsers = numUsers;
         this.dateOnFeed = dateOnFeed;
         this.members.add(this.getUser());

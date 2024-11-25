@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import orm.*;
 import service.PersonalService;
+import service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,13 +28,15 @@ public class PersonalEndpoint {
     @Inject
     SubtaskMapper subtaskMapper;
 
-
     @Inject
     private PersonalService personalService;
 
+    @Inject
+    UserMapper userMapper;
 
     @Inject
-    private UserMapper userMapper;
+    UserService userService;
+
 
     @GET
     public Response getAllSharedTasks() {
@@ -74,8 +77,14 @@ public class PersonalEndpoint {
             List<Subtask> subtasks = personalDTO.getSubtasks().stream()
                     .map(subtaskMapper::toSubtaskEntity)
                     .collect(Collectors.toList());
-            User user = userMapper.toUserEntity(personalDTO.getUser());
-
+            long userId = personalDTO.getUser_id();
+            UserDTO userDTO = userService.getUserById(userId);
+            User user = userMapper.toUserEntity(userDTO);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("User with ID " + userId + " not found")
+                        .build();
+            }
             // Passa i campi estratti
             PersonalDTO createdPersonal = personalService.createPersonal(
                     name, user, topic, deadline, totalTime, timeSlots, strategies, priority,
@@ -89,7 +98,11 @@ public class PersonalEndpoint {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
                     .build();
-        }
+        } /*catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }*/
     }
 
 

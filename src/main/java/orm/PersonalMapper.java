@@ -2,6 +2,7 @@ package orm;
 import jakarta.inject.Inject;
 import domain.*;
 import jakarta.enterprise.context.ApplicationScoped;
+import service.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,8 @@ public class PersonalMapper {
 
     @Inject
     UserMapper userMapper;
+    @Inject
+    private UserService userService;
 
     public PersonalDTO toPersonalDTO(Personal personal) {
         if(personal == null) {
@@ -37,13 +40,12 @@ public class PersonalMapper {
                 .stream()
                 .map(resourceMapper::toResourceEntity)
                 .toList();
-        User user = userMapper.toUserEntity(personalDTO.getUser());
-
+        UserDTO userDTO = userService.getUserById(personalDTO.getUser_id());
+        User user = userMapper.toUserEntity(userDTO);
         return new Personal(
                 personalDTO.getName(),
                 user,
                 personalDTO.getTopic(),
-                personalDTO.getTaskState(),
                 personalDTO.getDeadline(),
                 personalDTO.getDescription(),
                 personalDTO.getPercentageOfCompletion(),

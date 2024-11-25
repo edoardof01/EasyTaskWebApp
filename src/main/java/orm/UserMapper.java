@@ -28,7 +28,7 @@ public class UserMapper {
         Profile profile = profileMapper.toProfileEntity(userDTO.getPersonalProfile());
         return new User(
                 userDTO.getAge(),
-                Sex.valueOf(userDTO.getSex()),
+                userDTO.getSex(),
                 userDTO.getDescription(),
                 userDTO.getQualifications(),
                 userDTO.getProfession(),
@@ -40,9 +40,21 @@ public class UserMapper {
         if (userDTO == null || user == null) {
             return;
         }
+        // Aggiorna i campi semplici
         user.setAge(userDTO.getAge());
         user.setProfession(userDTO.getProfession());
-        user.setQualifications(userDTO.getQualifications());
         user.setDescription(userDTO.getDescription());
+        user.setSex(userDTO.getSex());
+
+        // Gestione della lista qualifications
+        if (userDTO.getQualifications() != null) {
+            user.getQualifications().clear();  // Rimuove tutte le qualifiche attuali
+            user.getQualifications().addAll(userDTO.getQualifications());  // Aggiunge le nuove qualifiche
+        }else{
+            user.getQualifications().clear();}
+
+        Profile profile = user.getPersonalProfile();
+        profileMapper.updateProfileFromDTO(profile, userDTO.getPersonalProfile());
+
     }
 }

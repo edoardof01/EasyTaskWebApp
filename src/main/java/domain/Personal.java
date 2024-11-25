@@ -13,10 +13,10 @@ import java.util.Set;
 @DiscriminatorValue("personal")
 public class Personal extends Task {
 
-    public Personal(String name, User user, Topic topic, TaskState state, @Nullable LocalDateTime deadline,
+    public Personal(String name, User user, Topic topic, @Nullable LocalDateTime deadline,
                     String description, int percentageOfCompletion, int priority,
-                    Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategy, List<Resource> resources) {
-        super(name, user, description, deadline, percentageOfCompletion, priority, totalTime, topic, state, timeTable, strategy, resources);
+                    Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategies, List<Resource> resources) {
+        super(name, user, description, deadline, percentageOfCompletion, priority, totalTime, topic, timeTable, strategies, resources);
     }
 
     public Personal() {}

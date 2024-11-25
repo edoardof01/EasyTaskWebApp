@@ -16,6 +16,7 @@ public class Subtask {
     private int level;
     @Column(length = 1000)
     private String description;
+    private int totalTime;
 
     @OneToMany(mappedBy = "subtask", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Session> sessions = new ArrayList<>();
@@ -25,10 +26,12 @@ public class Subtask {
 
 
     public Subtask() {}
-    public Subtask(String name, int level, String description) {
+    public Subtask(String name,int totalTime, int level, String description,List<Resource> resources) {
         this.name = name;
         this.level = level;
         this.description = description;
+        this.resources = resources;
+        this.totalTime = totalTime;
     }
 
     public Long getId() {
@@ -36,6 +39,12 @@ public class Subtask {
     }
     public String getName() {
         return name;
+    }
+    public int getTotalTime(){
+        return totalTime;
+    }
+    public void setTotalTime(int totalTime){
+        this.totalTime = totalTime;
     }
     public void setName(String name) {
         this.name = name;

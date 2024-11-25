@@ -40,7 +40,6 @@ public class ProfileMapper {
                         entry -> Topic.valueOf(entry.getKey()), // Converti la stringa in enum
                         Map.Entry::getValue // Mantieni il valore intero
                 ));
-
         profile.setUsername(profileDTO.getUsername());
         profile.setPassword(profileDTO.getPassword());
         profile.setTopics(topics);

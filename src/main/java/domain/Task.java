@@ -2,6 +2,7 @@ package domain;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -15,9 +16,7 @@ public abstract class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-
     private String name;
-
     @Column(length = 1000)
     private String description;
 
@@ -31,7 +30,8 @@ public abstract class Task {
     private int consecutiveSkippedSessions = 0;
     private boolean isInProgress = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne
     private User user;
 
     @ElementCollection(fetch = FetchType.EAGER, targetClass = Timetable.class)
@@ -59,9 +59,9 @@ public abstract class Task {
 
     public Task() {}
 
-    public Task(String name, User user, String description,
+    public Task(String name,@NotNull User user, String description,
                 @Nullable LocalDateTime deadline, int percentageOfCompletion, int priority, int totalTime, Topic topic,
-                TaskState state, Set<Timetable> timetable, Set<DefaultStrategy> strategies, List<Resource> resources) {
+               Set<Timetable> timetable, Set<DefaultStrategy> strategies, List<Resource> resources) {
         this.name = name;
         this.description = description;
         this.deadline = deadline;
@@ -69,7 +69,7 @@ public abstract class Task {
         this.priority = priority;
         this.totalTime = totalTime;
         this.topic = topic;
-        this.state = state;
+        this.state = TaskState.TODO;
         this.timetable = timetable;
         this.user = user;
         this.resources = resources;
@@ -193,13 +193,22 @@ public abstract class Task {
     }
 
     public int calculateResourceScore() {
-        int score = resources.stream().mapToInt(Resource::getValue).sum();
-        if (score <= 10) return 1;
-        else if (score <= 20) return 2;
-        else if (score <= 30) return 3;
-        else if (score <= 40) return 4;
+        int totalScore = resources.stream()
+                .mapToInt(resource -> {
+                    if (resource.getType() == ResourceType.MONEY) {
+                        return resource.calculateValueFromMoney();
+                    } else {
+                        return resource.getValue();
+                    }
+                })
+                .sum();
+        if (totalScore <= 10) return 1;
+        else if (totalScore <= 20) return 2;
+        else if (totalScore <= 30) return 3;
+        else if (totalScore <= 40) return 4;
         else return 5;
     }
+
 
 
     // Metodo per impostare le strategie e validare la selezione

@@ -111,7 +111,7 @@ public class SharedService {
         }
 
         assert subtasks != null;
-        Shared sharedTask = new Shared(name, user, topic, TaskState.TODO, deadline, description,
+        Shared sharedTask = new Shared(name, user, topic, deadline, description,
                 0 , priority, timeSlots, totalTime, strategies, resources);
 
         if (userGuidance != null) {
@@ -134,12 +134,20 @@ public class SharedService {
         return (subtaskScore + resourceScore) / 2;
     }
 
-    private int calculateResourceScore(List<Resource> resources) {
-        int score = resources.stream().mapToInt(Resource::getValue).sum();
-        if (score <= 10) return 1;
-        else if (score <= 20) return 2;
-        else if (score <= 30) return 3;
-        else if (score <= 40) return 4;
+    public int calculateResourceScore(List<Resource> resources) {
+        int totalScore = resources.stream()
+                .mapToInt(resource -> {
+                    if (resource.getType() == ResourceType.MONEY) {
+                        return resource.calculateValueFromMoney();
+                    } else {
+                        return resource.getValue();
+                    }
+                })
+                .sum();
+        if (totalScore <= 10) return 1;
+        else if (totalScore <= 20) return 2;
+        else if (totalScore <= 30) return 3;
+        else if (totalScore <= 40) return 4;
         else return 5;
     }
 

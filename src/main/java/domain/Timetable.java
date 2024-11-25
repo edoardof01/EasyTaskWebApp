@@ -1,6 +1,5 @@
 package domain;
 
-import java.time.LocalTime;
 
 public enum Timetable {
     MORNING("06-12"),

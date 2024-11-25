@@ -8,9 +8,7 @@ import jakarta.transaction.Transactional;
 import orm.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class PersonalService {
     @Inject
@@ -48,7 +46,7 @@ public class PersonalService {
                                       String description, List<Resource> resources, @Nullable List<Subtask> subtasks,
                                       @Nullable Integer requiredUsers, @Nullable String userGuidance) {
         if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null) {
-            throw new IllegalArgumentException("mandatory fields missing or invalid fields");
+            throw new IllegalArgumentException("Mandatory fields missing or invalid fields");
         }
 
         if (requiredUsers != null || userGuidance != null) {
@@ -57,47 +55,65 @@ public class PersonalService {
 
         if (strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
             if (deadline != null) {
-                throw new IllegalArgumentException("if this strategy is set, a deadline can't be selected");
+                throw new IllegalArgumentException("If this strategy is set, a deadline can't be selected");
             }
         }
         if (deadline != null) {
             if (strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
-                throw new IllegalArgumentException("if a deadline is set, this strategy can't be selected");
+                throw new IllegalArgumentException("If a deadline is set, this strategy can't be selected");
             }
         }
+
         if (subtasks != null) {
             int totalMoney = 0;
+            Map<Resource, Boolean> resourceUsage = new HashMap<>();
+            Map<String, Resource> resourceMap = new HashMap<>();
+
+            // Inizializza la mappa delle risorse del task principale
+            for (Resource resource : resources) {
+                resourceMap.put(resource.getName(), resource);
+                if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
+                    resourceUsage.put(resource, false); // Risorsa non ancora usata
+                }
+            }
+
             for (Subtask subtask : subtasks) {
                 for (Resource resource : subtask.getResources()) {
-                    if (resource.getType() != ResourceType.MONEY) {
-                        if (!resources.contains(resource)) {
-                            throw new IllegalArgumentException("subtasks can't contain resource " + resource);
-                        }
-                    } else {
+                    if (resource.getType() == ResourceType.MONEY) {
+                        // Gestione risorsa MONEY
                         totalMoney += resource.getMoney();
-                        Optional<Resource> moneyResource = resources.stream()
-                                .filter(resourceMoney -> resourceMoney.getMoney() != null)
-                                .findFirst();
-                        if (moneyResource.isEmpty()) {
-                            throw new IllegalArgumentException("subtasks can't contain the resource of type MONEY");
+                        Resource moneyResource = resources.stream()
+                                .filter(r -> ResourceType.MONEY.equals(r.getType()))
+                                .findFirst()
+                                .orElse(null);
+                        if (moneyResource == null || totalMoney > moneyResource.getMoney()) {
+                            throw new IllegalArgumentException("The sum of the money of the subtasks can't exceed the task one");
                         }
-                        if (totalMoney > moneyResource.get().getMoney()) {
-                            subtasks.remove(subtask);
-                            throw new IllegalArgumentException("the sum of the money of the subtasks can't exceed the task one");
+                    } else if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
+                        // Gestione risorse COMPETENCE e EQUIPMENT
+                        Resource mainTaskResource = resourceMap.get(resource.getName());
+                        if (mainTaskResource == null || !mainTaskResource.equals(resource)) {
+                            throw new IllegalArgumentException("Subtasks can't contain resource " + resource.getName() + " not present in the task");
+                        }
+                        if (Boolean.TRUE.equals(resourceUsage.get(mainTaskResource))) {
+                            throw new IllegalArgumentException("Resource " + resource.getName() + " has already been used by another subtask");
+                        }
+                        // Segna la risorsa come usata
+                        resourceUsage.put(mainTaskResource, true);
+                    } else {
+                        if (!resources.contains(resource)) {
+                            throw new IllegalArgumentException("Subtasks can't contain resource " + resource.getName());
                         }
                     }
                 }
             }
         }
-        assert subtasks != null;
-        Personal personalTask = new Personal(name, user, topic, TaskState.TODO, deadline, description,
-                0, priority, timeSlots, totalTime, strategies, resources);
 
-
+        Personal personalTask = new Personal(name, user, topic, deadline, description, 0, priority, timeSlots, totalTime, strategies, resources);
         personalDAO.save(personalTask);
-
         return personalMapper.toPersonalDTO(personalTask);
     }
+
 
     private int calculateComplexity(List<Subtask> subtasks, List<Resource> resources) {
         int subtaskScore;
@@ -111,12 +127,20 @@ public class PersonalService {
         return (subtaskScore + resourceScore) / 2;
     }
 
-    private int calculateResourceScore(List<Resource> resources) {
-        int score = resources.stream().mapToInt(Resource::getValue).sum();
-        if (score <= 10) return 1;
-        else if (score <= 20) return 2;
-        else if (score <= 30) return 3;
-        else if (score <= 40) return 4;
+    public int calculateResourceScore(List<Resource> resources) {
+        int totalScore = resources.stream()
+                .mapToInt(resource -> {
+                    if (resource.getType() == ResourceType.MONEY) {
+                        return resource.calculateValueFromMoney();
+                    } else {
+                        return resource.getValue();
+                    }
+                })
+                .sum();
+        if (totalScore <= 10) return 1;
+        else if (totalScore <= 20) return 2;
+        else if (totalScore <= 30) return 3;
+        else if (totalScore <= 40) return 4;
         else return 5;
     }
 

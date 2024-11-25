@@ -45,7 +45,6 @@ public class GroupMapper {
                 groupDTO.getDateOnFeed(),
                 groupDTO.getName(),
                 groupDTO.getTopic(),
-                groupDTO.getTaskState(),
                 groupDTO.getDeadline(),
                 groupDTO.getDescription(),
                 groupDTO.getPercentageOfCompletion(),

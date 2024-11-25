@@ -89,6 +89,9 @@ public class User {
     public Sex getSex() {
         return sex;
     }
+    public void setSex(Sex sex){
+        this.sex = sex;
+    }
     public void setDescription(String description) {
         this.description = description;
     }
@@ -122,6 +125,7 @@ public class User {
     public void setPersonalProfile(Profile personalProfile) {
         this.personalProfile = personalProfile;
     }
+
 
     // DA COMPLETARE, METODO RICHIAMATO POI
     public void incrementTopicScore(Topic topic){

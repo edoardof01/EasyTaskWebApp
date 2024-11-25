@@ -64,7 +64,7 @@ public class UserEndpoint {
         try {
             // Estrai i campi da UserDTO
             int age = userDTO.getAge();
-            Sex sex = Sex.valueOf(userDTO.getSex());
+            Sex sex = userDTO.getSex();
             String description = userDTO.getDescription();
             List<String> qualifications = userDTO.getQualifications();
             String profession = userDTO.getProfession();

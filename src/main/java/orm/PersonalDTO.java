@@ -12,15 +12,14 @@ import java.util.stream.Collectors;
 public class PersonalDTO {
     private final long id;
     private String name;
-    @ManyToOne
-    private UserDTO user;
+    private long user_id;
     private String description;
     private int percentageOfCompletion;
     private LocalDateTime deadline;
     private boolean isInProgress;
     private int totalTime;
     private List<SubtaskDTO> subtasks;
-    private final Topic topic;
+    private Topic topic;
     private TaskState taskState;
     private int complexity;
     private int priority;
@@ -28,9 +27,12 @@ public class PersonalDTO {
     private Set<DefaultStrategy> strategies = new HashSet<>();
     private List<ResourceDTO> resources;
 
+    public PersonalDTO() {
+        this.id = -1;
+    }
     public PersonalDTO(Personal personal) {
         this.id = personal.getId();
-        this.user = new UserDTO(personal.getUser());
+        this.user_id = personal.getUser().getId();
         this.name = personal.getName();
         this.description = personal.getDescription();
         this.percentageOfCompletion = personal.getPercentageOfCompletion();
@@ -45,14 +47,13 @@ public class PersonalDTO {
         this.complexity = personal.getComplexity();
         this.resources = personal.getResources().stream().map(ResourceDTO::new).collect(Collectors.toList());
         this.timetable.addAll(personal.getTimetable());
-
     }
     public long getId() {
         return id;
     }
 
-    public UserDTO getUser() {
-        return user;
+    public long getUser_id() {
+        return user_id;
     }
 
     public String getName() {

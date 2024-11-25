@@ -32,10 +32,15 @@ public class UserService {
 
     @Inject
     CommentedFolderMapper commentedFolderDAO;
+
     @Inject
     private CalendarDAO calendarDAO;
+
     @Inject
     private FolderDAO folderDAO;
+
+    @Inject
+    private ProfileDAO profileDAO;
 
 
     public List<UserDTO> getAllUsers() {
@@ -70,6 +75,7 @@ public class UserService {
             User user = new User(age, sex, description, qualifications, profession, personalProfile); // Debug
             logger.debug("Salvando l'utente: {}", user);
             userDAO.save(user);
+            profileDAO.save(personalProfile);
             logger.debug("Utente salvato con ID: {}", user.getId());
             CommentedFolder commentedFolder = user.getCommentedFolder();
             commentedFolder.setUser(user);

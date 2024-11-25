@@ -103,7 +103,7 @@ public class GroupService {
 
         assert subtasks != null;
 
-        Group group = new Group(numUsers, user, dateOnFeed, name, topic, TaskState.TODO, deadline, description, 0, priority, timeSlots,
+        Group group = new Group(numUsers, user, dateOnFeed, name, topic, deadline, description, 0, priority, timeSlots,
                 totalTime, strategies, resources);
         user.setUserRole(Role.ADMIN);
         Feed.getInstance().getGroup().add(group);

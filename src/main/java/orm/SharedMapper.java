@@ -46,7 +46,6 @@ public class SharedMapper {
                 sharedDTO.getName(),
                 user,
                 sharedDTO.getTopic(),
-                sharedDTO.getTaskState(),
                 sharedDTO.getDeadline(),
                 sharedDTO.getDescription(),
                 sharedDTO.getPercentageOfCompletion(),
