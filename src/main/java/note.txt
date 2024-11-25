@@ -1,1 +1,2 @@
-(25/11,12:05) Ho sistemato i metodi endpoint createUser() e getUserById()
+(25/11,12:05) Ho sistemato i metodi dello UserEndpoint createUser(), getUserById(), getUserByUsername(), getAllUsers()
+

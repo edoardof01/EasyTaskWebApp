@@ -17,7 +17,7 @@ public class Profile {
     @NotNull
     private String password;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Map<Topic, Integer> topics;
 
     private String email;
