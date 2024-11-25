@@ -14,10 +14,13 @@ public class UserDAO {
 
     public UserDAO() {}
 
+
+    @Transactional
     public User findById(long userId) {
         return entityManager.find(User.class, userId);
     }
 
+    @Transactional
     public User findByUsername(String username) {
         try {
             return entityManager.createQuery(

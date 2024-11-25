@@ -18,7 +18,7 @@ public abstract class Task {
 
     private String name;
 
-    @Lob
+    @Column(length = 1000)
     private String description;
 
     private LocalDateTime deadline;

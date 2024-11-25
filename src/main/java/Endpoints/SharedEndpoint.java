@@ -1,6 +1,7 @@
 package Endpoints;
 
 import domain.*;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @Path("/shared")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@RequestScoped
 public class SharedEndpoint {
 
     @Inject

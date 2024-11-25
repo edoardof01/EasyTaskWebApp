@@ -1,6 +1,7 @@
 package domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,24 +18,25 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
-    @Lob
+    @Column(length = 1000)
     private String description;
 
     @Enumerated(EnumType.STRING)
     private Role userRole;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> qualifications;
 
     private String profession;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(nullable = false)
     private Profile personalProfile;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Calendar calendar;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private CommentedFolder commentedFolder;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -42,23 +44,28 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private final List<Task> tasks = new ArrayList<>();
+
     public User() {}
 
-    public User(int age, Sex sex, String description, List<String> qualifications, String profession, Profile personalProfile, Role userRole) {
+    public User(int age, Sex sex, String description, List<String> qualifications, String profession, @NotNull Profile personalProfile) {
         this.age = age;
         this.description = description;
         this.sex = sex;
         this.qualifications = qualifications;
         this.profession = profession;
         this.personalProfile = personalProfile;
-        this.userRole = userRole;
+        personalProfile.setUser(this);
+        this.userRole = Role.USER;
 
         // Creazione dei Folder per ciascun FolderType
         this.folders.add(new Folder(FolderType.PERSONAL,this));
         this.folders.add(new Folder(FolderType.SHARED, this));
         this.folders.add(new Folder(FolderType.GROUP,this));
         this.calendar = new Calendar();
-        this.commentedFolder = new CommentedFolder();
+        CommentedFolder commentedFolder = new CommentedFolder();
+        commentedFolder.setUser(this);
+        this.commentedFolder = commentedFolder;
+
     }
 
     public Role getUserRole() {

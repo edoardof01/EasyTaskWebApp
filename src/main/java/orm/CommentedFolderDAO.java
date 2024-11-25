@@ -4,41 +4,31 @@ import domain.CommentedFolder;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+
+import java.util.List;
 
 @ApplicationScoped
 public class CommentedFolderDAO {
 
     @PersistenceContext
-    private EntityManager entityManager;
+    private EntityManager em;
 
-    public CommentedFolderDAO() {}
+    public CommentedFolder findById(long id) {
+        return em.find(CommentedFolder.class, id);
+    }
 
-    public CommentedFolderDTO toCommentedFolderDTO(CommentedFolder commentedFolder) {
-        if (commentedFolder == null) {
-            return null;
-        }
-        return new CommentedFolderDTO(commentedFolder);
+    public List<CommentedFolder> findAll() {
+        return em.createQuery("Select c from CommentedFolder c", CommentedFolder.class).getResultList();
     }
-    public CommentedFolder toCommentedFolderEntity(CommentedFolderDTO commentedFolderDTO) {
-        if (commentedFolderDTO == null) {
-            return null;
-        }
-        return new CommentedFolder(
-                commentedFolderDTO.getUser()
-        );
-    }
-    @Transactional
+
     public void save(CommentedFolder commentedFolder) {
-        entityManager.persist(commentedFolder);
+        em.persist(commentedFolder);
     }
-    @Transactional
     public void update(CommentedFolder commentedFolder) {
-        entityManager.merge(commentedFolder);
+        em.merge(commentedFolder);
     }
-    @Transactional
-    public void delete(CommentedFolder commentedFolderDTO) {
-        entityManager.remove(commentedFolderDTO);
+    public void delete(CommentedFolder commentedFolder) {
+        em.remove(commentedFolder);
     }
-
 }
+

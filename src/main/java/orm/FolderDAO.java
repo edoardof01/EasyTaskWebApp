@@ -1,5 +1,6 @@
 package orm;
 
+import domain.Folder;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -22,15 +23,15 @@ public class FolderDAO {
         return entityManager.createQuery("select f from Folder f", FolderDTO.class).getResultList();
     }
     @Transactional
-    public void save(FolderDTO folder) {
+    public void save(Folder folder) {
         entityManager.persist(folder);
     }
     @Transactional
-    public void update(FolderDTO folder) {
+    public void update(Folder folder) {
         entityManager.merge(folder);
     }
     @Transactional
-    public void delete(FolderDTO folder) {
+    public void delete(Folder folder) {
         entityManager.remove(folder);
     }
 }

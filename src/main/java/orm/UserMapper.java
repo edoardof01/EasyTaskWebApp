@@ -5,9 +5,10 @@ import domain.Role;
 import domain.Sex;
 import domain.User;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
-@ApplicationScoped
+@Dependent
 public class UserMapper {
 
     @Inject
@@ -31,8 +32,7 @@ public class UserMapper {
                 userDTO.getDescription(),
                 userDTO.getQualifications(),
                 userDTO.getProfession(),
-                profile,
-                Role.valueOf(userDTO.getUserRole())
+                profile
         );
     }
 

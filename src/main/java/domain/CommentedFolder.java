@@ -13,13 +13,13 @@ public class CommentedFolder {
     private Long id;
 
     @OneToMany
-    private ArrayList<Shared> shared;
+    private List<Shared> shared;
 
     @OneToOne
     private User user;
 
     @OneToMany
-    private ArrayList<Comment> comment;
+    private List<Comment> comment;
 
     public CommentedFolder() {}
 
@@ -27,10 +27,10 @@ public class CommentedFolder {
         this.user = user;
     }
 
-    public ArrayList<Comment> getComment() {
+    public List<Comment> getComment() {
         return comment;
     }
-    public void setComment(ArrayList<Comment> comment) {
+    public void setComment(List<Comment> comment) {
         this.comment = comment;
     }
     public Long getId() {
@@ -38,6 +38,9 @@ public class CommentedFolder {
     }
     public User getUser() {
         return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
     }
     public List<Shared> getShared() {
         return shared;

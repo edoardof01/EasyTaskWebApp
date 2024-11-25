@@ -12,11 +12,9 @@ public class UserDTO {
     private String description;
     private  String sex;
     private  ProfileDTO personalProfile;
-    private  String userRole;
+    private  Role userRole;
 
-    public UserDTO() {
-        this.id = 0;
-    }
+
 
     public UserDTO(User user) {
         this.id = user.getId();
@@ -26,16 +24,16 @@ public class UserDTO {
         this.description = user.getDescription();
         this.sex = user.getSex().toString();
         this.personalProfile = new ProfileDTO(user.getPersonalProfile());
-        this.userRole = user.getUserRole().toString();
+        this.userRole = user.getUserRole();
 
     }
     public long getId() {
         return id;
     }
-    public String getUserRole() {
+    public Role getUserRole() {
         return userRole;
     }
-    public void setUserRole(String userRole) {
+    public void setUserRole(Role userRole) {
         this.userRole = userRole;
     }
     public int getAge() {

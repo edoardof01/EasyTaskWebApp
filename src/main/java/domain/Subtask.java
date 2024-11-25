@@ -14,6 +14,7 @@ public class Subtask {
 
     private String name;
     private int level;
+    @Column(length = 1000)
     private String description;
 
     @OneToMany(mappedBy = "subtask", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

@@ -3,6 +3,7 @@ package Endpoints;
 import domain.Profile;
 import domain.Role;
 import domain.Sex;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Path;
@@ -20,6 +21,7 @@ import java.util.List;
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@RequestScoped
 public class UserEndpoint {
 
     @Inject
@@ -46,6 +48,16 @@ public class UserEndpoint {
         return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
     }
 
+    @GET
+    @Path("/username/{username}")
+    public Response getUserByUsername(@PathParam("username") String username) {
+        UserDTO userDTO = userService.getUserByUsername(username);
+        if (userDTO != null) {
+            return Response.ok(userDTO).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
+    }
+
     // Create a new user
     @POST
     public Response createUser(UserDTO userDTO) {
@@ -57,11 +69,10 @@ public class UserEndpoint {
             List<String> qualifications = userDTO.getQualifications();
             String profession = userDTO.getProfession();
             Profile personalProfile = profileMapper.toProfileEntity(userDTO.getPersonalProfile());
-            Role userRole = Role.valueOf(userDTO.getUserRole());
 
             // Passa i campi estratti al servizio
             UserDTO createdUser = userService.createUser(
-                    age, sex, description, qualifications, profession, personalProfile, userRole);
+                    age, sex, description, qualifications, profession, personalProfile);
 
             return Response.status(Response.Status.CREATED)
                     .entity(createdUser)

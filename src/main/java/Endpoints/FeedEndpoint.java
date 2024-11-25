@@ -2,6 +2,7 @@ package Endpoints;
 
 import domain.Feed;
 import domain.Topic;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -9,6 +10,7 @@ import jakarta.ws.rs.core.Response;
 @Path("/feed")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@RequestScoped
 public class FeedEndpoint {
 
     private final Feed feed = Feed.getInstance();

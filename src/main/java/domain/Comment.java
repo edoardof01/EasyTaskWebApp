@@ -11,7 +11,7 @@ public class Comment {
 
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private User author;
 
     @ManyToOne(fetch = FetchType.LAZY)

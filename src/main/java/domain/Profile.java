@@ -1,5 +1,6 @@
 package domain;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 
 import java.util.Map;
@@ -13,6 +14,7 @@ public class Profile {
     private Long id;
 
     private String username;
+    @NotNull
     private String password;
 
     @ElementCollection
@@ -22,7 +24,7 @@ public class Profile {
     private boolean emailVerified;
     private String verificationToken;
 
-    @OneToOne
+    @OneToOne(mappedBy="personalProfile",cascade = CascadeType.ALL)
     private User user;
 
     public Profile() {}
@@ -71,6 +73,12 @@ public class Profile {
     }
     public void setVerificationToken(String verificationToken) {
         this.verificationToken = verificationToken;
+    }
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setId(Long id) {
