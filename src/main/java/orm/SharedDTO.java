@@ -19,6 +19,7 @@ public class SharedDTO {
     private boolean isInProgress;
     private int totalTime;
     private List<SubtaskDTO> subtasks;
+    private List<SessionDTO> sessions;
     private final Topic topic;
     private TaskState taskState;
     private int complexity;
@@ -32,10 +33,12 @@ public class SharedDTO {
         this.id = shared.getId();
         this.user = new UserDTO(shared.getUser());
         this.name = shared.getName();
+        this.sessions = shared.getSessions().stream().map(SessionDTO::new).collect(Collectors.toList());
         this.topic = shared.getTopic();
         this.taskState = shared.getState();
         this.description = shared.getDescription();
         this.percentageOfCompletion = shared.getPercentageOfCompletion();
+        this.strategies = shared.getStrategies();
         this.deadline = shared.getDeadline();
         this.priority = shared.getPriority();
         this.complexity = shared.getComplexity();
@@ -107,6 +110,13 @@ public class SharedDTO {
 
     public void setSubtasks(List<SubtaskDTO> subtasks) {
         this.subtasks = subtasks;
+    }
+
+    public List<SessionDTO> getSessions(){
+        return sessions;
+    }
+    public void setSessions(List<SessionDTO> sessions) {
+        this.sessions = sessions;
     }
 
     public Topic getTopic() {

@@ -29,7 +29,10 @@ public class PersonalEndpoint {
     SubtaskMapper subtaskMapper;
 
     @Inject
-    private PersonalService personalService;
+    SessionMapper sessionMapper;
+
+    @Inject
+    PersonalService personalService;
 
     @Inject
     UserMapper userMapper;
@@ -54,7 +57,6 @@ public class PersonalEndpoint {
                     .entity("Task with ID " + id + " not found.")
                     .build();
         }
-
         return Response.ok(personalDTO).build();
     }
 
@@ -77,20 +79,22 @@ public class PersonalEndpoint {
             List<Subtask> subtasks = personalDTO.getSubtasks().stream()
                     .map(subtaskMapper::toSubtaskEntity)
                     .collect(Collectors.toList());
-            long userId = personalDTO.getUser_id();
-            UserDTO userDTO = userService.getUserById(userId);
+            List<Session> sessions = personalDTO.getSessions().stream()
+                    .map(sessionMapper::toSessionEntity)
+                    .collect(Collectors.toList());
+            String username = personalDTO.getUser().getPersonalProfile().getUsername();
+            UserDTO userDTO = userService.getUserByUsername(username);
             User user = userMapper.toUserEntity(userDTO);
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("User with ID " + userId + " not found")
+                        .entity("User with username " + username + " not found")
                         .build();
             }
             // Passa i campi estratti
             PersonalDTO createdPersonal = personalService.createPersonal(
                     name, user, topic, deadline, totalTime, timeSlots, strategies, priority,
-                    description, resources, subtasks, null, null
+                    description, resources, subtasks, sessions,null, null
             );
-
             return Response.status(Response.Status.CREATED)
                     .entity(createdPersonal)
                     .build();
@@ -98,11 +102,7 @@ public class PersonalEndpoint {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
                     .build();
-        } /*catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An unexpected error occurred: " + e.getMessage())
-                    .build();
-        }*/
+        }
     }
 
 
@@ -122,7 +122,10 @@ public class PersonalEndpoint {
                     personalDTO.getPriority(),
                     personalDTO.getDescription(),
                     personalDTO.getResources().stream().map(resourceMapper::toResourceEntity).collect(Collectors.toList()),
-                    personalDTO.getSubtasks().stream().map(subtaskMapper::toSubtaskEntity).collect(Collectors.toList())
+                    personalDTO.getSubtasks().stream().map(subtaskMapper::toSubtaskEntity).collect(Collectors.toList()),
+                    personalDTO.getSessions().stream().map(sessionMapper::toSessionEntity).collect(Collectors.toList()),
+                    null,
+                    null
             );
             return Response.ok(updatedPersonal).build();
         } catch (IllegalArgumentException e) {

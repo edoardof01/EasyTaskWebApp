@@ -16,7 +16,10 @@ public class GroupMapper {
     private ResourceMapper resourceMapper;
 
     @Inject
-    UserMapper userMapper;
+    private UserMapper userMapper;
+
+    @Inject
+    private SessionMapper sessionMapper;
 
     public GroupDTO toGroupDTO(Group group) {
         if (group == null) return null;
@@ -37,6 +40,11 @@ public class GroupMapper {
                 .map(resourceMapper::toResourceEntity)
                 .toList();
 
+        List<Session> sessions = groupDTO.getSessions()
+                .stream()
+                .map(sessionMapper::toSessionEntity)
+                .toList();
+
         User user = userMapper.toUserEntity(groupDTO.getUser());
 
         return new Group(
@@ -47,6 +55,8 @@ public class GroupMapper {
                 groupDTO.getTopic(),
                 groupDTO.getDeadline(),
                 groupDTO.getDescription(),
+                subtasks,
+                sessions,
                 groupDTO.getPercentageOfCompletion(),
                 groupDTO.getPriority(),
                 groupDTO.getTimetable(),

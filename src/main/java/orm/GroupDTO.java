@@ -3,7 +3,6 @@ package orm;
 import domain.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,12 +17,13 @@ public class GroupDTO {
     private boolean isInProgress;
     private int totalTime;
     private List<SubtaskDTO> subtasks;
+    private List<SessionDTO> sessions;
     private final Topic topic;
     private TaskState taskState;
     private int complexity;
     private int priority;
-    private Set<Timetable> timetable = new HashSet<>();
-    private Set<DefaultStrategy> strategies = new HashSet<>();
+    private Set<Timetable> timetable;
+    private Set<DefaultStrategy> strategies;
     private List<ResourceDTO> resources;
     private int numUser;
     private int actualMembers;
@@ -43,10 +43,11 @@ public class GroupDTO {
         this.complexity = group.getComplexity();
         this.isInProgress = group.isInProgress();
         this.totalTime = group.getTotalTime();
-        this.strategies.addAll(group.getStrategies());
-        this.timetable.addAll(group.getTimetable());
+        this.strategies = group.getStrategies();
+        this.timetable= group.getTimetable();
         this.resources = group.getResources().stream().map(ResourceDTO::new).collect(Collectors.toList());
         this.subtasks = group.getSubtasks().stream().map(SubtaskDTO::new).collect(Collectors.toList());
+        this.sessions = group.getSessions().stream().map(SessionDTO::new).collect(Collectors.toList());
         this.numUser = group.getNumUsers();
         this.actualMembers = group.getActualMembers();
     }
@@ -112,6 +113,9 @@ public class GroupDTO {
     }
     public void setSubtasks(List<SubtaskDTO> subtasks) {
         this.subtasks = subtasks;
+    }
+    public List<SessionDTO> getSessions() {
+        return sessions;
     }
     public Topic getTopic() {
         return topic;

@@ -3,6 +3,7 @@ package domain;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,10 +14,10 @@ import java.util.Set;
 @DiscriminatorValue("personal")
 public class Personal extends Task {
 
-    public Personal(String name, User user, Topic topic, @Nullable LocalDateTime deadline,
-                    String description, int percentageOfCompletion, int priority,
+    public Personal(String name, @NotNull User user, Topic topic, @Nullable LocalDateTime deadline,
+                    String description, @Nullable List<Subtask> subtasks, List<Session> sessions, int percentageOfCompletion, int priority,
                     Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategies, List<Resource> resources) {
-        super(name, user, description, deadline, percentageOfCompletion, priority, totalTime, topic, timeTable, strategies, resources);
+        super(name, user, description,subtasks,sessions,deadline, percentageOfCompletion, priority, totalTime, topic, timeTable, strategies, resources);
     }
 
     public Personal() {}

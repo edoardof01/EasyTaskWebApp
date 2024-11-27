@@ -8,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import orm.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -57,7 +58,7 @@ public class GroupService {
 
     public GroupDTO createGroup(String name, User user, Topic topic, @Nullable LocalDateTime deadline, LocalDateTime dateOnFeed, int totalTime,
                                 Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
-                                String description, List<Resource> resources, @Nullable List<Subtask> subtasks,
+                                String description, List<Resource> resources, List<Subtask> subtasks, List<Session> sessions,
                                 int numUsers, @Nullable String userGuidance) {
         if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null || numUsers <= 0) {
             throw new IllegalArgumentException("mandatory fields missing or invalid fields");
@@ -103,14 +104,47 @@ public class GroupService {
 
         assert subtasks != null;
 
-        Group group = new Group(numUsers, user, dateOnFeed, name, topic, deadline, description, 0, priority, timeSlots,
+        Group group = new Group(numUsers, user, dateOnFeed, name, topic, deadline, description, subtasks, sessions, 0, priority, timeSlots,
                 totalTime, strategies, resources);
         user.setUserRole(Role.ADMIN);
+        group.setComplexity(calculateComplexity(subtasks,resources));
         Feed.getInstance().getGroup().add(group);
         for(User member : group.getMembers())  Feed.getInstance().getContributors().add(member);
         groupDAO.save(group);
         userDAO.update(user);
         return groupMapper.toGroupDTO(group);
+    }
+
+    private int calculateComplexity(@Nullable List<Subtask> subtasks, List<Resource> resources) {
+        int subtaskScore;
+        assert subtasks != null;
+        if (subtasks.size() <= 3) subtaskScore = 1;
+        else if (subtasks.size() <= 5) subtaskScore = 2;
+        else if (subtasks.size() <= 10) subtaskScore = 3;
+        else if (subtasks.size() <= 20) subtaskScore = 4;
+        else subtaskScore = 5;
+
+        int resourceScore = calculateResourceScore(resources);
+        return (subtaskScore + resourceScore) / 2;
+    }
+
+
+    public int calculateResourceScore(List<Resource> resources) {
+        int totalScore = resources.stream()
+                .mapToInt(resource -> {
+                    if (resource.getType() == ResourceType.MONEY) {
+                        resource.setValue(resource.calculateValueFromMoney()); // NON SONO SICUROOOOOOOOOOOOOOOO
+                        return resource.calculateValueFromMoney();
+                    } else {
+                        return resource.getValue();
+                    }
+                })
+                .sum();
+        if (totalScore <= 10) return 1;
+        else if (totalScore <= 20) return 2;
+        else if (totalScore <= 30) return 3;
+        else if (totalScore <= 40) return 4;
+        else return 5;
     }
 
 
@@ -149,11 +183,7 @@ public class GroupService {
         if (resources != null) group.setResources(resources);
         if (numUsers != null) group.setNumUsers(numUsers);
         if (subtasks != null)  group.setSubtasks(subtasks);
-
-
-
         group.setComplexity(group.calculateComplexity());
-
         Feed.getInstance().getGroup().add(group);
         for(User member: group.getMembers()) {
             Feed.getInstance().getContributors().add(member);
@@ -315,7 +345,7 @@ public class GroupService {
         }
         User sender = userDAO.findById(senderId);
         User receiver = userDAO.findById(receiverId);
-        if (!group.getMembers().containsAll(List.of(new User[]{sender, receiver}))) {
+        if (!new HashSet<>(group.getMembers()).containsAll(List.of(new User[]{sender, receiver}))) {
             throw new IllegalArgumentException("User with ID " + senderId + " and/or " + receiverId + "not in member list.");
         }
         group.sendExchangeRequest(sender, receiver);

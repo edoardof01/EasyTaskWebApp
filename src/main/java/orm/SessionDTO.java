@@ -11,20 +11,24 @@ public class SessionDTO {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private SessionState state;
-    private final Task task;
-    private final Subtask subtask;
-    private User user;
+    private Task task;
+    private Subtask subtask;
+
+    public SessionDTO() {
+    }
 
     public SessionDTO(Session session) {
         this.startDate = this.getStartDate();
         this.endDate = this.getEndDate();
-        this.state = this.getState();
+        this.state = SessionState.PROGRAMMED;
         this.task = this.getTask();
         this.subtask = this.getSubtask();
-        this.user = this.getUser();
     }
     public long getId() {
         return id;
+    }
+    public void setId(long id) {
+        this.id = id;
     }
     public LocalDateTime getStartDate() {
         return startDate;
@@ -50,16 +54,5 @@ public class SessionDTO {
     public Subtask getSubtask() {
         return subtask;
     }
-    public User getUser() {
-        return user;
-    }
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-
-
-
-
 
 }

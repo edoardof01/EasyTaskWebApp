@@ -11,13 +11,17 @@ import java.util.stream.Collectors;
 public class PersonalMapper {
 
     @Inject
-    SubtaskMapper subtaskMapper;
+    private SubtaskMapper subtaskMapper;
 
     @Inject
-    ResourceMapper resourceMapper;
+    private ResourceMapper resourceMapper;
 
     @Inject
-    UserMapper userMapper;
+    private UserMapper userMapper;
+
+    @Inject
+    private SessionMapper sessionMapper;
+
     @Inject
     private UserService userService;
 
@@ -40,14 +44,22 @@ public class PersonalMapper {
                 .stream()
                 .map(resourceMapper::toResourceEntity)
                 .toList();
-        UserDTO userDTO = userService.getUserById(personalDTO.getUser_id());
+        UserDTO userDTO = userService.getUserByUsername(personalDTO.getUser().getPersonalProfile().getUsername());
         User user = userMapper.toUserEntity(userDTO);
+
+        List<Session> sessions = personalDTO.getSessions()
+                .stream()
+                .map(sessionMapper::toSessionEntity)
+                .toList();
+
         return new Personal(
                 personalDTO.getName(),
                 user,
                 personalDTO.getTopic(),
                 personalDTO.getDeadline(),
                 personalDTO.getDescription(),
+                subtasks,
+                sessions,
                 personalDTO.getPercentageOfCompletion(),
                 personalDTO.getPriority(),
                 personalDTO.getTimetable(),

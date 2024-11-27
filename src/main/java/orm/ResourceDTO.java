@@ -22,11 +22,11 @@ public class ResourceDTO {
 
         if (resource.getType() == ResourceType.MONEY) {
             this.money = resource.getMoney();
+            this.value = resource.calculateValueFromMoney();
         } else {
             this.value = resource.getValue();
         }
     }
-
     // Getter
     public long getId() {
         return id;
@@ -38,6 +38,9 @@ public class ResourceDTO {
 
     public int getValue() {
         return value;
+    }
+    public void setValue(int value){
+        this.value = value;
     }
 
     public Integer getMoney() {
@@ -56,5 +59,6 @@ public class ResourceDTO {
     public void setMoney(Integer money) {
         this.money = money;
     }
+
 }
 

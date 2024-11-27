@@ -5,7 +5,7 @@ import domain.*;
 import java.util.List;
 
 public class UserDTO {
-    private final long id;
+    private long id;
     private int age;
     private String profession;
     private List<String> qualifications;
@@ -14,9 +14,7 @@ public class UserDTO {
     private ProfileDTO personalProfile;
     private Role userRole;
 
-    public UserDTO() {
-        this.id = 0;
-    }
+    public UserDTO() {}
 
     public UserDTO(User user) {
         this.id = user.getId();

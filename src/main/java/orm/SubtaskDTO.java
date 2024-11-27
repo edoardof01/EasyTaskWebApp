@@ -11,7 +11,7 @@ public class SubtaskDTO {
     private String name;
     private int totalTime;
     private String description;
-    private int level;
+    private Integer level;
     private List<ResourceDTO> resources;
 
     public SubtaskDTO(){

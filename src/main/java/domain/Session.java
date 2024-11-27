@@ -1,4 +1,5 @@
 package domain;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
@@ -16,8 +17,6 @@ public class Session {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
 
     @Enumerated(EnumType.STRING)
     private SessionState state;
@@ -32,15 +31,12 @@ public class Session {
 
     public Session() {}
 
-    public Session( LocalDateTime startDate, LocalDateTime endDate, User user,Task task,@Nullable Subtask subtask) {
+    public Session(LocalDateTime startDate, LocalDateTime endDate,Task task,@Nullable Subtask subtask) {
         this.startDate = startDate;
         this.endDate = endDate;
-        this.user = user;
         this.task = task;
         this.subtask = subtask;
-        this.sessionDuration =  Duration.between(startDate,endDate).toHours();
     }
-
 
     public Long getId() {
         return id;
@@ -56,18 +52,6 @@ public class Session {
     }
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
-    }
-    public void findEndDate(long hours){
-        endDate = startDate.plusHours(hours);
-    }
-    public long getSessionDuration() {
-        return sessionDuration;
-    }
-    public User getUser() {
-        return user;
-    }
-    public void setUser(User user) {
-        this.user = user;
     }
     public Task getTask() {
         return task;

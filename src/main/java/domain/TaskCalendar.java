@@ -41,7 +41,14 @@ public class TaskCalendar {
         }
 
         // Verifica che il subtask appartenga effettivamente all'utente
-        if (!subtask.equals(group.getTakenSubtasks().get(user))) {
+        boolean subtaskFound = false;
+        for (TakenSubtask ts : group.getTakenSubtasks()) {
+            if (ts.getUser().equals(user) && ts.getSubtask().equals(subtask)) {
+                subtaskFound = true;
+                break; // Esce dal ciclo non appena trovato
+            }
+        }
+        if (!subtaskFound) {
             throw new IllegalArgumentException("Il subtask fornito non è associato all'utente specificato");
         }
 

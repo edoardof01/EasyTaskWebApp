@@ -1,5 +1,6 @@
 package domain;
 
+
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static domain.SubfolderType.*;
+
+
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -31,20 +34,21 @@ public abstract class Task {
     private boolean isInProgress = false;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ElementCollection(fetch = FetchType.EAGER, targetClass = Timetable.class)
     @Enumerated(EnumType.STRING)
     private Set<Timetable> timetable;
 
-    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Subtask> subtasks = new ArrayList<>();
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Session> sessions = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Resource> resources = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -59,7 +63,7 @@ public abstract class Task {
 
     public Task() {}
 
-    public Task(String name,@NotNull User user, String description,
+    public Task(String name,@NotNull User user, String description,@Nullable List<Subtask> subtasks, List<Session> sessions,
                 @Nullable LocalDateTime deadline, int percentageOfCompletion, int priority, int totalTime, Topic topic,
                Set<Timetable> timetable, Set<DefaultStrategy> strategies, List<Resource> resources) {
         this.name = name;
@@ -73,9 +77,10 @@ public abstract class Task {
         this.timetable = timetable;
         this.user = user;
         this.resources = resources;
+        this.subtasks = subtasks;
         setStrategies(strategies);
         complexity = calculateComplexity();
-
+        this.sessions = sessions;
     }
 
 
@@ -142,6 +147,9 @@ public abstract class Task {
     public List<Subtask> getSubtasks() {
         return subtasks;
     }
+    public void setSubtasks(List<Subtask> subtasks){
+        this.subtasks = subtasks;
+    }
     public void setTotalTime(int totalTime) {
         this.totalTime = totalTime;
     }
@@ -153,6 +161,9 @@ public abstract class Task {
     }
     public List<Session> getSessions() {
         return sessions;
+    }
+    public void setSessions(List<Session> sessions) {
+        this.sessions = sessions;
     }
     public List<Resource> getResources() {
         return resources;
@@ -196,6 +207,7 @@ public abstract class Task {
         int totalScore = resources.stream()
                 .mapToInt(resource -> {
                     if (resource.getType() == ResourceType.MONEY) {
+                        resource.setValue(resource.calculateValueFromMoney());
                         return resource.calculateValueFromMoney();
                     } else {
                         return resource.getValue();
@@ -259,9 +271,6 @@ public abstract class Task {
     public void commonModifyLogic(User user){
         if (this.getState() == TaskState.FINISHED) {
             throw new UnsupportedOperationException("It can't be brought to freezed");
-        }
-        if (this.getState() == TaskState.FREEZED) {
-            throw new UnsupportedOperationException("It's already freezed");
         }
         this.setState(TaskState.FREEZED);
         this.isInProgress = false;

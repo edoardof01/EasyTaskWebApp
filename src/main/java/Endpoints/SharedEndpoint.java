@@ -35,7 +35,13 @@ public class SharedEndpoint {
     private UserMapper userMapper;
 
     @Inject
-    SharedDAO sharedDAO;
+    private SessionMapper sessionMapper;
+
+    @Inject
+    private SharedMapper sharedMapper;
+
+
+
 
     /**
      * Ottieni tutti i task Shared.
@@ -85,12 +91,16 @@ public class SharedEndpoint {
             List<Subtask> subtasks = sharedDTO.getSubtasks().stream()
                     .map(subtaskMapper::toSubtaskEntity)
                     .collect(Collectors.toList());
+            List<Session> sessions = sharedDTO.getSessions().stream()
+                    .map(sessionMapper::toSessionEntity)
+                    .collect(Collectors.toList());
+
             User user = userMapper.toUserEntity(sharedDTO.getUser());
 
             // Passa i campi estratti
             SharedDTO createdShared = sharedService.createShared(
                     name, user, topic, deadline, totalTime, timeSlots, strategies, priority,
-                    description, resources, subtasks, null, userGuidance
+                    description, resources, subtasks, sessions, null, userGuidance
             );
 
             return Response.status(Response.Status.CREATED)
@@ -108,7 +118,8 @@ public class SharedEndpoint {
     @Transactional
     public Response addToFeed(@PathParam("sharedId") long sharedId, String guidance ) {
         try {
-            Shared shared = sharedDAO.findById(sharedId);
+            SharedDTO sharedDTO = sharedService.getSharedById(sharedId);
+            Shared shared = sharedMapper.toSharedEntity(sharedDTO);
             sharedService.addTaskToFeed(shared,guidance);
             return Response.ok().build();
         } catch (IllegalArgumentException e) {

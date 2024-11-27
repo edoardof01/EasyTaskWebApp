@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Subtask {
@@ -13,7 +14,7 @@ public class Subtask {
     private Long id;
 
     private String name;
-    private int level;
+    private Integer level;
     @Column(length = 1000)
     private String description;
     private int totalTime;
@@ -21,7 +22,7 @@ public class Subtask {
     @OneToMany(mappedBy = "subtask", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Session> sessions = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Resource> resources = new ArrayList<>();
 
 
@@ -49,7 +50,7 @@ public class Subtask {
     public void setName(String name) {
         this.name = name;
     }
-    public int getLevel() {
+    public Integer getLevel() {
         return level;
     }
     public void setLevel(int level) {
@@ -68,5 +69,30 @@ public class Subtask {
         return resources;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Subtask subtask = (Subtask) o;
+        if (!Objects.equals(level, subtask.level)) return false;
+        if (totalTime != subtask.totalTime) return false;
+        if (!name.equals(subtask.name)) return false;
+        if (!description.equals(subtask.description)) return false;
+        if (!sessions.equals(subtask.sessions)) return false;
+        return resources.equals(subtask.resources);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + level;
+        result = 31 * result + description.hashCode();
+        result = 31 * result + totalTime;
+        result = 31 * result + sessions.hashCode();
+        result = 31 * result + resources.hashCode();
+        return result;
+    }
 
 }

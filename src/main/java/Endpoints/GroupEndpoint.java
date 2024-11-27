@@ -29,8 +29,12 @@ public class GroupEndpoint {
 
     @Inject
     private SubtaskMapper subtaskMapper;
+
     @Inject
     private UserMapper userMapper;
+
+    @Inject
+    private SessionMapper sessionMapper;
 
 
     @GET
@@ -78,12 +82,16 @@ public class GroupEndpoint {
             List<Subtask> subtasks = groupDTO.getSubtasks().stream()
                     .map(subtaskMapper::toSubtaskEntity)
                     .collect(Collectors.toList());
+            List<Session> sessions = groupDTO.getSessions().stream()
+                    .map(sessionMapper::toSessionEntity)
+                    .collect(Collectors.toList());
+
             User user = userMapper.toUserEntity(groupDTO.getUser());
 
             // Passa i campi estratti e le entità al servizio
             GroupDTO createdGroup = groupService.createGroup(
                     name, user, topic, dateOnFeed, deadline, totalTime, timeSlots, strategies, priority,
-                    description, resources, subtasks, numUsers, null);
+                    description, resources, subtasks, sessions, numUsers, null);
 
             return Response.status(Response.Status.CREATED)
                     .entity(createdGroup)

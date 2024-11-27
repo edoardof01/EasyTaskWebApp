@@ -63,7 +63,7 @@ public class SharedService {
 
     public SharedDTO createShared(String name, User user, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
                                   Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
-                                  String description, List<Resource> resources, @Nullable List<Subtask> subtasks,
+                                  String description, List<Resource> resources, @Nullable List<Subtask> subtasks, List<Session> sessions,
                                   @Nullable Integer requiredUsers, @Nullable String userGuidance) {
 
         if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null) {
@@ -111,8 +111,9 @@ public class SharedService {
         }
 
         assert subtasks != null;
-        Shared sharedTask = new Shared(name, user, topic, deadline, description,
+        Shared sharedTask = new Shared(name, user, topic, deadline, description, subtasks, sessions,
                 0 , priority, timeSlots, totalTime, strategies, resources);
+        sharedTask.setComplexity(calculateComplexity(subtasks,resources));
 
         if (userGuidance != null) {
             sharedTask.updateUserGuidance(userGuidance);
@@ -122,7 +123,11 @@ public class SharedService {
         return sharedMapper.toSharedDTO(sharedTask);
     }
 
-    private int calculateComplexity(List<Subtask> subtasks, List<Resource> resources) {
+    private int calculateComplexity(@Nullable List<Subtask> subtasks, List<Resource> resources) {
+        if (subtasks == null || subtasks.isEmpty()) {
+            // Se subtasks è null o vuota, restituisce subito il calcolo basato solo sulle risorse.
+            return calculateResourceScore(resources) / 2;
+        }
         int subtaskScore;
         if (subtasks.size() <= 3) subtaskScore = 1;
         else if (subtasks.size() <= 5) subtaskScore = 2;
@@ -138,6 +143,7 @@ public class SharedService {
         int totalScore = resources.stream()
                 .mapToInt(resource -> {
                     if (resource.getType() == ResourceType.MONEY) {
+                        resource.setValue(resource.calculateValueFromMoney());
                         return resource.calculateValueFromMoney();
                     } else {
                         return resource.getValue();

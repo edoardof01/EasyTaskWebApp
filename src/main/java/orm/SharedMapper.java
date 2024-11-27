@@ -18,6 +18,9 @@ public class SharedMapper {
     @Inject
     private UserMapper userMapper;
 
+    @Inject
+    private SessionMapper sessionMapper;
+
 
     public SharedDTO toSharedDTO(Shared shared) {
         if (shared == null) {
@@ -40,6 +43,11 @@ public class SharedMapper {
                 .stream()
                 .map(resourceMapper::toResourceEntity)
                 .toList();
+
+        List<Session> sessions = sharedDTO.getSessions()
+                .stream()
+                .map(sessionMapper::toSessionEntity)
+                .toList();
         User user = userMapper.toUserEntity(sharedDTO.getUser());
 
         return new Shared(
@@ -48,6 +56,8 @@ public class SharedMapper {
                 sharedDTO.getTopic(),
                 sharedDTO.getDeadline(),
                 sharedDTO.getDescription(),
+                subtasks,
+                sessions,
                 sharedDTO.getPercentageOfCompletion(),
                 sharedDTO.getPriority(),
                 sharedDTO.getTimetable(),

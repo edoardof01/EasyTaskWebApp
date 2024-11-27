@@ -12,13 +12,14 @@ import java.util.stream.Collectors;
 public class PersonalDTO {
     private final long id;
     private String name;
-    private long user_id;
+    private UserDTO user;
     private String description;
     private int percentageOfCompletion;
     private LocalDateTime deadline;
     private boolean isInProgress;
     private int totalTime;
     private List<SubtaskDTO> subtasks;
+    private List<SessionDTO> sessions;
     private Topic topic;
     private TaskState taskState;
     private int complexity;
@@ -32,7 +33,7 @@ public class PersonalDTO {
     }
     public PersonalDTO(Personal personal) {
         this.id = personal.getId();
-        this.user_id = personal.getUser().getId();
+        this.user = new UserDTO(personal.getUser());
         this.name = personal.getName();
         this.description = personal.getDescription();
         this.percentageOfCompletion = personal.getPercentageOfCompletion();
@@ -42,18 +43,20 @@ public class PersonalDTO {
         this.resources = personal.getResources().stream().map(ResourceDTO::new).collect(Collectors.toList());
         this.subtasks = personal.getSubtasks().stream().map(SubtaskDTO::new).collect(Collectors.toList());
         this.topic = personal.getTopic();
+        this.strategies = personal.getStrategies();
         this.taskState = personal.getState();
         this.priority = personal.getPriority();
         this.complexity = personal.getComplexity();
         this.resources = personal.getResources().stream().map(ResourceDTO::new).collect(Collectors.toList());
         this.timetable.addAll(personal.getTimetable());
+        this.sessions = personal.getSessions().stream().map(SessionDTO::new).collect(Collectors.toList());
     }
     public long getId() {
         return id;
     }
 
-    public long getUser_id() {
-        return user_id;
+    public UserDTO getUser() {
+        return user;
     }
 
     public String getName() {
@@ -109,6 +112,12 @@ public class PersonalDTO {
     }
     public void setSubtasks(List<SubtaskDTO> subtasks) {
         this.subtasks = subtasks;
+    }
+    public List<SessionDTO> getSessions() {
+        return sessions;
+    }
+    public void setSessions(List<SessionDTO> sessions) {
+        this.sessions = sessions;
     }
     public Topic getTopic() {
         return topic;
