@@ -1,10 +1,8 @@
 package domain;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.annotation.Nullable;
-import jakarta.persistence.*;
 
-import java.time.Duration;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 
 @Entity
@@ -17,25 +15,15 @@ public class Session {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
-
     @Enumerated(EnumType.STRING)
     private SessionState state;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Task task;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Subtask subtask;
-
-    private long sessionDuration;
-
     public Session() {}
 
-    public Session(LocalDateTime startDate, LocalDateTime endDate,Task task,@Nullable Subtask subtask) {
+    public Session(LocalDateTime startDate, LocalDateTime endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
-        this.task = task;
-        this.subtask = subtask;
+        this.state = SessionState.PROGRAMMED;
     }
 
     public Long getId() {
@@ -53,20 +41,26 @@ public class Session {
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
-    public Task getTask() {
-        return task;
-    }
-    public Subtask getSubtask(){
-        if(subtask!=null) {
-            return subtask;
-        }
-        return null;
-    }
     public SessionState getState() {
         return state;
     }
     public void setState(SessionState state) {
         this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Session session = (Session) o;
+        return Objects.equals(startDate, session.startDate) &&
+                Objects.equals(endDate, session.endDate) &&
+                state == session.state;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startDate, endDate, state);
     }
 
 

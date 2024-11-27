@@ -45,7 +45,7 @@ public abstract class Task {
     @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Subtask> subtasks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Session> sessions = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -395,11 +395,11 @@ public abstract class Task {
     }
     private Session findNextSession(Session currentSession) {
         return sessions.stream()
-                .filter(s -> s.getTask().equals(currentSession.getTask())
-                        && s.getStartDate().isAfter(currentSession.getEndDate()))
+                .filter(s -> s.getStartDate().isAfter(currentSession.getEndDate()))
                 .min(Comparator.comparing(Session::getStartDate))
                 .orElse(null);
     }
+
 
 
 

@@ -36,17 +36,36 @@ public class Calendar {
     public void addSessions(List<Session> newSessions) {
         sessions.addAll(newSessions);
     }
+
+
     public void removeSessions(Task task) {
-        if(!new HashSet<>(sessions).containsAll(task.getSessions())){
-            throw new IllegalArgumentException("the task isn't in the calendar");
+        for (Session taskSession : task.getSessions()) {
+            boolean found = false;
+            for (Session calendarSession : sessions) {
+                if (taskSession.equals(calendarSession)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new IllegalArgumentException("The task isn't in the calendar. Missing session: " + taskSession);
+            }
         }
         sessions.removeAll(task.getSessions());
+    }
+
+
+    public List<Session> getSessionsSortedByStartDate(List<Session> sessions) {
+        return sessions.stream()
+                .sorted(Comparator.comparing(Session::getStartDate))
+                .toList();
     }
     public void addSubtaskSessionsForGroups(Subtask subtask){
         sessions.addAll(subtask.getSessions());
     }
     public void removeSubtaskSessionsForGroups(Subtask subtask){
-        sessions.removeAll(subtask.getSessions());
+        subtask.getSessions().forEach(sessions::remove);
     }
+
 
 }

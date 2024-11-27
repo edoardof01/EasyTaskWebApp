@@ -1,6 +1,7 @@
 package Endpoints;
 
 import domain.*;
+import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -92,7 +93,7 @@ public class PersonalEndpoint {
             }
             // Passa i campi estratti
             PersonalDTO createdPersonal = personalService.createPersonal(
-                    name, user, topic, deadline, totalTime, timeSlots, strategies, priority,
+                    name, user.getId(), topic, deadline, totalTime, timeSlots, strategies, priority,
                     description, resources, subtasks, sessions,null, null
             );
             return Response.status(Response.Status.CREATED)

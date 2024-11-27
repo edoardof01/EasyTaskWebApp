@@ -10,36 +10,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="Pom change">
-      <change afterPath="$PROJECT_DIR$/src/main/java/domain/TakenSubtask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/81057390-208a-478b-acff-672d7dba1aa9.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/81057390-208a-478b-acff-672d7dba1aa9.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/81057390-208a-478b-acff-672d7dba1aa9/storage_v2/_src_/database/easyTask.pzwh0g/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/81057390-208a-478b-acff-672d7dba1aa9/storage_v2/_src_/database/easyTask.pzwh0g/schema/public.abK9xQ.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/GroupEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/GroupEndpoint.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/PersonalEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/PersonalEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/SharedEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/SharedEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Group.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Group.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Personal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Personal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Resource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Resource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Calendar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Calendar.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/Session.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Session.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Shared.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Shared.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/Subtask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Subtask.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/TaskCalendar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/TaskCalendar.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/GroupDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/GroupDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/GroupMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/GroupMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/PersonalDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/PersonalMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/ResourceDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/ResourceDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/orm/SessionDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SessionDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/orm/SessionMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SessionMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SharedDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SharedDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SharedMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SharedMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SubtaskDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SubtaskDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/GroupService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/GroupService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/PersonalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/PersonalService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/SharedService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/SharedService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -379,7 +359,8 @@
       <workItem from="1732610447380" duration="19989000" />
       <workItem from="1732640991391" duration="3861000" />
       <workItem from="1732693549767" duration="12109000" />
-      <workItem from="1732705866252" duration="8066000" />
+      <workItem from="1732705866252" duration="15731000" />
+      <workItem from="1732736886766" duration="365000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -637,7 +618,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732569605674</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Pom change">
+      <option name="closed" value="true" />
+      <created>1732720314164</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1732720314164</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

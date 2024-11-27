@@ -48,7 +48,7 @@ public class PersonalService {
                 .toList();
     }
 
-    public PersonalDTO createPersonal(String name, User user, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
+    public PersonalDTO createPersonal(String name, long userId, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
                                       Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
                                       String description, List<Resource> resources, @Nullable List<Subtask> subtasks, List<Session> sessions,
                                       @Nullable Integer requiredUsers, @Nullable String userGuidance) {
@@ -124,12 +124,15 @@ public class PersonalService {
         // CONTROLLO SULLE SESSIONI
         validateSessions(sessions, timeSlots, totalTime);
 
-        User existingUser = userDAO.findByUsername(user.getPersonalProfile().getUsername());
+
+        User existingUser = userDAO.findById(userId);
         if (existingUser == null) {
-            throw new IllegalArgumentException("User with userName " +user.getPersonalProfile().getUsername()+ " does not exist.");
+            throw new IllegalArgumentException("User with userName " +userId+ " does not exist.");
         }
         Personal personalTask = new Personal(name, existingUser, topic, deadline, description, subtasks, sessions, 0, priority, timeSlots, totalTime, strategies, resources);
         personalTask.setComplexity(calculateComplexity(subtasks,resources));
+        existingUser.getCalendar().addSessions(sessions);
+        calendarDAO.update(existingUser.getCalendar());
         personalDAO.save(personalTask);
         userDAO.update(existingUser);
         return personalMapper.toPersonalDTO(personalTask);
@@ -329,16 +332,12 @@ public class PersonalService {
             personalTask.getSessions().addAll(sessions);
             validateSessions(personalTask.getSessions(),timeSlots,totalTime);
         }
-
-
         int complexity = calculateComplexity(subtasks, resources);
         personalTask.setComplexity(complexity);
-
-        personalDAO.update(personalTask);
         calendarDAO.update(personalTask.getUser().getCalendar());
+        personalDAO.update(personalTask);
         return personalMapper.toPersonalDTO(personalTask);
     }
-
 
     public boolean compareSubtasks(List<Subtask> subtasks, List<Subtask> personalTaskSubtasks) {
         subtasks.sort(Comparator.comparing(Subtask::getName));
@@ -363,8 +362,9 @@ public class PersonalService {
             throw new IllegalArgumentException("Task with ID " + taskId + " not found.");
         }
         personalTask.deleteTask();
-        personalDAO.delete(personalTask.getId());
         calendarDAO.update(personalTask.getUser().getCalendar());
+        personalDAO.delete(personalTask.getId());
+
     }
 
     @Transactional
@@ -374,7 +374,6 @@ public class PersonalService {
             throw new IllegalArgumentException("Task with ID " + personalId + " not found.");
         }
         personal.toCalendar();
-        personalDAO.update(personal);
         calendarDAO.update(personal.getUser().getCalendar());
         personalDAO.update(personal);
     }
@@ -412,15 +411,13 @@ public class PersonalService {
     @Transactional
     public void handleLimitExceeded(SessionDTO sessionDTO, long personalId) {
         Personal personal = personalDAO.findById(personalId);
-        /*if (personal == null) {
-            *//*throw new IllegalArgumentException("Personal task with ID " + personalId + " not found.");*//*
-
-        }*/
+        if (personal == null) {
+            throw new IllegalArgumentException("Personal task with ID " + personalId + " not found.");
+        }
         Session session = sessionMapper.toSessionEntity(sessionDTO);
         if (session == null) {
             throw new IllegalArgumentException("Session with ID " + personalId + " not found.");
         }
-        assert personal != null;
         personal.autoSkipIfNotCompleted(session);
         sessionDAO.update(session);
         personalDAO.update(personal);

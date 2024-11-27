@@ -12,7 +12,7 @@ public class SessionMapper {
     public Session toSessionEntity(SessionDTO sessionDTO) {
         if (sessionDTO == null) return null;
         return new Session(
-                sessionDTO.getStartDate(), sessionDTO.getEndDate(), sessionDTO.getTask(), sessionDTO.getSubtask()
+                sessionDTO.getStartDate(), sessionDTO.getEndDate()
         );
     }
 

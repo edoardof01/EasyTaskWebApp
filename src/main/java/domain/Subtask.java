@@ -19,7 +19,7 @@ public class Subtask {
     private String description;
     private int totalTime;
 
-    @OneToMany(mappedBy = "subtask", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Session> sessions = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
