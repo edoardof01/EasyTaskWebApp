@@ -48,7 +48,7 @@ public class Calendar {
                 }
             }
             if (!found) {
-                throw new IllegalArgumentException("The task isn't in the calendar. Missing session: " + taskSession);
+                throw new IllegalArgumentException("The task isn't in the calendar. Missing session: " + taskSession+ ". ClASS CALENDAR");
             }
         }
         sessions.removeAll(task.getSessions());

@@ -2,6 +2,8 @@ package orm;
 
 import domain.Subtask;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +14,8 @@ public class SubtaskDTO {
     private int totalTime;
     private String description;
     private Integer level;
-    private List<ResourceDTO> resources;
+    private List<ResourceDTO> resources = new ArrayList<>();
+    private List<SessionDTO> sessions = new ArrayList<>();
 
     public SubtaskDTO(){
         this.id = -1;
@@ -24,6 +27,7 @@ public class SubtaskDTO {
         this.description = subtask.getDescription();
         this.level = subtask.getLevel();
         this.resources = subtask.getResources().stream().map(ResourceDTO::new).collect(Collectors.toList());
+        this.sessions = subtask.getSessions().stream().map(SessionDTO::new).collect(Collectors.toList());
     }
     public long getId() {
         return id;
@@ -57,5 +61,8 @@ public class SubtaskDTO {
     }
     public void setTotalTime(int totalTime) {
         this.totalTime = totalTime;
+    }
+    public List<SessionDTO> getSessions() {
+        return sessions;
     }
 }

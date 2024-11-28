@@ -63,7 +63,7 @@ public class PersonalEndpoint {
 
     @POST
     @Transactional
-    public Response createPersonal(PersonalDTO personalDTO) {
+    public Response createPersonal(PersonalDTO personalDTO) { //Passa l'id dello user, non lo userDTO
         try {
             // Estrai i campi da personalDTO
             String name = personalDTO.getName();
@@ -83,17 +83,11 @@ public class PersonalEndpoint {
             List<Session> sessions = personalDTO.getSessions().stream()
                     .map(sessionMapper::toSessionEntity)
                     .collect(Collectors.toList());
-            String username = personalDTO.getUser().getPersonalProfile().getUsername();
-            UserDTO userDTO = userService.getUserByUsername(username);
-            User user = userMapper.toUserEntity(userDTO);
-            if (user == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("User with username " + username + " not found")
-                        .build();
-            }
+
+
             // Passa i campi estratti
             PersonalDTO createdPersonal = personalService.createPersonal(
-                    name, user.getId(), topic, deadline, totalTime, timeSlots, strategies, priority,
+                    name, personalDTO.getUserId(), topic, deadline, totalTime, timeSlots, strategies, priority,  //ricorda che quì ora hai user.getId()
                     description, resources, subtasks, sessions,null, null
             );
             return Response.status(Response.Status.CREATED)

@@ -253,7 +253,6 @@ public abstract class Task {
         }
         this.updateIsInProgress();
         user.getCalendar().addSessions(this.getSessions());
-
         List<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {
@@ -274,7 +273,9 @@ public abstract class Task {
         }
         this.setState(TaskState.FREEZED);
         this.isInProgress = false;
+
         user.getCalendar().removeSessions(this);
+
         List<Folder> folders = user.getFolders();
         boolean taskRemoved = false;
         for (Folder folder : folders) {

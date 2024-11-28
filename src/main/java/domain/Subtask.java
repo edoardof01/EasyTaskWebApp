@@ -19,7 +19,7 @@ public class Subtask {
     private String description;
     private int totalTime;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Session> sessions = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -27,12 +27,26 @@ public class Subtask {
 
 
     public Subtask() {}
-    public Subtask(String name,int totalTime, int level, String description,List<Resource> resources) {
+    public Subtask(String name,int totalTime, int level, String description,List<Resource> resources, List<Session> sessions) {
         this.name = name;
         this.level = level;
         this.description = description;
         this.resources = resources;
         this.totalTime = totalTime;
+        this.sessions = sessions;
+    }
+
+    public Subtask(Subtask original) {
+        if (original == null) {
+            throw new IllegalArgumentException("Original subtask cannot be null");
+        }
+        this.id = original.id; // Assumendo che l'ID non cambi
+        this.name = original.name;
+        this.description = original.description;
+        this.level = original.level;
+        this.totalTime = original.totalTime;
+        this.resources = original.resources;
+        this.sessions = original.sessions != null ? new ArrayList<>(original.sessions) : new ArrayList<>();
     }
 
     public Long getId() {
@@ -64,6 +78,9 @@ public class Subtask {
     }
     public List<Session> getSessions() {
         return sessions;
+    }
+    public void setSessions(List<Session> sessions) {
+        this.sessions = sessions;
     }
     public List<Resource> getResources() {
         return resources;

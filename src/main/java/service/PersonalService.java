@@ -17,7 +17,7 @@ public class PersonalService {
     private PersonalDAO personalDAO;
 
     @Inject
-    CalendarDAO calendarDAO;
+    private CalendarDAO calendarDAO;
 
     @Inject
     private PersonalMapper personalMapper;
@@ -29,7 +29,7 @@ public class PersonalService {
     private SessionMapper sessionMapper;
 
     @Inject
-    UserDAO userDAO;
+    private UserDAO userDAO;
 
 
 
@@ -58,6 +58,16 @@ public class PersonalService {
                 if (subtask.getName()==null || subtask.getLevel()==null || subtask.getDescription()==null) throw new IllegalArgumentException("you must fill this fields");
             }
         }
+        if(sessions != null){
+            for(Session session:sessions){
+                if(session.getStartDate()==null || session.getEndDate()==null) throw new IllegalArgumentException("you must fill this fields");
+            }
+        }
+
+        if(sessions==null || sessions.isEmpty()){
+            throw new IllegalArgumentException("you must specify Personal's sessions");
+        }
+
         if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null) {
             throw new IllegalArgumentException("Mandatory fields missing or invalid fields");
         }
@@ -76,6 +86,7 @@ public class PersonalService {
                 throw new IllegalArgumentException("If a deadline is set, this strategy can't be selected");
             }
         }
+
 
         if (subtasks != null) {
             int totalMoney = 0;
@@ -121,13 +132,44 @@ public class PersonalService {
                 }
             }
         }
-        // CONTROLLO SULLE SESSIONI
-        validateSessions(sessions, timeSlots, totalTime);
+        //CONTROLLO SESSIONI SUBTASK
+        if (subtasks != null && !subtasks.isEmpty()) {
+            Set<Session> allAssignedSessions = new HashSet<>(); // Per tenere traccia delle sessioni assegnate
+
+            // Verifica che le sessioni dei subtasks combacino con quelle del task principale
+            for (Subtask subtask : subtasks) {
+                List<Session> subtaskSessions = subtask.getSessions();
+
+                // Verifica che ogni sessione del subtask sia presente nel task principale
+                for (Session session : subtaskSessions) {
+                    if (!sessions.contains(session)) {
+                        throw new IllegalArgumentException("Session " + session + " in subtask does not exist in the main task.");
+                    }
+
+                    // Verifica che la sessione non sia già stata assegnata a un altro subtask
+                    if (allAssignedSessions.contains(session)) {
+                        throw new IllegalArgumentException("Session " + session + " is already assigned to another subtask.");
+                    }
+
+                    // Aggiungi la sessione alla lista delle sessioni assegnate
+                    allAssignedSessions.add(session);
+                }
+            }
+
+            // Verifica che tutte le sessioni siano state assegnate
+            if (!allAssignedSessions.containsAll(sessions)) {
+                throw new IllegalArgumentException("Not all sessions from the main task have been assigned to subtasks.");
+            }
+        }
+
+
+    // Validazione finale delle sessioni
+    validateSessions(sessions, timeSlots, totalTime);
 
 
         User existingUser = userDAO.findById(userId);
         if (existingUser == null) {
-            throw new IllegalArgumentException("User with userName " +userId+ " does not exist.");
+            throw new IllegalArgumentException("User with userId " +userId+ " does not exist.");
         }
         Personal personalTask = new Personal(name, existingUser, topic, deadline, description, subtasks, sessions, 0, priority, timeSlots, totalTime, strategies, resources);
         personalTask.setComplexity(calculateComplexity(subtasks,resources));
@@ -271,6 +313,34 @@ public class PersonalService {
         }
         personalTask.modifyTask();
 
+        if (sessions != null) {
+            // Sincronizza le sessioni tra il task e il calendario
+            List<Session> existingSessions = new ArrayList<>(personalTask.getSessions());
+
+            // Rimuovi le sessioni non più presenti
+            for (Session existing : existingSessions) {
+                if (!sessions.contains(existing)) {
+                    personalTask.getSessions().remove(existing);
+                }
+            }
+
+            // Aggiungi nuove sessioni, se non già presenti
+            for (Session session : sessions) {
+                if (!personalTask.getSessions().contains(session)) {
+                    personalTask.getSessions().add(session);
+                }
+            }
+
+            // Validazione delle sessioni aggiornate
+            validateSessions(personalTask.getSessions(), timeSlots, totalTime);
+
+            // Aggiorna il calendario
+            user.getCalendar().addSessions(personalTask.getSessions());
+        }
+
+        userDAO.update(user);
+        calendarDAO.update(user.getCalendar());
+
         personalTask.setName(name);
         personalTask.setTopic(topic);
         if (deadline != null) personalTask.setDeadline(deadline);
@@ -283,6 +353,38 @@ public class PersonalService {
             personalTask.getResources().clear();
             personalTask.getResources().addAll(resources);
         }
+
+        // Suddivisione delle sessioni tra i subtasks
+        if (subtasks != null) {
+            Set<Session> allAssignedSessions = new HashSet<>();
+            // Distribuisci le sessioni tra i subtasks
+            for (Subtask subtask : subtasks) {
+                List<Session> assignedSessions = subtask.getSessions();
+
+                // Gestisci sessioni preesistenti nel subtask
+                List<Session> reconciledSessions = new ArrayList<>();
+                for (Session session : assignedSessions) {
+                    if (personalTask.getSessions().contains(session)) {
+                        if (allAssignedSessions.contains(session)) {
+                            throw new IllegalArgumentException("Session " + session + " is already assigned to another subtask");
+                        }
+                        reconciledSessions.add(session);
+                        allAssignedSessions.add(session);
+                    }
+                }
+                subtask.setSessions(reconciledSessions);
+            }
+
+            // Verifica che tutte le sessioni del task siano state assegnate
+            if (!allAssignedSessions.containsAll(personalTask.getSessions())) {
+                throw new IllegalArgumentException("Not all sessions from the main task have been assigned to subtasks");
+            }
+
+            // Aggiorna i subtasks del task
+            personalTask.getSubtasks().clear();
+            personalTask.getSubtasks().addAll(subtasks);
+        }
+
         if (subtasks!=null && !compareSubtasks(subtasks,personalTask.getSubtasks())){
             personalTask.getSubtasks().clear();
             personalTask.getSubtasks().addAll(subtasks);
@@ -327,11 +429,9 @@ public class PersonalService {
                 }
             }
         }
-        if(sessions!=null && compareSessions(sessions,personalTask.getSessions())){
-            personalTask.getSessions().clear();
-            personalTask.getSessions().addAll(sessions);
-            validateSessions(personalTask.getSessions(),timeSlots,totalTime);
-        }
+
+        validateSessions(personalTask.getSessions(),timeSlots,totalTime);
+
         int complexity = calculateComplexity(subtasks, resources);
         personalTask.setComplexity(complexity);
         calendarDAO.update(personalTask.getUser().getCalendar());
@@ -345,14 +445,7 @@ public class PersonalService {
         return subtasks.equals(personalTaskSubtasks);
     }
 
-    public boolean compareSessions(List<Session> sessions, List<Session> personalTaskSessions) {
-        // Ordina la lista delle sessioni in base a startDate
-        sessions.sort(Comparator.comparing(Session::getStartDate));
-        personalTaskSessions.sort(Comparator.comparing(Session::getStartDate));
 
-        // Confronta le due liste ordinate
-        return sessions.equals(personalTaskSessions);
-    }
 
 
     @Transactional

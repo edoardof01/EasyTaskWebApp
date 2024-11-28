@@ -13,6 +13,7 @@ public class PersonalDTO {
     private final long id;
     private String name;
     private UserDTO user;
+    private long userId;
     private String description;
     private int percentageOfCompletion;
     private LocalDateTime deadline;
@@ -31,6 +32,27 @@ public class PersonalDTO {
     public PersonalDTO() {
         this.id = -1;
     }
+    public PersonalDTO(long id, String name, long userId , String description, int percentageOfCompletion,LocalDateTime deadline,
+                       boolean isInProgress,int totalTime,List<SubtaskDTO> subtasks,List<SessionDTO> sessions,Topic topic,TaskState taskState,
+                       Set<Timetable> timetable,Set<DefaultStrategy> strategies,List<ResourceDTO> resources) {
+        this.id = id;
+        this.name = name;
+        this.userId = userId;
+        this.description = description;
+        this.percentageOfCompletion = percentageOfCompletion;
+        this.deadline = deadline;
+        this.isInProgress = isInProgress;
+        this.totalTime = totalTime;
+        this.subtasks = subtasks;
+        this.sessions = sessions;
+        this.topic = topic;
+        this.taskState = taskState;
+        this.timetable = timetable;
+        this.strategies = strategies;
+        this.resources = resources;
+    }
+
+
     public PersonalDTO(Personal personal) {
         this.id = personal.getId();
         this.user = new UserDTO(personal.getUser());
@@ -57,6 +79,13 @@ public class PersonalDTO {
 
     public UserDTO getUser() {
         return user;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getName() {
