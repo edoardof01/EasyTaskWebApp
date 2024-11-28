@@ -53,6 +53,7 @@ public class PersonalService {
                                       String description, List<Resource> resources, @Nullable List<Subtask> subtasks, List<Session> sessions,
                                       @Nullable Integer requiredUsers, @Nullable String userGuidance) {
 
+
         if(subtasks != null){
             for(Subtask subtask:subtasks){
                 if (subtask.getName()==null || subtask.getLevel()==null || subtask.getDescription()==null) throw new IllegalArgumentException("you must fill this fields");
@@ -86,7 +87,21 @@ public class PersonalService {
                 throw new IllegalArgumentException("If a deadline is set, this strategy can't be selected");
             }
         }
+        User existingUser = userDAO.findById(userId);
+        if (existingUser == null) {
+            throw new IllegalArgumentException("User with userId " +userId+ " does not exist.");
+        }
 
+        if(!sessions.isEmpty()) {
+            for (Session newSession : sessions) {
+                // Verifica se la nuova sessione si sovrappone a quelle già nel calendario
+                for (Session existingSession : existingUser.getCalendar().getSessions()) {
+                    if (newSession.overlaps(existingSession)) {
+                        throw new IllegalArgumentException("Session " + newSession + " overlaps with an existing session. CLASS PERSONAL SERVICE (create)");
+                    }
+                }
+            }
+        }
 
         if (subtasks != null) {
             int totalMoney = 0;
@@ -132,7 +147,7 @@ public class PersonalService {
                 }
             }
         }
-        //CONTROLLO SESSIONI SUBTASK
+        // CONTROLLO SESSIONI SUBTASK
         if (subtasks != null && !subtasks.isEmpty()) {
             Set<Session> allAssignedSessions = new HashSet<>(); // Per tenere traccia delle sessioni assegnate
 
@@ -142,12 +157,15 @@ public class PersonalService {
 
                 // Verifica che ogni sessione del subtask sia presente nel task principale
                 for (Session session : subtaskSessions) {
-                    if (!sessions.contains(session)) {
+                    // Controlla se la sessione corrente è uguale a una delle sessioni del task principale
+                    boolean sessionExistsInTask = sessions.stream().anyMatch(taskSession -> taskSession.equals(session));
+                    if (!sessionExistsInTask) {
                         throw new IllegalArgumentException("Session " + session + " in subtask does not exist in the main task.");
                     }
 
-                    // Verifica che la sessione non sia già stata assegnata a un altro subtask
-                    if (allAssignedSessions.contains(session)) {
+                    // Controlla se la sessione è già stata assegnata a un altro subtask
+                    boolean sessionAlreadyAssigned = allAssignedSessions.stream().anyMatch(assignedSession -> assignedSession.equals(session));
+                    if (sessionAlreadyAssigned) {
                         throw new IllegalArgumentException("Session " + session + " is already assigned to another subtask.");
                     }
 
@@ -155,22 +173,13 @@ public class PersonalService {
                     allAssignedSessions.add(session);
                 }
             }
-
-            // Verifica che tutte le sessioni siano state assegnate
-            if (!allAssignedSessions.containsAll(sessions)) {
-                throw new IllegalArgumentException("Not all sessions from the main task have been assigned to subtasks.");
-            }
         }
 
 
-    // Validazione finale delle sessioni
-    validateSessions(sessions, timeSlots, totalTime);
+        // Validazione finale delle sessioni
+        validateSessions(sessions, timeSlots, totalTime);
 
 
-        User existingUser = userDAO.findById(userId);
-        if (existingUser == null) {
-            throw new IllegalArgumentException("User with userId " +userId+ " does not exist.");
-        }
         Personal personalTask = new Personal(name, existingUser, topic, deadline, description, subtasks, sessions, 0, priority, timeSlots, totalTime, strategies, resources);
         personalTask.setComplexity(calculateComplexity(subtasks,resources));
         existingUser.getCalendar().addSessions(sessions);
@@ -230,14 +239,13 @@ public class PersonalService {
     private static boolean isSessionInTimeSlot(LocalTime sessionStartTime, LocalTime sessionEndTime, Timetable timeSlot) {
         return switch (timeSlot) {
             case MORNING ->
-                    sessionStartTime.isAfter(LocalTime.of(6, 0)) && sessionEndTime.isBefore(LocalTime.of(12, 0));
+                    sessionStartTime.isAfter(LocalTime.of(6, 1)) && sessionEndTime.isBefore(LocalTime.of(11, 59));
             case AFTERNOON ->
-                    sessionStartTime.isAfter(LocalTime.of(12, 0)) && sessionEndTime.isBefore(LocalTime.of(18, 0));
+                    sessionStartTime.isAfter(LocalTime.of(12, 0)) && sessionEndTime.isBefore(LocalTime.of(17, 59));
             case EVENING ->
                     sessionStartTime.isAfter(LocalTime.of(18, 0)) && sessionEndTime.isBefore(LocalTime.of(23, 59));
             case NIGHT ->
-                    (sessionStartTime.isAfter(LocalTime.of(0, 0)) && sessionEndTime.isBefore(LocalTime.of(6, 0))) ||
-                            (sessionStartTime.isBefore(LocalTime.of(6, 0)) && sessionEndTime.isAfter(LocalTime.of(0, 0)));
+                    sessionStartTime.isAfter(LocalTime.of(0, 0)) && sessionEndTime.isBefore(LocalTime.of(6, 0));
         };
     }
 
@@ -313,30 +321,44 @@ public class PersonalService {
         }
         personalTask.modifyTask();
 
-        if (sessions != null) {
-            // Sincronizza le sessioni tra il task e il calendario
-            List<Session> existingSessions = new ArrayList<>(personalTask.getSessions());
-
-            // Rimuovi le sessioni non più presenti
-            for (Session existing : existingSessions) {
-                if (!sessions.contains(existing)) {
-                    personalTask.getSessions().remove(existing);
+        if(!sessions.isEmpty()) {
+            for (Session newSession : sessions) {
+                // Verifica se la nuova sessione si sovrappone a quelle già nel calendario
+                for (Session existingSession : user.getCalendar().getSessions()) {
+                    if (newSession.overlaps(existingSession)) {
+                        throw new IllegalArgumentException("Session " + newSession + " overlaps with an existing session. CLASS PERSONAL SERVICE (modify)");
+                    }
                 }
             }
-
-            // Aggiungi nuove sessioni, se non già presenti
-            for (Session session : sessions) {
-                if (!personalTask.getSessions().contains(session)) {
-                    personalTask.getSessions().add(session);
-                }
-            }
-
-            // Validazione delle sessioni aggiornate
-            validateSessions(personalTask.getSessions(), timeSlots, totalTime);
-
-            // Aggiorna il calendario
-            user.getCalendar().addSessions(personalTask.getSessions());
         }
+
+        // Sincronizza le sessioni tra il task e il calendario
+        List<Session> existingSessions = new ArrayList<>(personalTask.getSessions());
+
+        // Rimuovi le sessioni non più presenti
+        for (Session existing : existingSessions) {
+            // Verifica se la sessione non è più presente nel nuovo elenco di sessioni
+            boolean sessionExistsInNewList = sessions.stream().anyMatch(session -> session.equals(existing));
+            if (!sessionExistsInNewList) {
+                personalTask.getSessions().remove(existing);
+            }
+        }
+
+        // Aggiungi nuove sessioni, se non già presenti
+        for (Session session : sessions) {
+            // Verifica se la sessione non è già presente nel task
+            boolean sessionExistsInTask = personalTask.getSessions().stream().noneMatch(taskSession -> taskSession.equals(session));
+            if (sessionExistsInTask) {
+                personalTask.getSessions().add(session);
+            }
+        }
+
+        // Validazione delle sessioni aggiornate
+        validateSessions(personalTask.getSessions(), timeSlots, totalTime);
+
+
+        // Aggiorna il calendario
+        user.getCalendar().addSessions(personalTask.getSessions());
 
         userDAO.update(user);
         calendarDAO.update(user.getCalendar());
@@ -364,8 +386,12 @@ public class PersonalService {
                 // Gestisci sessioni preesistenti nel subtask
                 List<Session> reconciledSessions = new ArrayList<>();
                 for (Session session : assignedSessions) {
-                    if (personalTask.getSessions().contains(session)) {
-                        if (allAssignedSessions.contains(session)) {
+                    // Verifica se la sessione è presente nel task principale
+                    boolean sessionExistsInTask = personalTask.getSessions().stream().anyMatch(taskSession -> taskSession.equals(session));
+                    if (sessionExistsInTask) {
+                        // Verifica se la sessione è già stata assegnata a un altro subtask
+                        boolean sessionAlreadyAssigned = allAssignedSessions.stream().anyMatch(assignedSession -> assignedSession.equals(session));
+                        if (sessionAlreadyAssigned) {
                             throw new IllegalArgumentException("Session " + session + " is already assigned to another subtask");
                         }
                         reconciledSessions.add(session);
@@ -374,6 +400,7 @@ public class PersonalService {
                 }
                 subtask.setSessions(reconciledSessions);
             }
+
 
             // Verifica che tutte le sessioni del task siano state assegnate
             if (!allAssignedSessions.containsAll(personalTask.getSessions())) {
@@ -429,9 +456,7 @@ public class PersonalService {
                 }
             }
         }
-
         validateSessions(personalTask.getSessions(),timeSlots,totalTime);
-
         int complexity = calculateComplexity(subtasks, resources);
         personalTask.setComplexity(complexity);
         calendarDAO.update(personalTask.getUser().getCalendar());

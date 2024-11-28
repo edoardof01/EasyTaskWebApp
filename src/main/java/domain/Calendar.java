@@ -34,6 +34,15 @@ public class Calendar {
         this.user = user;
     }
     public void addSessions(List<Session> newSessions) {
+        for (Session newSession : newSessions) {
+            // Verifica se la nuova sessione si sovrappone a quelle già nel calendario
+            for (Session existingSession : sessions) {
+                if (newSession.overlaps(existingSession)) {
+                    throw new IllegalArgumentException("Session " + newSession + " overlaps with an existing session. CLASS CALENDAR");
+                }
+            }
+        }
+        // Se non ci sono sovrapposizioni, aggiungi le nuove sessioni
         sessions.addAll(newSessions);
     }
 

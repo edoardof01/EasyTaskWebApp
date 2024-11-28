@@ -11,7 +11,6 @@ public class Session {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
@@ -61,6 +60,11 @@ public class Session {
     @Override
     public int hashCode() {
         return Objects.hash(startDate, endDate, state);
+    }
+
+    public boolean overlaps(Session other) {
+        // Verifica se le sessioni si sovrappongono
+        return (this.startDate.isBefore(other.endDate) && this.endDate.isAfter(other.startDate));
     }
 
 
