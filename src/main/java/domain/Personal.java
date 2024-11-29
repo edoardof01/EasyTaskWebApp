@@ -16,7 +16,7 @@ public class Personal extends Task {
 
     public Personal(String name, @NotNull User user, Topic topic, @Nullable LocalDateTime deadline,
                     String description, @Nullable List<Subtask> subtasks, List<Session> sessions, int percentageOfCompletion, int priority,
-                    Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategies, List<Resource> resources) {
+                    Set<Timetable> timeTable, int totalTime, List<StrategyInstance> strategies, List<Resource> resources) {
         super(name, user, description,subtasks,sessions,deadline, percentageOfCompletion, priority, totalTime, topic, timeTable, strategies, resources);
     }
 
@@ -24,7 +24,6 @@ public class Personal extends Task {
 
     @Override
     public void handleLimitExceeded() {
-        // Rimuovo il task dal calendario, sposto il task dalla cartella InProgress a quella Freezed
         removeAndFreezeTask(this.getUser(), this);
     }
 

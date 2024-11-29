@@ -3,6 +3,7 @@ package orm;
 import domain.*;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +26,7 @@ public class SharedDTO {
     private int complexity;
     private int priority;
     private Set<Timetable> timetable = new HashSet<>();
-    private Set<DefaultStrategy> strategies = new HashSet<>();
+    private List<StrategyInstance> strategies;
     private List<ResourceDTO> resources;
     private String UserGuidance;
 
@@ -155,11 +156,11 @@ public class SharedDTO {
         this.timetable = timetable;
     }
 
-    public Set<DefaultStrategy> getStrategies() {
+    public List<StrategyInstance> getStrategies() {
         return strategies;
     }
 
-    public void setStrategies(Set<DefaultStrategy> strategies) {
+    public void setStrategies(List<StrategyInstance> strategies) {
         this.strategies = strategies;
     }
 

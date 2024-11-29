@@ -81,7 +81,7 @@ public class SharedEndpoint {
             LocalDateTime deadline = sharedDTO.getDeadline();
             int totalTime = sharedDTO.getTotalTime();
             Set<Timetable> timeSlots = sharedDTO.getTimetable();
-            Set<DefaultStrategy> strategies = sharedDTO.getStrategies();
+            List<StrategyInstance> strategies = sharedDTO.getStrategies();
             int priority = sharedDTO.getPriority();
             String description = sharedDTO.getDescription();
             String userGuidance = sharedDTO.getUserGuidance();

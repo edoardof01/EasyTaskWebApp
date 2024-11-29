@@ -54,7 +54,7 @@ public class Session {
         Session session = (Session) o;
         return Objects.equals(startDate, session.startDate) &&
                 Objects.equals(endDate, session.endDate) &&
-                state == session.state;
+                state == session.state;  //EVENTUALMENTE DA RIAGGIUNGERE (PROBLEMI CON COMPLETEBYSESSIONS)
     }
 
     @Override

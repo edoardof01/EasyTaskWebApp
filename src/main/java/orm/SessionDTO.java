@@ -15,9 +15,10 @@ public class SessionDTO {
     public SessionDTO() {
     }
     public SessionDTO(Session session) {
+        this.id = session.getId();
         this.startDate = session.getStartDate();
         this.endDate = session.getEndDate();
-        this.state = SessionState.PROGRAMMED;
+        this.state = session.getState();
     }
     public long getId() {
         return id;

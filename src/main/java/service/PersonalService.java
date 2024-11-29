@@ -26,11 +26,10 @@ public class PersonalService {
     private SessionDAO sessionDAO;
 
     @Inject
-    private SessionMapper sessionMapper;
-
-    @Inject
     private UserDAO userDAO;
 
+    @Inject
+    private SubtaskDAO subtaskDAO;
 
 
     public PersonalDTO getPersonalById(long id) {
@@ -49,7 +48,7 @@ public class PersonalService {
     }
 
     public PersonalDTO createPersonal(String name, long userId, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
-                                      Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
+                                      Set<Timetable> timeSlots, List<StrategyInstance> strategies, int priority,
                                       String description, List<Resource> resources, @Nullable List<Subtask> subtasks, List<Session> sessions,
                                       @Nullable Integer requiredUsers, @Nullable String userGuidance) {
 
@@ -77,16 +76,20 @@ public class PersonalService {
             throw new IllegalArgumentException("Users number can be set only for group tasks and teh userGuidance for shared tasks");
         }
 
-        if (strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
+        if (strategies.stream().anyMatch(strategy ->
+                strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
             if (deadline != null) {
                 throw new IllegalArgumentException("If this strategy is set, a deadline can't be selected");
             }
         }
+
         if (deadline != null) {
-            if (strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
+            if (strategies.stream().anyMatch(strategy ->
+                    strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
                 throw new IllegalArgumentException("If a deadline is set, this strategy can't be selected");
             }
         }
+
         User existingUser = userDAO.findById(userId);
         if (existingUser == null) {
             throw new IllegalArgumentException("User with userId " +userId+ " does not exist.");
@@ -284,7 +287,7 @@ public class PersonalService {
     }
 
     public PersonalDTO modifyPersonal(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
-                                    Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority, String description,
+                                    Set<Timetable> timeSlots, List<StrategyInstance> strategies, int priority, String description,
                                     List<Resource> resources,@Nullable List<Subtask> subtasks, List<Session> sessions, @Nullable Integer requiredUsers, @Nullable String userGuidance) {
 
         if(subtasks != null){
@@ -300,13 +303,16 @@ public class PersonalService {
             throw new IllegalArgumentException("Users number can be set only for group tasks and teh userGuidance for shared tasks");
         }
 
-        if (strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
+        if (strategies.stream().anyMatch(strategy ->
+                strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
             if (deadline != null) {
                 throw new IllegalArgumentException("If this strategy is set, a deadline can't be selected");
             }
         }
+
         if (deadline != null) {
-            if (strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
+            if (strategies.stream().anyMatch(strategy ->
+                    strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
                 throw new IllegalArgumentException("If a deadline is set, this strategy can't be selected");
             }
         }
@@ -357,8 +363,8 @@ public class PersonalService {
         validateSessions(personalTask.getSessions(), timeSlots, totalTime);
 
 
-        // Aggiorna il calendario
-        user.getCalendar().addSessions(personalTask.getSessions());
+        /*// Aggiorna il calendario
+        user.getCalendar().addSessions(personalTask.getSessions());*/  //LE SESSIONI VERRANNO AGGIUNTE SOLO DOPO QUANDO CHIAMO TOCALENDAR()
 
         userDAO.update(user);
         calendarDAO.update(user.getCalendar());
@@ -464,6 +470,7 @@ public class PersonalService {
         return personalMapper.toPersonalDTO(personalTask);
     }
 
+
     public boolean compareSubtasks(List<Subtask> subtasks, List<Subtask> personalTaskSubtasks) {
         subtasks.sort(Comparator.comparing(Subtask::getName));
         personalTaskSubtasks.sort(Comparator.comparing(Subtask::getName));
@@ -494,17 +501,35 @@ public class PersonalService {
         personal.toCalendar();
         calendarDAO.update(personal.getUser().getCalendar());
         personalDAO.update(personal);
+        userDAO.update(personal.getUser());
     }
 
     @Transactional
     public void completeSession(long personalId, long sessionId) {
         Personal personal = personalDAO.findById(personalId);
         Session session = sessionDAO.findById(sessionId);
-        if (personal == null || session == null) return;
-        personal.completeSession(session);
-        sessionDAO.update(session);
+        if(personal == null){
+            throw new IllegalArgumentException("Task with ID " + personalId + " not found. PERSONAL SERVICE completeSession");
+        }
+        if(session == null){
+            throw new IllegalArgumentException("session with ID " + sessionId + " not found. PERSONAL SERVICE completeSession");
+        }
+        // Completamento della sessione nei subtasks (se esiste una sessione corrispondente)
+        if (personal.getSubtasks() != null) {
+            for (Subtask subtask : personal.getSubtasks()) {
+                for (Session subSession : subtask.getSessions()) {
+                    if (subSession.equals(session)) {
+                        subSession.setState(SessionState.COMPLETED);
+                        subtaskDAO.update(subtask);
+                        break;  // Uscita dal ciclo appena trovata la sessione corrispondente
+                    }
+                }
+            }
+        }
+        personal.completeSession(session);  // Assicurati che questo metodo completi la sessione nel task principale
         personalDAO.update(personal);
     }
+
 
     @Transactional
     public void completePersonalBySessions(long personalId) {
@@ -527,17 +552,26 @@ public class PersonalService {
     }
 
     @Transactional
-    public void handleLimitExceeded(SessionDTO sessionDTO, long personalId) {
+    public void handleLimitExceeded(long sessionId, long personalId) {
         Personal personal = personalDAO.findById(personalId);
+        Session session = sessionDAO.findById(sessionId);
         if (personal == null) {
             throw new IllegalArgumentException("Personal task with ID " + personalId + " not found.");
         }
-        Session session = sessionMapper.toSessionEntity(sessionDTO);
         if (session == null) {
             throw new IllegalArgumentException("Session with ID " + personalId + " not found.");
         }
+        boolean found = false;
+        for (Session oldSession : personal.getSessions()) {
+            if (session.equals(oldSession)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            throw new IllegalStateException("session not found in task. CLASS PERSONALSERVICE handleLimit...");
+        }
         personal.autoSkipIfNotCompleted(session);
-        sessionDAO.update(session);
         personalDAO.update(personal);
         calendarDAO.update(personal.getUser().getCalendar());
     }

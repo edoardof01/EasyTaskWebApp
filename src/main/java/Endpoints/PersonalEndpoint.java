@@ -71,7 +71,7 @@ public class PersonalEndpoint {
             LocalDateTime deadline = personalDTO.getDeadline();
             int totalTime = personalDTO.getTotalTime();
             Set<Timetable> timeSlots = personalDTO.getTimetable();
-            Set<DefaultStrategy> strategies = personalDTO.getStrategies();
+            List<StrategyInstance> strategies = personalDTO.getStrategies();
             int priority = personalDTO.getPriority();
             String description = personalDTO.getDescription();
             List<Resource> resources = personalDTO.getResources().stream()
@@ -143,7 +143,7 @@ public class PersonalEndpoint {
         }
     }
 
-    @POST
+    @PUT
     @Path("/moveToCalendar")
     @Transactional
     public Response moveToCalendar(@QueryParam("personalId") long personalId) {
@@ -157,8 +157,8 @@ public class PersonalEndpoint {
         }
     }
 
-    @POST
-    @Path("/completeSession/{personalId}")
+    @PUT
+    @Path("/completeSession/{personalId}/")
     @Transactional
     public Response completeSession(@PathParam("personalId") long personalId, @QueryParam("sessionId") long sessionId) {
         try {
@@ -171,9 +171,7 @@ public class PersonalEndpoint {
         }
     }
 
-
-
-    @POST
+    @PUT
     @Path("/completeBySessions/{personalId}")
     @Transactional
     public Response completePersonalBySessions(@PathParam("personalId") long personalId) {
@@ -186,7 +184,7 @@ public class PersonalEndpoint {
                     .build();
         }
     }
-    @POST
+    @PUT
     @Path("/forceCompletion/{personalId}")
     @Transactional
     public Response forceCompletion(@PathParam("personalId") long personalId) {
@@ -197,15 +195,16 @@ public class PersonalEndpoint {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
                     .build();
+
         }
     }
 
-    @POST
-    @Path("/handleLimitExceeded/{personalId}")
+    @PUT
+    @Path("/handleLimitExceeded/{personalId}/")
     @Transactional
-    public Response handleLimitExceeded(@PathParam("personalId") long personalId, SessionDTO sessionDTO) {
+    public Response handleLimitExceeded(@PathParam("personalId") long personalId,@QueryParam("sessionId") long sessionId) {
         try {
-            personalService.handleLimitExceeded(sessionDTO, personalId);
+            personalService.handleLimitExceeded(sessionId, personalId);
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)

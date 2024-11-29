@@ -23,7 +23,7 @@ public class GroupDTO {
     private int complexity;
     private int priority;
     private Set<Timetable> timetable;
-    private Set<DefaultStrategy> strategies;
+    private List<StrategyInstance> strategies;
     private List<ResourceDTO> resources;
     private int numUser;
     private int actualMembers;
@@ -117,6 +117,9 @@ public class GroupDTO {
     public List<SessionDTO> getSessions() {
         return sessions;
     }
+    public void setSessions(List<SessionDTO> sessions) {
+        this.sessions = sessions;
+    }
     public Topic getTopic() {
         return topic;
     }
@@ -148,10 +151,10 @@ public class GroupDTO {
     public void setTimetable(Set<Timetable> timetable) {
         this.timetable = timetable;
     }
-    public Set<DefaultStrategy> getStrategies() {
+    public List<StrategyInstance> getStrategies() {
         return strategies;
     }
-    public void setStrategies(Set<DefaultStrategy> strategies) {
+    public void setStrategies(List<StrategyInstance> strategies) {
         this.strategies = strategies;
     }
     public List<ResourceDTO> getResources() {

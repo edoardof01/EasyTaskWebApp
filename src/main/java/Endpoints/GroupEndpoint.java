@@ -71,7 +71,7 @@ public class GroupEndpoint {
             LocalDateTime deadline = groupDTO.getDeadline();
             int totalTime = groupDTO.getTotalTime();
             Set<Timetable> timeSlots = groupDTO.getTimetable();
-            Set<DefaultStrategy> strategies = groupDTO.getStrategies();
+            List<StrategyInstance> strategies = groupDTO.getStrategies();
             int priority = groupDTO.getPriority();
             String description = groupDTO.getDescription();
 

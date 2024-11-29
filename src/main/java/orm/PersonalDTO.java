@@ -4,6 +4,7 @@ import domain.*;
 import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +27,7 @@ public class PersonalDTO {
     private int complexity;
     private int priority;
     private Set<Timetable> timetable = new HashSet<>();
-    private Set<DefaultStrategy> strategies = new HashSet<>();
+    private List<StrategyInstance> strategies = new ArrayList<>();
     private List<ResourceDTO> resources;
 
     public PersonalDTO() {
@@ -34,7 +35,7 @@ public class PersonalDTO {
     }
     public PersonalDTO(long id, String name, long userId , String description, int percentageOfCompletion,LocalDateTime deadline,
                        boolean isInProgress,int totalTime,List<SubtaskDTO> subtasks,List<SessionDTO> sessions,Topic topic,TaskState taskState,
-                       Set<Timetable> timetable,Set<DefaultStrategy> strategies,List<ResourceDTO> resources) {
+                       Set<Timetable> timetable,List<StrategyInstance> strategies,List<ResourceDTO> resources) {
         this.id = id;
         this.name = name;
         this.userId = userId;
@@ -175,10 +176,10 @@ public class PersonalDTO {
     public void setTimetable(Set<Timetable> timetable) {
         this.timetable = timetable;
     }
-    public Set<DefaultStrategy> getStrategies() {
+    public List<StrategyInstance> getStrategies() {
         return strategies;
     }
-    public void setStrategies(Set<DefaultStrategy> strategies) {
+    public void setStrategies(List<StrategyInstance> strategies) {
         this.strategies = strategies;
     }
     public List<ResourceDTO> getResources() {

@@ -57,7 +57,7 @@ public class GroupService {
     }
 
     public GroupDTO createGroup(String name, User user, Topic topic, @Nullable LocalDateTime deadline, LocalDateTime dateOnFeed, int totalTime,
-                                Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
+                                Set<Timetable> timeSlots, List<StrategyInstance> strategies, int priority,
                                 String description, List<Resource> resources, List<Subtask> subtasks, List<Session> sessions,
                                 int numUsers, @Nullable String userGuidance) {
         if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null || numUsers <= 0) {
@@ -66,14 +66,17 @@ public class GroupService {
         if (userGuidance != null) {
             throw new IllegalArgumentException("UsersGuidance can be written only for shared tasks");
         }
-        if (strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
+        if (strategies.stream().anyMatch(strategy ->
+                strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
             if (deadline != null) {
-                throw new IllegalArgumentException("if this strategy is set, a deadline can't be selected");
+                throw new IllegalArgumentException("If this strategy is set, a deadline can't be selected");
             }
         }
+
         if (deadline != null) {
-            if (strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
-                throw new IllegalArgumentException("if a deadline is set, this strategy can't be selected");
+            if (strategies.stream().anyMatch(strategy ->
+                    strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
+                throw new IllegalArgumentException("If a deadline is set, this strategy can't be selected");
             }
         }
 
@@ -149,7 +152,7 @@ public class GroupService {
 
 
     public GroupDTO modifyGroup(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
-                                Set<Timetable> timeSlots, Set<DefaultStrategy> strategy, int priority, String description,
+                                Set<Timetable> timeSlots, List<StrategyInstance> strategy, int priority, String description,
                                 List<Resource> resources, List<Subtask> subtasks, Integer numUsers) {
 
         Group group = groupDAO.findById(taskId);

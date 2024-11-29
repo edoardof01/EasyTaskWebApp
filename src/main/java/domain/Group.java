@@ -31,7 +31,7 @@ public class Group extends Task {
 
     public Group(int numUsers,@NotNull User user, LocalDateTime dateOnFeed, String name, Topic topic, @Nullable LocalDateTime deadline,
                  String description,@NotNull List<Subtask> subtasks, List<Session> sessions, int percentageOfCompletion, int priority,
-                 Set<Timetable> timeTable, int totalTime, Set<DefaultStrategy> strategies, List<Resource> resources) {
+                 Set<Timetable> timeTable, int totalTime, List<StrategyInstance> strategies, List<Resource> resources) {
         super(name,user,description, subtasks, sessions, deadline, percentageOfCompletion, priority, totalTime, topic, timeTable, strategies, resources);
         this.numUsers = numUsers;
         this.dateOnFeed = dateOnFeed;

@@ -62,7 +62,7 @@ public class SharedService {
     }
 
     public SharedDTO createShared(String name, User user, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
-                                  Set<Timetable> timeSlots, Set<DefaultStrategy> strategies, int priority,
+                                  Set<Timetable> timeSlots, List<StrategyInstance> strategies, int priority,
                                   String description, List<Resource> resources, @Nullable List<Subtask> subtasks, List<Session> sessions,
                                   @Nullable Integer requiredUsers, @Nullable String userGuidance) {
 
@@ -74,14 +74,17 @@ public class SharedService {
             throw new IllegalArgumentException("Users number can be set only for shared tasks");
         }
 
-        if (strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
+        if (strategies.stream().anyMatch(strategy ->
+                strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
             if (deadline != null) {
-                throw new IllegalArgumentException("if this strategy is set, a deadline can't be selected");
+                throw new IllegalArgumentException("If this strategy is set, a deadline can't be selected");
             }
         }
-        if(deadline != null){
-            if(strategies.contains(DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)){
-                throw new IllegalArgumentException("if a deadline is set, this strategy can't be selected");
+
+        if (deadline != null) {
+            if (strategies.stream().anyMatch(strategy ->
+                    strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
+                throw new IllegalArgumentException("If a deadline is set, this strategy can't be selected");
             }
         }
 
@@ -158,7 +161,7 @@ public class SharedService {
     }
 
     public SharedDTO modifyShared(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
-                                  Set<Timetable> timeSlots, Set<DefaultStrategy> strategy, Integer priority, String description,
+                                  Set<Timetable> timeSlots, List<StrategyInstance> strategy, Integer priority, String description,
                                   List<Resource> resources, List<Subtask> subtasks, @Nullable String userGuidance) {
 
         Shared sharedTask = sharedDAO.findById(taskId);

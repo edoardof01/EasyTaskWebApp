@@ -8,38 +8,10 @@ public enum DefaultStrategy {
 
     private final boolean requiresTot;
     private final boolean requiresMaxConsecSkipped;
-    private Integer tot;
-    private Integer maxConsecSkipped;
 
     DefaultStrategy(boolean requiresTot, boolean requiresMaxConsecSkipped) {
         this.requiresTot = requiresTot;
         this.requiresMaxConsecSkipped = requiresMaxConsecSkipped;
-    }
-
-    public static DefaultStrategy createStrategyWithTot(DefaultStrategy strategy, int tot) {
-        if (!strategy.requiresTot) {
-            throw new UnsupportedOperationException("This strategy does not require TOT.");
-        }
-        strategy.tot = tot;
-        return strategy;
-    }
-
-    public Integer getTot() {
-        if (!requiresTot) {
-            throw new UnsupportedOperationException("This strategy does not support TOT.");
-        }
-        return tot;
-    }
-
-    public boolean hasTot() {
-        return tot != null;
-    }
-
-    public Integer getMaxConsecSkipped() {
-        if (!requiresMaxConsecSkipped) {
-            throw new UnsupportedOperationException("This strategy does not support max consecutive skipped sessions.");
-        }
-        return maxConsecSkipped;
     }
 
     public boolean requiresTot() {
