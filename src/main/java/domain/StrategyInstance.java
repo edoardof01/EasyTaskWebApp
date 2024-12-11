@@ -48,4 +48,9 @@ public class StrategyInstance {
                 ", maxConsecSkipped=" + maxConsecSkipped +
                 '}';
     }
+
+    public Long getId() {
+        return id;
+    }
+
 }

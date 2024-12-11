@@ -1,4 +1,4 @@
-/*
+
 package registration;
 
 import domain.Profile;
@@ -16,8 +16,7 @@ public class RegisterService {
     @Inject
     private UserDAO userDAO;
 
-    @Inject
-    private EmailService emailService;
+
 
     public void register(RegistrationDTO registrationDTO) {
         if (userDAO.findByUsername(registrationDTO.getUsername()) != null) {
@@ -30,10 +29,7 @@ public class RegisterService {
         Profile profile = new Profile(
                 registrationDTO.getUsername(),
                 hashedPassword,
-                null,  // Non viene specificato topics nella registrazione (puoi modificarlo se necessario)
-                registrationDTO.getEmail(),
-                false, // email non verificata
-                UUID.randomUUID().toString()  // Token di verifica univoco
+                null /*, ci sarebbe la mail quì */
         );
 
         // Crea l'utente e imposta il profile
@@ -43,13 +39,9 @@ public class RegisterService {
         // Salva l'utente nel database
         userDAO.save(newUser);
 
-        // Invia l'email di verifica
-        String verificationLink = "http://localhost:8080/register/confirm?token=" + profile.getVerificationToken();
-        emailService.sendEmail(profile.getEmail(), "Confirm your email",
-                "Click the following link to confirm your email: " + verificationLink);
     }
 
-    public void confirmEmail(String token) {
+   /* public void confirmEmail(String token) {
         User user = userDAO.findByVerificationToken(token);
         if (user == null) {
             throw new IllegalArgumentException("Invalid or expired token");
@@ -57,11 +49,7 @@ public class RegisterService {
 
         // Aggiorna lo stato dell'email dell'utente
         Profile profile = user.getPersonalProfile();
-        profile.setEmailVerified(true);
-        profile.setVerificationToken(null); // Rimuove il token di verifica
-
-        // Salva le modifiche
         userDAO.update(user);
-    }
+    }*/
 }
-*/
+

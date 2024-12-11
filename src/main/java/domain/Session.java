@@ -1,6 +1,11 @@
 package domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -17,8 +22,9 @@ public class Session {
     @Enumerated(EnumType.STRING)
     private SessionState state;
 
-    public Session() {}
 
+
+    public Session() {}
     public Session(LocalDateTime startDate, LocalDateTime endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
@@ -47,14 +53,15 @@ public class Session {
         this.state = state;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Session session = (Session) o;
         return Objects.equals(startDate, session.startDate) &&
-                Objects.equals(endDate, session.endDate) &&
-                state == session.state;  //EVENTUALMENTE DA RIAGGIUNGERE (PROBLEMI CON COMPLETEBYSESSIONS)
+                Objects.equals(endDate, session.endDate);
+
     }
 
     @Override
@@ -65,6 +72,14 @@ public class Session {
     public boolean overlaps(Session other) {
         // Verifica se le sessioni si sovrappongono
         return (this.startDate.isBefore(other.endDate) && this.endDate.isAfter(other.startDate));
+    }
+
+    public int getDurationMinutes() {
+        if (startDate != null && endDate != null) {
+            return (int) Duration.between(startDate, endDate).toMinutes(); // Restituisce la durata in minuti
+        } else {
+            throw new IllegalStateException("Start date or end date is null");
+        }
     }
 
 

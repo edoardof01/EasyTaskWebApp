@@ -5,16 +5,27 @@ import domain.Shared;
 import domain.User;
 
 public class CommentDTO {
-    private final long id;
+    private  long id;
     private String content;
-    private final User author;
-    private final Shared sharedTask;
+    private long authorId;
+    private UserDTO author;
+    private long sharedId;
+    private SharedDTO sharedTask;
+
+    public CommentDTO(){}
+
+    public CommentDTO(long id, String content,long authorId, long sharedId) {
+        this.id = id;
+        this.content = content;
+        this.authorId = authorId;
+        this.sharedId = sharedId;
+    }
 
     public CommentDTO(Comment comment) {
         this.id = comment.getId();
         this.content = comment.getContent();
-        this.author = comment.getAuthor();
-        this.sharedTask = comment.getCommentedTask();
+        this.author = new UserDTO(comment.getAuthor());
+        this.sharedTask = new SharedDTO(comment.getCommentedTask());
     }
     public long getId() {
         return id;
@@ -25,10 +36,16 @@ public class CommentDTO {
     public void setContent(String content) {
         this.content = content;
     }
-    public Shared getSharedTask() {
+    public SharedDTO getSharedTask() {
         return sharedTask;
     }
-    public User getAuthor() {
+    public UserDTO getAuthor() {
         return author;
+    }
+    public long getAuthorId(){
+        return authorId;
+    }
+    public long getSharedId() {
+        return sharedId;
     }
 }

@@ -13,7 +13,7 @@ public class CommentedFolder {
     private Long id;
 
     @OneToMany
-    private List<Shared> shared;
+    private List<Shared> shared = new ArrayList<>();
 
     @OneToOne
     private User user;

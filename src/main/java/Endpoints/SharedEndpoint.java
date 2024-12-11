@@ -1,6 +1,7 @@
 package Endpoints;
 
 import domain.*;
+import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -24,7 +25,6 @@ public class SharedEndpoint {
     @Inject
     private SharedService sharedService;
 
-
     @Inject
     private ResourceMapper resourceMapper;
 
@@ -32,15 +32,13 @@ public class SharedEndpoint {
     private SubtaskMapper subtaskMapper;
 
     @Inject
-    private UserMapper userMapper;
-
-    @Inject
     private SessionMapper sessionMapper;
 
     @Inject
     private SharedMapper sharedMapper;
 
-
+    @Inject
+    private CommentMapper commentMapper;
 
 
     /**
@@ -80,7 +78,7 @@ public class SharedEndpoint {
             Topic topic = sharedDTO.getTopic();
             LocalDateTime deadline = sharedDTO.getDeadline();
             int totalTime = sharedDTO.getTotalTime();
-            Set<Timetable> timeSlots = sharedDTO.getTimetable();
+            Timetable timeSlots = sharedDTO.getTimetable();
             List<StrategyInstance> strategies = sharedDTO.getStrategies();
             int priority = sharedDTO.getPriority();
             String description = sharedDTO.getDescription();
@@ -95,11 +93,9 @@ public class SharedEndpoint {
                     .map(sessionMapper::toSessionEntity)
                     .collect(Collectors.toList());
 
-            User user = userMapper.toUserEntity(sharedDTO.getUser());
-
             // Passa i campi estratti
             SharedDTO createdShared = sharedService.createShared(
-                    name, user, topic, deadline, totalTime, timeSlots, strategies, priority,
+                    name, sharedDTO.getUserId(), topic, deadline, totalTime, timeSlots, strategies, priority,
                     description, resources, subtasks, sessions, null, userGuidance
             );
 
@@ -140,12 +136,14 @@ public class SharedEndpoint {
                     sharedDTO.getDeadline(),
                     sharedDTO.getTotalTime(),
                     sharedDTO.getTimetable(),
-                    sharedDTO.getStrategies(), // Seleziona una strategia
+                    sharedDTO.getStrategies(),
                     sharedDTO.getPriority(),
                     sharedDTO.getDescription(),
                     sharedDTO.getResources().stream().map(resourceMapper::toResourceEntity).collect(Collectors.toList()),
                     sharedDTO.getSubtasks().stream().map(subtaskMapper::toSubtaskEntity).collect(Collectors.toList()),
-                    sharedDTO.getUserGuidance()
+                    sharedDTO.getUserGuidance(),
+                    sharedDTO.getSessions().stream().map(sessionMapper::toSessionEntity).collect(Collectors.toList()),
+                    null
             );
             return Response.ok(updatedShared).build();
         } catch (IllegalArgumentException e) {
@@ -172,12 +170,12 @@ public class SharedEndpoint {
     /**
      * Sposta il task Shared nel calendario.
      */
-    @POST
+    @PUT
     @Path("/moveToCalendar")
     @Transactional
-    public Response moveToCalendar(SharedDTO sharedDTO) {
+    public Response moveToCalendar(@QueryParam("sharedId") long sharedId) {
         try {
-            sharedService.moveToCalendar(sharedDTO);
+            sharedService.moveToCalendar(sharedId);
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -206,12 +204,25 @@ public class SharedEndpoint {
     /**
      * Completa il task Shared in base alle sessioni e, se specificato, assegna il miglior commento.
      */
-    @POST
+    @PUT
+    @Path("/completeBySessionsWithComment/{sharedId}")
+    @Transactional
+    public Response completeSharedBySessionsWithComment(@PathParam("sharedId") long sharedId,@QueryParam("commentId") Long commentId) {
+        try {
+            sharedService.completeSharedBySessionsWithComment(commentId, sharedId); // Se commentDTO non è null, usalo
+            return Response.status(Response.Status.OK).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+    @PUT
     @Path("/completeBySessions/{sharedId}")
     @Transactional
-    public Response completeSharedBySessions(@PathParam("sharedId") long sharedId, CommentDTO commentDTO) {
+    public Response completeSharedBySessions(@PathParam("sharedId") long sharedId) {
         try {
-            sharedService.completeSharedBySessions(sharedService.getBestComment(sharedId, commentDTO.getId()), sharedId);
+            sharedService.completeSharedBySessions(sharedId);
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -220,7 +231,9 @@ public class SharedEndpoint {
         }
     }
 
-    @POST
+
+
+    @PUT
     @Path("/forceCompletion/{sharedId}")
     @Transactional
     public Response forceCompletion(@PathParam("sharedId") long sharedId) {
@@ -235,7 +248,7 @@ public class SharedEndpoint {
     }
 
 
-    @POST
+    @PUT
     @Path("/completeSession/{sharedId}")
     @Transactional
     public Response completeSession(@PathParam("sharedId") long sharedId, @QueryParam("sessionId") long sessionId) {
@@ -252,12 +265,12 @@ public class SharedEndpoint {
     /**
      * Gestisce il caso di superamento del limite per una sessione.
      */
-    @POST
+    @PUT
     @Path("/handleLimitExceeded/{sharedId}")
     @Transactional
-    public Response handleLimitExceeded(@PathParam("sharedId") long sharedId, SessionDTO sessionDTO) {
+    public Response handleLimitExceeded(@PathParam("sharedId") long sharedId, @QueryParam("sessionId") long sessionId) {
         try {
-            sharedService.handleLimitExceeded(sessionDTO, sharedId);
+            sharedService.handleLimitExceeded(sessionId, sharedId);
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)

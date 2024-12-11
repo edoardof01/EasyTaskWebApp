@@ -1,4 +1,4 @@
-/*
+
 package JWT;
 import domain.User;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -28,12 +28,11 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid username or password");
         }
 
-        if (!user.getPersonalProfile().isEmailVerified()) {
+       /* if (!user.getPersonalProfile().isEmailVerified()) {
             throw new IllegalArgumentException("Email not verified");
-        }
+        }*/
 
         String token = jwtUtil.generateToken(user.getPersonalProfile().getUsername());
         return new TokenResponse(token);
     }
 }
-*/

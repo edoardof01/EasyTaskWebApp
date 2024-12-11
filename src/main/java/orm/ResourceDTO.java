@@ -4,15 +4,14 @@ import domain.Resource;
 import domain.ResourceType;
 
 public class ResourceDTO {
-    private final long id;
+    private  long id;
     private String name;
     private int value;
     private Integer money;
     private ResourceType type;
 
 
-    public ResourceDTO() {
-        this.id = -1; // Valore di default
+    public ResourceDTO() {// Valore di default
     }
 
     public ResourceDTO(Resource resource) {

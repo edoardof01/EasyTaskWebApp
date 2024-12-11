@@ -1,8 +1,17 @@
 package orm;
 
 import domain.Comment;
+import domain.Shared;
+import domain.User;
+import jakarta.inject.Inject;
 
 public class CommentMapper {
+
+    @Inject
+    private UserMapper userMapper;
+
+    @Inject
+    private SharedMapper sharedMapper;
 
     public CommentDTO toCommentDTO(Comment comment) {
         if (comment == null) {
@@ -14,10 +23,12 @@ public class CommentMapper {
         if (commentDTO == null) {
             return null;
         }
+        User author = userMapper.toUserEntity(commentDTO.getAuthor());
+        Shared shared = sharedMapper.toSharedEntity(commentDTO.getSharedTask());
         return new Comment(
                 commentDTO.getContent(),
-                commentDTO.getAuthor(),
-                commentDTO.getSharedTask()
+                author,
+                shared
         );
     }
     public void updateCommentFromDTO(CommentDTO commentDTO, Comment comment) {

@@ -56,10 +56,10 @@ public class UserDAO {
     }
 
     // Metodo per cercare un utente tramite token di verifica
-    public User findByVerificationToken(String token) {
+   /* public User findByVerificationToken(String token) {
         return entityManager.createQuery("SELECT u FROM User u WHERE u.personalProfile.verificationToken = :token", User.class)
                 .setParameter("token", token)
                 .getSingleResult();
-    }
+    }*/
 
 }

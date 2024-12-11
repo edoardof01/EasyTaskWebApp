@@ -4,14 +4,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ProfileDTO {
+    private  long id;
     private  String username;
     private  String password;
-    private  String email;
+    /*private  String email;*/
     private Map<String, Integer> topics;
-    private boolean emailVerified;
-    private String verificationToken;
+   /* private boolean emailVerified;
+    private String verificationToken;*/
 
-    public ProfileDTO() {}
+    public ProfileDTO() {
+    }
 
     public ProfileDTO(Profile profile) {
         this.password = profile.getPassword();
@@ -21,9 +23,10 @@ public class ProfileDTO {
                         Map.Entry::getValue // Mantieni il valore intero
                 ));
         this.username = profile.getUsername();
-        this.email = profile.getEmail();
+       /* this.email = profile.getEmail();
+        this.id=profile.getId();
         this.emailVerified = profile.isEmailVerified();
-        this.verificationToken = profile.getVerificationToken();
+        this.verificationToken = profile.getVerificationToken();*/
     }
     public String getPassword() {
         return password;
@@ -43,7 +46,7 @@ public class ProfileDTO {
     public void setUsername(String username) {
         this.username = username;
     }
-    public String getEmail() {
+/*    public String getEmail() {
         return email;
     }
     public void setEmail(String email) {
@@ -60,6 +63,9 @@ public class ProfileDTO {
     }
     public void setVerificationToken(String verificationToken) {
         this.verificationToken = verificationToken;
+    }*/
+    public long getId() {
+        return id;
     }
 
 }

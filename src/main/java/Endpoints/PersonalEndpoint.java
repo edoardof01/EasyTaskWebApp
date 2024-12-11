@@ -70,7 +70,7 @@ public class PersonalEndpoint {
             Topic topic = personalDTO.getTopic();
             LocalDateTime deadline = personalDTO.getDeadline();
             int totalTime = personalDTO.getTotalTime();
-            Set<Timetable> timeSlots = personalDTO.getTimetable();
+            Timetable timeSlots = personalDTO.getTimetable();
             List<StrategyInstance> strategies = personalDTO.getStrategies();
             int priority = personalDTO.getPriority();
             String description = personalDTO.getDescription();

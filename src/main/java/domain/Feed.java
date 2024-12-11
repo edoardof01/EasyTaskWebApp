@@ -3,6 +3,7 @@ package domain;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Feed {
@@ -11,9 +12,9 @@ public class Feed {
     private Topic topicFilter;
     private boolean groupFilter;
     private boolean sharedFilter;
-    private ArrayList<Group> groups;
-    private ArrayList<Shared> shared;
-    private ArrayList<User> contributors;
+    private List<Group> groups = new ArrayList<>();
+    private List<Shared> shared = new ArrayList<>();
+    private List<User> contributors = new ArrayList<>();
     private static final Feed feedInstance = new Feed();
 
     public Feed() {}
@@ -43,18 +44,27 @@ public class Feed {
     public void setSharedFilter(boolean sharedFilter) {
         this.sharedFilter = sharedFilter;
     }
-    public ArrayList<Group> getGroup() {
+    public List<Group> getGroup() {
         return groups;
     }
-    public ArrayList<Shared> getShared() {
+    public void setGroup(List<Group> groups) {
+        this.groups = groups;
+    }
+    public List<Shared> getShared() {
         return shared;
     }
-    public ArrayList<User> getContributors() {
+    public void setShared(List<Shared> shared) {
+        this.shared = shared;
+    }
+    public List<User> getContributors() {
         return contributors;
     }
+    public void setContributors(List<User> contributors) {
+        this.contributors = contributors;
+    }
 
-    public ArrayList<Task> getFilteredFeed() {
-        ArrayList<Task> filteredFeed = new ArrayList<>();
+    public List<Task> getFilteredFeed() {
+        List<Task> filteredFeed = new ArrayList<>();
 
         // Aggiungi task di gruppo se il filtro groupFilter è attivo
         if (groupFilter) {
@@ -73,5 +83,6 @@ public class Feed {
 
         return filteredFeed;
     }
+
 
 }

@@ -3,8 +3,12 @@ package orm;
 import domain.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.eclipse.persistence.expressions.ExpressionOperator.LocalDateTime;
 
 @ApplicationScoped
 public class SharedMapper {
@@ -34,20 +38,20 @@ public class SharedMapper {
             return null;
         }
         // Usa gli altri mapper per convertire subtasks e resources
-        List<Subtask> subtasks = sharedDTO.getSubtasks()
+        List<Subtask> subtasks = new ArrayList<>(sharedDTO.getSubtasks()
                 .stream()
                 .map(subtaskMapper::toSubtaskEntity)
-                .toList();
+                .toList());
 
-        List<Resource> resources = sharedDTO.getResources()
+        List<Resource> resources = new ArrayList<>(sharedDTO.getResources()
                 .stream()
                 .map(resourceMapper::toResourceEntity)
-                .toList();
+                .toList());
 
-        List<Session> sessions = sharedDTO.getSessions()
+        List<Session> sessions = new ArrayList<>(sharedDTO.getSessions()
                 .stream()
                 .map(sessionMapper::toSessionEntity)
-                .toList();
+                .toList());
         User user = userMapper.toUserEntity(sharedDTO.getUser());
 
         return new Shared(
@@ -63,7 +67,8 @@ public class SharedMapper {
                 sharedDTO.getTimetable(),
                 sharedDTO.getTotalTime(),
                 sharedDTO.getStrategies(),
-                resources
+                resources,
+                sharedDTO.getUserGuidance()
         );
     }
     public void updateSharedFromDTO(SharedDTO sharedDTO, Shared shared) {

@@ -1,5 +1,6 @@
 package domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,8 +14,7 @@ public class Comment {
 
     @ManyToOne
     private User author;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Shared commentedTask;
 
     private boolean isBest = false;
@@ -38,8 +38,14 @@ public class Comment {
     public User getAuthor() {
       return author;
     }
+    public void setAuthor(User author) {
+        this.author = author;
+    }
     public Shared getCommentedTask() {
       return commentedTask;
+    }
+    public void setCommentedTask(Shared commentedTask) {
+        this.commentedTask = commentedTask;
     }
     public boolean getIsBest() {
         return isBest;
@@ -47,4 +53,15 @@ public class Comment {
     public void setIsBest(boolean best) {
         isBest = best;
     }
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", author=" + (author != null ? author.getPersonalProfile().getUsername() : "null") +
+                ", commentedTask=" + (commentedTask != null ? commentedTask.getId() : "null") +
+                ", isBest=" + isBest +
+                '}';
+    }
+
 }

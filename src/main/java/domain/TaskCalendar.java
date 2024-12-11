@@ -34,10 +34,24 @@ public class TaskCalendar {
         return id;
     }
 
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
     public void addSessions(User user, Subtask subtask) {
         // Verifica che l'utente sia membro del gruppo e che il task sia attivo
-        if (!group.getMembers().contains(user) || !group.getIsComplete()) {
-            throw new UnsupportedOperationException("L'utente non fa parte del gruppo o il task non è completo");
+        if (!group.getIsComplete()) {
+            throw new UnsupportedOperationException(" il task non è completo");
+        }
+        boolean found = false;
+        for(User member : group.getMembers()) {
+            if(member.equals(user)) {
+                found = true;
+            }
+        }
+        if(!found) {
+            throw new IllegalArgumentException("the user is not a member of the group");
         }
 
         // Verifica che il subtask appartenga effettivamente all'utente

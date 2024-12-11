@@ -3,8 +3,10 @@ package orm;
 import domain.Resource;
 import domain.Session;
 import domain.Subtask;
+import domain.Task;
 import jakarta.inject.Inject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SubtaskMapper {
@@ -21,10 +23,17 @@ public class SubtaskMapper {
     }
     public Subtask toSubtaskEntity(SubtaskDTO subtaskDTO) {
         if (subtaskDTO == null) return null;
-        List<Resource> resources = subtaskDTO.getResources().stream().
-                map(resourceMapper :: toResourceEntity).toList();
-        List<Session> sessions = subtaskDTO.getSessions().stream().
-                map(sessionMapper :: toSessionEntity).toList();
+        List<Resource> resources = new ArrayList<>(subtaskDTO.getResources()
+                .stream()
+                .map(resourceMapper::toResourceEntity)
+                .toList());
+
+        List<Session> sessions = new ArrayList<>(subtaskDTO.getSessions()
+                .stream()
+                .map(sessionMapper::toSessionEntity)
+                .toList());
+
+
         return new Subtask(
                 subtaskDTO.getName(),
                 subtaskDTO.getTotalTime(),

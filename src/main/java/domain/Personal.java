@@ -16,7 +16,7 @@ public class Personal extends Task {
 
     public Personal(String name, @NotNull User user, Topic topic, @Nullable LocalDateTime deadline,
                     String description, @Nullable List<Subtask> subtasks, List<Session> sessions, int percentageOfCompletion, int priority,
-                    Set<Timetable> timeTable, int totalTime, List<StrategyInstance> strategies, List<Resource> resources) {
+                    Timetable timeTable, int totalTime, List<StrategyInstance> strategies, List<Resource> resources) {
         super(name, user, description,subtasks,sessions,deadline, percentageOfCompletion, priority, totalTime, topic, timeTable, strategies, resources);
     }
 
@@ -24,7 +24,7 @@ public class Personal extends Task {
 
     @Override
     public void handleLimitExceeded() {
-        removeAndFreezeTask(this.getUser(), this);
+        removeAndFreezeTask(this.getUser());
     }
 
     @Override
@@ -34,17 +34,8 @@ public class Personal extends Task {
 
     @Override
     public void deleteTask() {
-        this.getUser().getCalendar().removeSessions(this);
-        List<Folder> folders = this.getUser().getFolders();
-        boolean taskRemoved = false;
-        for (Folder folder : folders) {
-            for (Subfolder subfolder : folder.getSubfolders()) {
-                if (!taskRemoved && subfolder.getTasks().contains(this)) {
-                    subfolder.getTasks().remove(this);
-                    taskRemoved = true;
-                }
-
-            }
+        if (this.getState() == TaskState.INPROGRESS) {
+            this.getUser().getCalendar().removeSessions(this);
         }
     }
 

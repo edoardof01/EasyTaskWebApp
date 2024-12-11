@@ -3,11 +3,11 @@ package registration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import jakarta.enterprise.context.ApplicationScoped;
-import javax.mail.*;
-import javax.mail.internet.*;
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
 import java.util.Properties;
+
 
 @ApplicationScoped
 public class EmailService {
@@ -46,5 +46,5 @@ public class EmailService {
             logger.error("Failed to send email to {}: {}", recipient, e.getMessage(), e);
         }
     }
-}
-*/
+}*/
+

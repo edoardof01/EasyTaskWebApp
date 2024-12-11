@@ -1,4 +1,3 @@
-/*
 package JWT;
 
 import jakarta.inject.Inject;
@@ -25,4 +24,3 @@ public class AuthEndpoint {
         }
     }
 }
-*/

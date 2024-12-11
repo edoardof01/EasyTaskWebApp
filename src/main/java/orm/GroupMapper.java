@@ -3,6 +3,9 @@ package orm;
 import domain.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,20 +33,21 @@ public class GroupMapper {
         if (groupDTO == null) return null;
 
         // Usa gli altri mapper per convertire subtasks e resources
-        List<Subtask> subtasks = groupDTO.getSubtasks()
+        List<Subtask> subtasks = new ArrayList<>(groupDTO.getSubtasks()
                 .stream()
                 .map(subtaskMapper::toSubtaskEntity)
-                .toList();
+                .toList());
 
-        List<Resource> resources = groupDTO.getResources()
+        List<Resource> resources = new ArrayList<>(groupDTO.getResources()
                 .stream()
                 .map(resourceMapper::toResourceEntity)
-                .toList();
+                .toList());
 
-        List<Session> sessions = groupDTO.getSessions()
+        List<Session> sessions = new ArrayList<>(groupDTO.getSessions()
                 .stream()
                 .map(sessionMapper::toSessionEntity)
-                .toList();
+                .toList());
+
 
         User user = userMapper.toUserEntity(groupDTO.getUser());
 

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class SubtaskDTO {
     @NotNull
-    private final long id;
+    private long id;
     private String name;
     private int totalTime;
     private String description;
@@ -17,8 +17,9 @@ public class SubtaskDTO {
     private List<ResourceDTO> resources = new ArrayList<>();
     private List<SessionDTO> sessions = new ArrayList<>();
 
+
     public SubtaskDTO(){
-        this.id = -1;
+        ;
     }
     public SubtaskDTO(Subtask subtask) {
         this.id = subtask.getId();

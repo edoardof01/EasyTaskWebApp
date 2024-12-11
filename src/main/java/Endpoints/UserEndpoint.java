@@ -8,8 +8,10 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import orm.CommentDTO;
 import orm.ProfileMapper;
 import orm.UserDTO;
@@ -17,6 +19,8 @@ import orm.UserMapper;
 import service.UserService;
 
 import java.util.List;
+
+import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -58,21 +62,31 @@ public class UserEndpoint {
         return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
     }
 
-    // Create a new user
     @POST
-    public Response createUser(UserDTO userDTO) {
+    @Path("/create")
+    public Response createUser(UserDTO userDTO, @Context SecurityContext securityContext) {
         try {
+            // Estrai il nome utente dal token JWT
+            String username = securityContext.getUserPrincipal().getName();
+
+            // Verifica nel servizio se l'utente ha già un profilo
+            if (userService.hasUserProfile(username)) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("User profile already exists for this account.")
+                        .build();
+            }
+
             // Estrai i campi da UserDTO
             int age = userDTO.getAge();
             Sex sex = userDTO.getSex();
             String description = userDTO.getDescription();
             List<String> qualifications = userDTO.getQualifications();
             String profession = userDTO.getProfession();
-            Profile personalProfile = profileMapper.toProfileEntity(userDTO.getPersonalProfile());
+
 
             // Passa i campi estratti al servizio
             UserDTO createdUser = userService.createUser(
-                    age, sex, description, qualifications, profession, personalProfile);
+                    age, sex, description, qualifications, profession, username);
 
             return Response.status(Response.Status.CREATED)
                     .entity(createdUser)
@@ -83,6 +97,7 @@ public class UserEndpoint {
                     .build();
         }
     }
+
 
 
     // Update user by ID
@@ -123,18 +138,8 @@ public class UserEndpoint {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
                     .build();
-        } catch (Exception e) {
-            // Gestisce errori imprevisti
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("An error occurred while processing the request.")
-                    .build();
         }
     }
-
-
-
-
-
 
 }
 

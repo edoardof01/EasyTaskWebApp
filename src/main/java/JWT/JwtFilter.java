@@ -1,4 +1,3 @@
-/*
 package JWT;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,7 +7,7 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 import io.jsonwebtoken.Claims;
-
+import service.UserService;
 @ApplicationScoped
 @Provider
 public class JwtFilter implements ContainerRequestFilter {
@@ -16,33 +15,73 @@ public class JwtFilter implements ContainerRequestFilter {
     @Inject
     private JwtUtil jwtUtil;
 
+    @Inject
+    private UserService userService; // Servizio per controllare lo stato del profilo
+
     @Override
     public void filter(ContainerRequestContext requestContext) {
-
         String path = requestContext.getUriInfo().getPath();
-        if (path.equals("register")) {
-            return;
+
+        // Escludi gli endpoint pubblici
+        if (isPublicEndpoint(path)) {
+            return; // Continua senza richiedere il token
         }
+
         String token = requestContext.getHeaderString("Authorization");
 
-        // Controlla se il token è presente e valido
         if (token == null || !jwtUtil.validateToken(token)) {
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("Invalid or missing token").build());
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("Invalid or missing token").build());
             return;
         }
 
-        // Ottieni i claims dal token
         Claims claims = jwtUtil.getClaims(token);
 
-        // Verifica se l' issuer del token è corretto
+        // Verifica l'Issuer del token
         if (!claims.getIssuer().equals("your-application")) {
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("Invalid token issuer").build());
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("Invalid token issuer").build());
             return;
         }
 
-        // Imposta il SecurityContext con il nome utente
+        // Ottieni il nome utente dal token
         String username = claims.getSubject();
+
+        // Controlla se l'utente ha completato il profilo
+        if (!isProfileComplete(username)) {
+            // Se il profilo non è completo, permetti solo l'accesso a /user/create
+            if (!isProfileCreationEndpoint(path)) {
+                requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
+                        .entity("You must complete your profile to access this resource.")
+                        .build());
+                return;
+            }
+        } else {
+            // Se il profilo è completo, impedisci l'accesso all' Endpoint /user/create
+            if (isProfileCreationEndpoint(path)) {
+                requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
+                        .entity("Profile already completed. You cannot create a profile again.")
+                        .build());
+                return;
+            }
+        }
+
+        // Imposta il SecurityContext
         requestContext.setSecurityContext(new JwtSecurityContext(username));
     }
+
+    private boolean isPublicEndpoint(String path) {
+        // Elenco di endpoint pubblici
+        return path.startsWith("/auth/login") || path.startsWith("/register"); /// quì andrebbe aggiunto /register/confirm
+    }
+
+    private boolean isProfileCreationEndpoint(String path) {
+        // Endpoint per creare il profilo
+        return path.startsWith("/users/create");
+    }
+
+    private boolean isProfileComplete(String username) {
+        // Usa il servizio per controllare se l'utente ha completato il profilo
+        return userService.hasUserProfile(username);
+    }
 }
-*/

@@ -8,22 +8,15 @@ public class TakenSubtask {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false) // Relazione con Group
-    private Group group;
-
-    @ManyToOne
-    @JoinColumn(nullable = false) // Relazione con User
+    @OneToOne
     private User user;
 
-    @ManyToOne
-    @JoinColumn(nullable = false) // Relazione con Subtask
+    @OneToOne
     private Subtask subtask;
 
     // Costruttori, getter e setter
     public TakenSubtask() {}
-    public TakenSubtask(Group group, User user, Subtask subtask) {
-        this.group = group;
+    public TakenSubtask( User user, Subtask subtask) {
         this.user = user;
         this.subtask = subtask;
     }
@@ -34,8 +27,8 @@ public class TakenSubtask {
     public User getUser(){
         return user;
     }
-    public Group getGroup(){
-        return group;
+    public void setUser(User user){
+        this.user = user;
     }
     public void setSubtask(Subtask subtask){
         this.subtask = subtask;

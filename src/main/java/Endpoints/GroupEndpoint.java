@@ -1,6 +1,5 @@
 package Endpoints;
 import domain.*;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -12,7 +11,6 @@ import service.GroupService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Path("/group")
@@ -29,9 +27,6 @@ public class GroupEndpoint {
 
     @Inject
     private SubtaskMapper subtaskMapper;
-
-    @Inject
-    private UserMapper userMapper;
 
     @Inject
     private SessionMapper sessionMapper;
@@ -61,16 +56,20 @@ public class GroupEndpoint {
 
     @POST
     @Transactional
-    public Response createGroup(GroupDTO groupDTO) {
+    public Response createGroup(GroupSubtaskWrapperDTO wrapper) {
         try {
+            // Estrai i DTO dal wrapper
+            GroupDTO groupDTO = wrapper.getGroupDTO();
+            SubtaskDTO chosenSubtaskDTO = wrapper.getChosenSubtaskDTO();
+
             // Estrai i campi da groupDTO
             String name = groupDTO.getName();
-            int numUsers = groupDTO.getNumUser();
+            Integer numUsers = groupDTO.getNumUser();
             LocalDateTime dateOnFeed = groupDTO.getDateOnFeed();
             Topic topic = groupDTO.getTopic();
             LocalDateTime deadline = groupDTO.getDeadline();
             int totalTime = groupDTO.getTotalTime();
-            Set<Timetable> timeSlots = groupDTO.getTimetable();
+            Timetable timeSlots = groupDTO.getTimetable();
             List<StrategyInstance> strategies = groupDTO.getStrategies();
             int priority = groupDTO.getPriority();
             String description = groupDTO.getDescription();
@@ -85,13 +84,14 @@ public class GroupEndpoint {
             List<Session> sessions = groupDTO.getSessions().stream()
                     .map(sessionMapper::toSessionEntity)
                     .collect(Collectors.toList());
+            Subtask chosenSubtask = subtaskMapper.toSubtaskEntity(chosenSubtaskDTO);
 
-            User user = userMapper.toUserEntity(groupDTO.getUser());
+
 
             // Passa i campi estratti e le entità al servizio
             GroupDTO createdGroup = groupService.createGroup(
-                    name, user, topic, dateOnFeed, deadline, totalTime, timeSlots, strategies, priority,
-                    description, resources, subtasks, sessions, numUsers, null);
+                    name, groupDTO.getUserId(), topic, dateOnFeed, deadline, totalTime, timeSlots, strategies, priority,
+                    description, resources, subtasks, chosenSubtask, sessions, null, numUsers);
 
             return Response.status(Response.Status.CREATED)
                     .entity(createdGroup)
@@ -102,6 +102,7 @@ public class GroupEndpoint {
                     .build();
         }
     }
+
 
     @DELETE
     @Path("/{id}")
@@ -129,11 +130,12 @@ public class GroupEndpoint {
                     groupDTO.getDeadline(),
                     groupDTO.getTotalTime(),
                     groupDTO.getTimetable(),
-                    groupDTO.getStrategies(), // Seleziona una strategia
+                    groupDTO.getStrategies(),
                     groupDTO.getPriority(),
                     groupDTO.getDescription(),
                     groupDTO.getResources().stream().map(resourceMapper::toResourceEntity).collect(Collectors.toList()),
                     groupDTO.getSubtasks().stream().map(subtaskMapper::toSubtaskEntity).collect(Collectors.toList()),
+                    groupDTO.getSessions().stream().map(sessionMapper ::toSessionEntity).collect(Collectors.toList()),
                     groupDTO.getNumUser()
             );
             return Response.ok(updatedGroup).build();
@@ -144,12 +146,12 @@ public class GroupEndpoint {
 
 
 
-    @POST
-    @Path("/moveToCalendar/")
+    @PUT
+    @Path("/moveToCalendar/{groupId}/{userId}")
     @Transactional
-    public Response moveToCalendar(GroupDTO groupDTO, @QueryParam("groupId") long groupId) {
+    public Response moveToCalendar(@PathParam("groupId") long groupId, @PathParam("userId") long userId) {
         try {
-            groupService.moveToCalendar(groupDTO, groupId);
+            groupService.moveToCalendar(groupId,userId);
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -158,7 +160,7 @@ public class GroupEndpoint {
         }
     }
 
-    @POST
+    @PUT
     @Path("/completeSession/{groupId}")
     @Transactional
     public Response completeSession(@PathParam("groupId") long groupId, @QueryParam("sessionId") long sessionId) {
@@ -172,10 +174,26 @@ public class GroupEndpoint {
         }
     }
 
-    @POST
+    @PUT
+    @Path("/completeSubtaskSession/{userId}/{groupId}/{subtaskId}")
+    @Transactional
+    public Response completeSubtaskSession(@PathParam("userId")long userId,@PathParam("groupId") long groupId,@PathParam("subtaskId") long subtaskId, @QueryParam("sessionId") long sessionId ) {
+        try{
+            groupService.completeSubtaskSession(userId,groupId,subtaskId,sessionId);
+            return Response.status(Response.Status.OK).build();
+
+        } catch (IllegalArgumentException e){
+            return Response.status(Response.Status.NOT_FOUND)
+                .entity(e.getMessage())
+                .build();
+        }
+    }
+
+
+    @PUT
     @Path("/completeBySessions/{groupId}")
     @Transactional
-    public Response completeSharedBySessions(@PathParam("groupId") long groupId) {
+    public Response completeGroupBySessions(@PathParam("groupId") long groupId) {
         try {
             groupService.completeSharedBySessions(groupId);
             return Response.status(Response.Status.OK).build();
@@ -186,7 +204,7 @@ public class GroupEndpoint {
         }
     }
 
-    @POST
+    @PUT
     @Path("/forceCompletion/{groupId}")
     @Transactional
     public Response forceCompletion(@PathParam("groupId") long groupId, @QueryParam("userId") long userId) {
@@ -200,12 +218,12 @@ public class GroupEndpoint {
         }
     }
 
-    @POST
+    @PUT
     @Path("/handleLimitExceeded/{groupId}")
     @Transactional
-    public Response handleLimitExceeded(@PathParam("groupId") long groupId, SessionDTO sessionDTO) {
+    public Response handleLimitExceeded(@PathParam("groupId") long groupId,@QueryParam("sessionId") long sessionId) {
         try {
-            groupService.handleLimitExceeded(sessionDTO, groupId);
+            groupService.handleLimitExceeded(sessionId, groupId);
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -213,8 +231,8 @@ public class GroupEndpoint {
                     .build();
         }
     }
-    @POST
-    @Path("/{groupId}/users/{userId}/subtasks/{subtaskId}")
+    @PUT
+    @Path("/joinGroup/{groupId}/users/{userId}/subtasks/{subtaskId}")
     public Response joinGroup(
             @PathParam("groupId") long groupId,
             @PathParam("userId") long userId,
@@ -231,10 +249,9 @@ public class GroupEndpoint {
     }
 
 
-    @POST
+    @PUT
     @Path("/{groupId}/leave/{userId}")
     @Transactional
-    @RolesAllowed({"USER"})
     public Response leaveGroup(@PathParam("groupId") long groupId, @PathParam("userId") long userId) {
         try {
             groupService.leaveGroup(groupId, userId);return Response.ok().build();
@@ -258,16 +275,26 @@ public class GroupEndpoint {
         }
     }
 
-    @POST
-    @Path("/{groupId}/exchangeRequest/{requestId}/process/{receiverId}")
+    @GET
+    @Path("/exchangeRequest/{userId}")
+    public Response getPendingExchangeRequests(@PathParam("userId") long userId) {
+        try {
+            List<RequestDTO> requests = groupService.getPendingExchangeRequests(userId);
+            return Response.ok(requests).build();
+        } catch (Exception e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @PUT
+    @Path("/{groupId}/exchangeRequest/{requestId}/process")
     @Transactional
     public Response processExchangeRequest(
             @PathParam("groupId") long groupId,
-            @PathParam("receiverId") long receiverId,
             @PathParam("requestId") long requestId,
             @QueryParam("accept") boolean accept) {
         try {
-            groupService.processExchangeRequest(groupId, receiverId, requestId, accept);
+            groupService.processExchangeRequest(groupId, requestId, accept);
             return Response.ok().build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -275,14 +302,15 @@ public class GroupEndpoint {
     }
 
     @DELETE
-    @Path("/{groupId}/remove/{userId}")
+    @Path("/{groupId}/remove/{adminId}/{userId}")
     @Transactional
     public Response removeMemberFromGroup(
             @PathParam("groupId") long groupId,
+            @PathParam("adminId") long adminId,
             @PathParam("userId") long userId,
             @QueryParam("substitute") boolean substitute) {
         try {
-            groupService.removeMemberFromGroup(groupId, userId, substitute);
+            groupService.removeMemberFromGroup(groupId, adminId, userId, substitute);
             return Response.ok().build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();

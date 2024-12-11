@@ -2,7 +2,9 @@ package orm;
 
 import domain.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserDTO {
     private long id;
@@ -12,9 +14,10 @@ public class UserDTO {
     private String description;
     private Sex sex;
     private ProfileDTO personalProfile;
-    private Role userRole;
+    private boolean isProfileCompleted;
 
-    public UserDTO() {}
+    public UserDTO() {
+    }
 
     public UserDTO(User user) {
         this.id = user.getId();
@@ -24,17 +27,26 @@ public class UserDTO {
         this.description = user.getDescription();
         this.sex = user.getSex();
         this.personalProfile = new ProfileDTO(user.getPersonalProfile());
-        this.userRole = user.getUserRole();
+        this.isProfileCompleted = user.isProfileComplete();
 
     }
+
+    public UserDTO(long id, int age, String profession, List<String> qualifications, String descriptions, Sex sex, ProfileDTO personalProfile, Role userRole) {
+        this.id = id;
+        this.age = age;
+        this.profession = profession;
+        this.qualifications = qualifications;
+        this.description = descriptions;
+        this.sex = sex;
+        this.personalProfile = personalProfile;
+
+
+
+    }
+
+
     public long getId() {
         return id;
-    }
-    public Role getUserRole() {
-        return userRole;
-    }
-    public void setUserRole(Role userRole) {
-        this.userRole = userRole;
     }
     public int getAge() {
         return age;
@@ -72,5 +84,13 @@ public class UserDTO {
     public void setPersonalProfile(ProfileDTO personalProfile){
         this.personalProfile = personalProfile;
     }
+
+    public boolean isProfileCompleted() {
+        return isProfileCompleted;
+    }
+    public void setProfileCompleted(boolean isProfileCompleted) {
+        this.isProfileCompleted = isProfileCompleted;
+    }
+
 
 }

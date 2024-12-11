@@ -16,7 +16,7 @@ public class Shared extends Task {
     private LocalDateTime dateOnFeed;
     private String userGuidance;
 
-    @OneToMany(mappedBy = "commentedTask", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "commentedTask", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
     public Shared() {
@@ -24,9 +24,11 @@ public class Shared extends Task {
 
     public Shared(String name, User user, Topic topic, @Nullable LocalDateTime deadline,
                   String description, @Nullable List<Subtask> subtasks, List<Session> sessions, int percentageOfCompletion, int priority,
-                  Set<Timetable> timeTable, int totalTime, List<StrategyInstance> strategies, List<Resource> resources) {
+                  Timetable timeTable, int totalTime, List<StrategyInstance> strategies, List<Resource> resources,@Nullable String userGuidance) {
         super(name,user, description, subtasks, sessions, deadline, percentageOfCompletion, priority, totalTime, topic, timeTable, strategies, resources);
         Feed.getInstance().getShared().add(this);
+        this.dateOnFeed = LocalDateTime.now();
+        this.userGuidance = userGuidance;
     }
 
     public LocalDateTime getDateOnFeed() {
@@ -50,16 +52,20 @@ public class Shared extends Task {
     }
 
     public void bestComment(Comment comment) {
-        if (this.getUser().getTasks().contains(this)) {
-            for(Comment c : this.getComments()) {
-                if(c.getIsBest()){
-                    throw new UnsupportedOperationException("The best comment has been already selected");
+        for (Task task : this.getUser().getTasks()) {
+            if (task.getName().equals(this.getName())) {
+                for (Comment c : this.getComments()) {
+                    if (c.getIsBest()) {
+                        throw new UnsupportedOperationException("The best comment has been already selected");
+                    }
                 }
+                comment.setIsBest(true);
+                comment.getAuthor().incrementTopicScore(this.getTopic());
             }
-            comment.setIsBest(true);
-            comment.getAuthor().incrementTopicScore(this.getTopic());
         }
     }
+
+
 
     @Override
     public void toCalendar() {
@@ -72,27 +78,18 @@ public class Shared extends Task {
     @Override
     public void handleLimitExceeded() {
         // Rimuovo il task dal calendario, sposto il task dalla cartella InProgress a quella Freezed e lo rimuovo dal feed
-        removeAndFreezeTask(this.getUser(), this);
+        removeAndFreezeTask(this.getUser());
         Feed.getInstance().getShared().remove(this);
         Feed.getInstance().getContributors().add((this.getUser()));
     }
 
     @Override
     public void deleteTask() {
-        this.getUser().getCalendar().removeSessions(this);
-        List<Folder> folders = this.getUser().getFolders();
-        boolean taskRemoved = false;
-        for (Folder folder : folders) {
-            for (Subfolder subfolder : folder.getSubfolders()) {
-                if (!taskRemoved && subfolder.getTasks().contains(this)) {
-                    subfolder.getTasks().remove(this);
-                    taskRemoved = true;
-                }
-            }
+        if (this.getState() == TaskState.INPROGRESS) {
+            this.getUser().getCalendar().removeSessions(this);
+            Feed.getInstance().getShared().remove(this);
+            Feed.getInstance().getContributors().remove((this.getUser()));
         }
-        Feed.getInstance().getShared().remove(this);
-        Feed.getInstance().getContributors().add((this.getUser()));
-
     }
 
     @Override
@@ -104,14 +101,14 @@ public class Shared extends Task {
 
     @Override
     public void completeTaskBySessions() {
-        commonCompleteBySessionsLogic(this.getUser());
+        this.commonCompleteBySessionsLogic(this.getUser());
         Feed.getInstance().getShared().remove(this);
-        Feed.getInstance().getContributors().add((this.getUser()));
+        Feed.getInstance().getContributors().remove((this.getUser()));
     }
 
     public void completeBySessionsAndChooseBestComment(Comment comment) {
         if (comments.contains(comment)) {
-            commonCompleteBySessionsLogic(getUser());
+            this.commonCompleteBySessionsLogic(this.getUser());
             Feed.getInstance().getShared().remove(this);
             Feed.getInstance().getContributors().add((this.getUser()));
             bestComment(comment);
@@ -120,42 +117,16 @@ public class Shared extends Task {
 
     @Override
     public void forcedCompletion() {
-        commonForcedCompletionLogic(this.getUser());
+        this.commonForcedCompletionLogic(this.getUser());
         Feed.getInstance().getShared().remove(this);
         Feed.getInstance().getContributors().add((this.getUser()));
     }
 
-
+    //giustamente non rimuovo il task dal calendario
     public void removeTaskJustFromFeed() {
         // Rimuovi il task dal feed
         Feed.getInstance().getShared().remove(this);
-        Feed.getInstance().getContributors().add((this.getUser()));
-
-        List<Folder> folders = this.getUser().getFolders();
-        boolean taskRemovedFromShared = false;
-
-        for (Folder folder : folders) {
-            // Rimuove il task solo se è nella cartella SHARED
-            if (folder.getFolderType() == FolderType.SHARED && !taskRemovedFromShared) {
-                for (Subfolder subfolder : folder.getSubfolders()) {
-                    if (subfolder.getTasks().contains(this)) {
-                        subfolder.getTasks().remove(this);
-                        taskRemovedFromShared = true; // Indica che è stato rimosso da SHARED
-                        break;
-                    }
-                }
-            }
-
-            // Aggiunge il task alla cartella PERSONAL se è stato rimosso da SHARED
-            if (folder.getFolderType() == FolderType.PERSONAL && taskRemovedFromShared) {
-                for (Subfolder subfolder : folder.getSubfolders()) {
-                    if (subfolder.getType() == SubfolderType.INPROGRESS) {
-                        subfolder.getTasks().add(this);
-                        break; // Aggiunto, non serve continuare
-                    }
-                }
-            }
-        }
+        Feed.getInstance().getContributors().add(this.getUser());
     }
 
     

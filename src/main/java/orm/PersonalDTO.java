@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PersonalDTO {
-    private final long id;
+    private  long id;
     private String name;
     private UserDTO user;
     private long userId;
@@ -26,16 +26,15 @@ public class PersonalDTO {
     private TaskState taskState;
     private int complexity;
     private int priority;
-    private Set<Timetable> timetable = new HashSet<>();
+    private Timetable timetable;
     private List<StrategyInstance> strategies = new ArrayList<>();
     private List<ResourceDTO> resources;
 
     public PersonalDTO() {
-        this.id = -1;
     }
     public PersonalDTO(long id, String name, long userId , String description, int percentageOfCompletion,LocalDateTime deadline,
                        boolean isInProgress,int totalTime,List<SubtaskDTO> subtasks,List<SessionDTO> sessions,Topic topic,TaskState taskState,
-                       Set<Timetable> timetable,List<StrategyInstance> strategies,List<ResourceDTO> resources) {
+                       Timetable timetable,List<StrategyInstance> strategies,List<ResourceDTO> resources) {
         this.id = id;
         this.name = name;
         this.userId = userId;
@@ -61,7 +60,7 @@ public class PersonalDTO {
         this.description = personal.getDescription();
         this.percentageOfCompletion = personal.getPercentageOfCompletion();
         this.deadline = personal.getDeadline();
-        this.isInProgress = personal.isInProgress();
+        this.isInProgress = personal.getIsInProgress();
         this.totalTime = personal.getTotalTime();
         this.resources = personal.getResources().stream().map(ResourceDTO::new).collect(Collectors.toList());
         this.subtasks = personal.getSubtasks().stream().map(SubtaskDTO::new).collect(Collectors.toList());
@@ -71,7 +70,7 @@ public class PersonalDTO {
         this.priority = personal.getPriority();
         this.complexity = personal.getComplexity();
         this.resources = personal.getResources().stream().map(ResourceDTO::new).collect(Collectors.toList());
-        this.timetable.addAll(personal.getTimetable());
+        this.timetable = personal.getTimetable();
         this.sessions = personal.getSessions().stream().map(SessionDTO::new).collect(Collectors.toList());
     }
     public long getId() {
@@ -170,10 +169,10 @@ public class PersonalDTO {
     public void setPriority(int priority) {
         this.priority = priority;
     }
-    public Set<Timetable> getTimetable() {
+    public Timetable getTimetable() {
         return timetable;
     }
-    public void setTimetable(Set<Timetable> timetable) {
+    public void setTimetable(Timetable timetable) {
         this.timetable = timetable;
     }
     public List<StrategyInstance> getStrategies() {

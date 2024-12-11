@@ -31,8 +31,8 @@ public class UserMapper {
                 userDTO.getSex(),
                 userDTO.getDescription(),
                 userDTO.getQualifications(),
-                userDTO.getProfession(),
-                profile
+                userDTO.getProfession()
+                /*profile*/
         );
     }
 

@@ -16,15 +16,16 @@ public class RegistrationDTO {
     @Size(min = 8, message = "Password must be at least 8 characters long.")
     private String password;
 
-    @NotBlank(message = "Email is required.")
+    /*@NotBlank(message = "Email is required.")
     @Email(message = "Invalid email format.")
-    private String email;
+    private String email;*/
 
+    public RegistrationDTO() {}
 
     public RegistrationDTO(Profile userProfile) {
         this.username = userProfile.getUsername();
         this.password = userProfile.getPassword();
-        this.email = userProfile.getEmail();
+      /*  this.email = userProfile.getEmail();*/
     }
 
     // Getters and setters
@@ -44,7 +45,7 @@ public class RegistrationDTO {
         this.password = password;
     }
 
-    public String getEmail() {
+ /*   public String getEmail() {
         return email;
     }
 
@@ -58,5 +59,5 @@ public class RegistrationDTO {
                 "username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 '}';
-    }
+    }*/
 }

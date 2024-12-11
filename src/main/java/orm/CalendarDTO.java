@@ -4,8 +4,11 @@ import domain.Calendar;
 import domain.User;
 
 public class CalendarDTO {
-    private final long id;
-    private final User user;
+    private  long id;
+    private  User user;
+
+    public CalendarDTO() {}
+
     public CalendarDTO(Calendar calendar) {
         this.id = calendar.getId();
         this.user = calendar.getUser();

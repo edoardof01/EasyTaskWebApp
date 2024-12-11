@@ -13,7 +13,7 @@ public class Calendar {
     @OneToOne
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany
     private List<Session> sessions = new ArrayList<>();
 
     public Calendar(){}
@@ -35,14 +35,11 @@ public class Calendar {
     }
     public void addSessions(List<Session> newSessions) {
         for (Session newSession : newSessions) {
-            // Verifica se la nuova sessione si sovrappone a quelle già nel calendario
-            for (Session existingSession : sessions) {
-                if (newSession.overlaps(existingSession)) {
-                    throw new IllegalArgumentException("Session " + newSession + " overlaps with an existing session. CLASS CALENDAR");
-                }
+            if (sessions.stream().anyMatch(existingSession -> existingSession.equals(newSession))) {
+                throw new IllegalArgumentException("Session already exists in the calendar: " + newSession);
             }
         }
-        // Se non ci sono sovrapposizioni, aggiungi le nuove sessioni
+        // Se non ci sono duplicati, aggiungi le nuove sessioni
         sessions.addAll(newSessions);
     }
 
@@ -56,25 +53,24 @@ public class Calendar {
                     break;
                 }
             }
-            if (!found) {
-                throw new IllegalArgumentException("The task isn't in the calendar. Missing session: " + taskSession+ ". ClASS CALENDAR");
-            }
+           /* if (!found) {
+                throw new IllegalArgumentException("The task isn't in the calendar. Missing session: " + taskSession+ ". ClASS CALENDAR removeSessions");
+            }*/
         }
         sessions.removeAll(task.getSessions());
     }
 
-
-    public List<Session> getSessionsSortedByStartDate(List<Session> sessions) {
-        return sessions.stream()
-                .sorted(Comparator.comparing(Session::getStartDate))
-                .toList();
-    }
     public void addSubtaskSessionsForGroups(Subtask subtask){
-        sessions.addAll(subtask.getSessions());
+        this.sessions.addAll(subtask.getSessions());
     }
-    public void removeSubtaskSessionsForGroups(Subtask subtask){
-        subtask.getSessions().forEach(sessions::remove);
+    public void removeSubtaskSessionsForGroups(Subtask subtask) {
+        subtask.getSessions().forEach(session -> {
+
+            this.sessions.remove(session);
+        });
     }
+
+
 
 
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -15,14 +16,14 @@ public class User {
 
     private int age;
 
+    private boolean isProfileComplete;
+
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
     @Column(length = 1000)
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private Role userRole;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> qualifications;
@@ -36,49 +37,47 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Calendar calendar;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private CommentedFolder commentedFolder;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private final List<Folder> folders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private final List<Task> tasks = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private  List<Task> tasks = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Request> requests = new ArrayList<>();
+
 
     public User() {}
 
-    public User(int age, Sex sex, String description, List<String> qualifications, String profession, @NotNull Profile personalProfile) {
+    public User(int age, Sex sex, String description, List<String> qualifications, String profession/*, @NotNull Profile personalProfile*/) {
         this.age = age;
         this.description = description;
         this.sex = sex;
         this.qualifications = qualifications;
         this.profession = profession;
-        this.personalProfile = personalProfile;
-        personalProfile.setUser(this);
-        this.userRole = Role.USER;
+       /* this.personalProfile = personalProfile;*/
 
-        // Creazione dei Folder per ciascun FolderType
-        this.folders.add(new Folder(FolderType.PERSONAL,this));
-        this.folders.add(new Folder(FolderType.SHARED, this));
-        this.folders.add(new Folder(FolderType.GROUP,this));
+
         this.calendar = new Calendar();
+        calendar.setUser(this); ///Prima non c'era. Strano
         CommentedFolder commentedFolder = new CommentedFolder();
         commentedFolder.setUser(this);
         this.commentedFolder = commentedFolder;
 
     }
 
-    public Role getUserRole() {
-        return userRole;
-    }
-    public void setUserRole(Role userRole) {
-        this.userRole = userRole;
-    }
     public long getId() {
         return id;
     }
     public void setId(long id) {
         this.id = id;
+    }
+    public boolean isProfileComplete() {
+        return isProfileComplete;
+    }
+    public void setProfileComplete(boolean isProfileComplete) {
+        this.isProfileComplete = isProfileComplete;
     }
     public int getAge() {
         return age;
@@ -116,14 +115,22 @@ public class User {
     public Calendar getCalendar() {
         return calendar;
     }
-    public List<Folder> getFolders() {
-        return folders;
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
     }
+    public List<Request> getPendingRequests(){
+        return requests;
+    }
+
+    
     public List<Task> getTasks() {
         return tasks;
     }
     public CommentedFolder getCommentedFolder() {
         return commentedFolder;
+    }
+    public void setCommentedFolder(CommentedFolder commentedFolder) {
+        this.commentedFolder = commentedFolder;
     }
     public void setPersonalProfile(Profile personalProfile) {
         this.personalProfile = personalProfile;
@@ -135,16 +142,40 @@ public class User {
         personalProfile.getTopics().put(topic, personalProfile.getTopics().get(topic)+1);
     }
 
-    public void makeComment(String content , Shared shared) {
-        if (content.isEmpty()) {
+    public Comment makeComment(String content, Shared shared) {
+        if (content == null || content.isEmpty()) {
             throw new IllegalArgumentException("Content cannot be empty");
         }
-        if (shared == null || !Feed.getInstance().getShared().contains(shared)) {
-            return;
+        if (shared == null) {
+            throw new IllegalArgumentException("Invalid shared task");
         }
         Comment comment = new Comment(content, this, shared);
         shared.getComments().add(comment);
         this.getCommentedFolder().getShared().add(shared);
+        return comment;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return  age == user.age &&
+                Objects.equals(sex, user.sex) &&
+                Objects.equals(description, user.description) &&
+                Objects.equals(qualifications, user.qualifications) &&
+                Objects.equals(profession, user.profession) &&
+                Objects.equals(personalProfile.getUsername(), user.personalProfile.getUsername());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, age, sex, description, qualifications, profession, personalProfile.getUsername());
+    }
+
+
+
+
+
 }
 

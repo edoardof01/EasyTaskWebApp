@@ -37,9 +37,6 @@ public class UserService {
     private CalendarDAO calendarDAO;
 
     @Inject
-    private FolderDAO folderDAO;
-
-    @Inject
     private ProfileDAO profileDAO;
 
 
@@ -69,35 +66,76 @@ public class UserService {
     }
 
 
-    @Transactional public UserDTO createUser(int age, Sex sex, String description, List<String> qualifications, String profession, Profile personalProfile) {
-        UserDTO result = null;
-        try {
-            User user = new User(age, sex, description, qualifications, profession, personalProfile); // Debug
-            logger.debug("Salvando l'utente: {}", user);
-            userDAO.save(user);
-            profileDAO.save(personalProfile);
-            logger.debug("Utente salvato con ID: {}", user.getId());
-            CommentedFolder commentedFolder = user.getCommentedFolder();
-            commentedFolder.setUser(user);
-            commentedFolderDAO.save(commentedFolder);
-            logger.debug("CommentedFolder salvato con ID: {}", commentedFolder.getId());
-            Calendar calendar = user.getCalendar();
-            calendar.setUser(user);
-            calendarDAO.save(calendar);
-            logger.debug("Calendar salvato con ID: {}", calendar.getId());
-            for (Folder folder : user.getFolders()) {
-                folder.setUser(user);
-                folderDAO.save(folder);
-                logger.debug("Folder salvato con ID: {}", folder.getId());
-            }
-            result = userMapper.toUserDTO(user);
-        } catch (Exception e) {
-            logger.error("Errore durante la creazione dell'utente", e);
-            throw new RuntimeException("Errore durante la creazione dell'utente", e);
+    @Transactional
+    public UserDTO createUser(int age, Sex sex, String description, List<String> qualifications, String profession, String username) {
+        User user = userDAO.findByUsername(username);
+        // Verifica se l'utente ha già un profilo
+        if (user.isProfileComplete()) {
+            throw new IllegalArgumentException("User profile already exists for this account.");
         }
-        return result;
+        if(age<16){
+            throw new IllegalArgumentException("you must be at least 16 years old.");
+        }
+        if(age>100){
+            throw new IllegalArgumentException("you can't be that old.");
+        }
+
+        // Crea il profilo e lo associa all'utente
+        user.setAge(age);
+        user.setSex(sex);
+        user.setDescription(description);
+        user.setQualifications(qualifications);
+        user.setProfession(profession);
+        user.setProfileComplete(true);
+        userDAO.update(user);
+        CommentedFolder commentedFolder = new CommentedFolder();
+        user.setCommentedFolder(commentedFolder);
+        commentedFolder.setUser(user);
+        commentedFolderDAO.save(commentedFolder);
+        Calendar calendar = new Calendar();
+        user.setCalendar(calendar);
+        calendar.setUser(user);
+        calendarDAO.save(calendar);
+
+        return userMapper.toUserDTO(user);
     }
 
+   /* @Transactional
+    public UserDTO createUser(int age, Sex sex, String description, List<String> qualifications, String profession, String username) {
+        User user = userDAO.findByUsername(username);
+        // Verifica se l'utente ha già un profilo
+        if (user.isProfileComplete()) {
+            throw new IllegalArgumentException("User profile already exists for this account.");
+        }
+        if(age<16){
+            throw new IllegalArgumentException("you must be at least 16 years old.");
+        }
+        if(age>100){
+            throw new IllegalArgumentException("you can't be that old.");
+        }
+
+        // Crea il profilo e lo associa all'utente
+        user.setAge(age);
+        user.setSex(sex);
+        user.setDescription(description);
+        user.setQualifications(qualifications);
+        user.setProfession(profession);
+        user.setProfileComplete(true);
+        userDAO.update(user);
+        CommentedFolder commentedFolder = user.getCommentedFolder();
+        commentedFolder.setUser(user);
+        commentedFolderDAO.save(commentedFolder);
+        Calendar calendar = user.getCalendar();
+        calendar.setUser(user);
+        calendarDAO.save(calendar);
+
+        return userMapper.toUserDTO(user);
+    }
+*/
+    public boolean hasUserProfile(String username) {
+        User user = userDAO.findByUsername(username);
+        return user.isProfileComplete();
+    }
 
 
     @Transactional
@@ -123,20 +161,39 @@ public class UserService {
 
     @Transactional
     public CommentDTO makeComment(long sharedId, CommentDTO commentDTO) {
-        User user = userDAO.findById(commentDTO.getAuthor().getId());
-        Shared shared = sharedDAO.findById(sharedId);
+        User user = userDAO.findById(commentDTO.getAuthorId());
+
         if (user == null) {
-            throw new IllegalArgumentException("User with the ID specified not found.");
+            throw new IllegalArgumentException("User with ID " + commentDTO.getAuthorId() + " not found.");
         }
-        Comment comment = commentMapper.toCommentEntity(commentDTO);
-        user.makeComment(comment.getContent(),shared);
-        sharedDAO.update(shared);
-        userDAO.update(user);
+
+        Shared shared = sharedDAO.findById(sharedId);
+        System.out.println("Shared correctly created. Name: " + shared.getName());
+        User taskOwner = userDAO.findById(shared.getUser().getId());
+        // Delego la logica al domain model
+        Comment comment = user.makeComment(commentDTO.getContent(), shared);
+        comment.setAuthor(user);
+
+
         commentDAO.save(comment);
-        commentedFolderDAO.update(user.getCommentedFolder());
+
+        // Persistenza
+        userDAO.update(user);
+        userDAO.update(taskOwner);
+        sharedDAO.update(shared); // Aggiorna il task condiviso con il nuovo commento
+
+       // Salva il commento
+        System.out.println("Comment created in User.makeComment:");
+        System.out.println("Author: " + comment.getAuthor().getPersonalProfile().getUsername());
+        System.out.println("Content: " + comment.getContent());
+        System.out.println("Shared Task: " + shared.getName());
+
 
         return commentMapper.toCommentDTO(comment);
     }
 
-
 }
+
+
+
+

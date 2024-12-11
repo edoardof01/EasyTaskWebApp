@@ -4,6 +4,7 @@ import domain.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,22 +36,24 @@ public class PersonalMapper {
         if(personalDTO == null) {
             return null;
         }
-        List<Subtask> subtasks = personalDTO.getSubtasks()
+        List<Subtask> subtasks = new ArrayList<>(personalDTO.getSubtasks()
                 .stream()
                 .map(subtaskMapper::toSubtaskEntity)
-                .toList();
+                .toList());
 
-        List<Resource> resources = personalDTO.getResources()
+        List<Resource> resources = new ArrayList<>(personalDTO.getResources()
                 .stream()
                 .map(resourceMapper::toResourceEntity)
-                .toList();
+                .toList());
+
+        List<Session> sessions = new ArrayList<>(personalDTO.getSessions()
+                .stream()
+                .map(sessionMapper::toSessionEntity)
+                .toList());
+
         UserDTO userDTO = userService.getUserByUsername(personalDTO.getUser().getPersonalProfile().getUsername());
         User user = userMapper.toUserEntity(userDTO);
 
-        List<Session> sessions = personalDTO.getSessions()
-                .stream()
-                .map(sessionMapper::toSessionEntity)
-                .toList();
 
         return new Personal(
                 personalDTO.getName(),

@@ -5,7 +5,9 @@ import domain.User;
 
 public class CommentedFolderDTO {
     private long id;
-    private final UserDTO user;
+    private  UserDTO user;
+
+    public CommentedFolderDTO() {}
 
     public CommentedFolderDTO(CommentedFolder folder) {
         this.user = new UserDTO(folder.getUser());

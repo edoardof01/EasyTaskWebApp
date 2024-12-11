@@ -29,6 +29,7 @@ public class GroupDAO {
     public void save(Group group) {
         entityManager.persist(group);
     }
+
     @Transactional
     public void update(Group group) {
         entityManager.merge(group);

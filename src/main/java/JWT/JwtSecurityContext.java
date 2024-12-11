@@ -1,4 +1,4 @@
-/*
+
 package JWT;
 import jakarta.ws.rs.core.SecurityContext;
 import java.security.Principal;
@@ -33,4 +33,4 @@ public class JwtSecurityContext implements SecurityContext {
         return "Bearer"; // Schema standard per token JWT
     }
 }
-*/
+

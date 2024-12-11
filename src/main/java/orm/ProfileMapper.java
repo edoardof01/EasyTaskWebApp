@@ -27,10 +27,10 @@ public class ProfileMapper {
         return new Profile(
                 profileDTO.getUsername(),
                 profileDTO.getPassword(),
-                topics, // Usa la mappa convertita
-                profileDTO.getEmail(),
+                topics // Usa la mappa convertita
+              /*  profileDTO.getEmail(),
                 profileDTO.isEmailVerified(),
-                profileDTO.getVerificationToken()
+                profileDTO.getVerificationToken()*/
         );
     }
     public void updateProfileFromDTO(Profile profile, ProfileDTO profileDTO) {
@@ -43,9 +43,9 @@ public class ProfileMapper {
         profile.setUsername(profileDTO.getUsername());
         profile.setPassword(profileDTO.getPassword());
         profile.setTopics(topics);
-        profile.setEmail(profileDTO.getEmail());
+        /*profile.setEmail(profileDTO.getEmail());
         profile.setEmailVerified(profileDTO.isEmailVerified());
-        profile.setVerificationToken(profileDTO.getVerificationToken());
+        profile.setVerificationToken(profileDTO.getVerificationToken());*/
     }
 
 }

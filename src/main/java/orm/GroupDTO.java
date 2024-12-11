@@ -8,27 +8,56 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GroupDTO {
-    private final long id;
+    private  long id;
+    private long userId;
     private String name;
     private String description;
     private int percentageOfCompletion;
     private LocalDateTime deadline;
-    private final LocalDateTime dateOnFeed;
+    private  LocalDateTime dateOnFeed;
     private boolean isInProgress;
     private int totalTime;
     private List<SubtaskDTO> subtasks;
     private List<SessionDTO> sessions;
-    private final Topic topic;
+    private  Topic topic;
     private TaskState taskState;
     private int complexity;
     private int priority;
-    private Set<Timetable> timetable;
+    private Timetable timetable;
     private List<StrategyInstance> strategies;
     private List<ResourceDTO> resources;
     private int numUser;
     private int actualMembers;
-    private final UserDTO user;
+    private  UserDTO user;
 
+
+    public GroupDTO(){}
+
+    public GroupDTO(long id, long userId, String name,  String description, int percentageOfCompletion, LocalDateTime deadline,
+                    LocalDateTime dateOnFeed, boolean isInProgress, int totalTime, List<SubtaskDTO> subtasks, List<SessionDTO> sessions, Topic topic,
+                    TaskState taskState, int complexity, int priority, Timetable timetable, List<StrategyInstance> strategies,
+                    List<ResourceDTO> resources,  int numUser,  int actualMembers){
+        this.id = id;
+        this.userId = userId;
+        this.name = name;
+        this.description = description;
+        this.percentageOfCompletion = percentageOfCompletion;
+        this.deadline = deadline;
+        this.dateOnFeed = dateOnFeed;
+        this.isInProgress = isInProgress;
+        this.totalTime = totalTime;
+        this.subtasks = subtasks;
+        this.sessions = sessions;
+        this.topic = topic;
+        this.taskState = taskState;
+        this.complexity = complexity;
+        this.priority = priority;
+        this.timetable = timetable;
+        this.strategies = strategies;
+        this.resources = resources;
+        this.numUser = numUser;
+        this.actualMembers = actualMembers;
+    }
     public GroupDTO(Group group) {
         this.id = group.getId();
         this.user = new UserDTO(group.getUser());
@@ -41,7 +70,7 @@ public class GroupDTO {
         this.dateOnFeed = group.getDateOnFeed();
         this.priority = group.getPriority();
         this.complexity = group.getComplexity();
-        this.isInProgress = group.isInProgress();
+        this.isInProgress = group.getIsInProgress();
         this.totalTime = group.getTotalTime();
         this.strategies = group.getStrategies();
         this.timetable= group.getTimetable();
@@ -145,10 +174,10 @@ public class GroupDTO {
     public void setPriority(int priority) {
         this.priority = priority;
     }
-    public Set<Timetable> getTimetable() {
+    public Timetable getTimetable() {
         return timetable;
     }
-    public void setTimetable(Set<Timetable> timetable) {
+    public void setTimetable(Timetable timetable) {
         this.timetable = timetable;
     }
     public List<StrategyInstance> getStrategies() {
@@ -178,7 +207,12 @@ public class GroupDTO {
     public void setActualMembers(int actualMembers) {
         this.actualMembers = actualMembers;
     }
-
+    public long getUserId() {
+        return userId;
+    }
+    public void setUserId(long userid) {
+        this.userId = userid;
+    }
 }
 
 

@@ -1,4 +1,4 @@
-/*
+
 package registration;
 
 import jakarta.inject.Inject;
@@ -16,13 +16,13 @@ public class RegisterEndpoint {
     public Response register(RegistrationDTO registrationDTO) {
         try {
             registerService.register(registrationDTO);
-            return Response.status(Response.Status.CREATED).entity("Registration successful. Check your email for confirmation.").build();
+            return Response.status(Response.Status.CREATED).entity("Registration successful.").build(); //add: Check your email for confirmation
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
 
-    @GET
+   /* @GET
     @Path("/confirm")
     public Response confirmEmail(@QueryParam("token") String token) {
         try {
@@ -31,6 +31,6 @@ public class RegisterEndpoint {
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
-    }
+    }*/
 }
-*/
+

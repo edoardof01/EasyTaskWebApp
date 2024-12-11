@@ -6,10 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
-
-import static domain.SubfolderType.*;
-
 
 
 @Entity
@@ -22,27 +20,22 @@ public abstract class Task {
     private String name;
     @Column(length = 1000)
     private String description;
-
     private LocalDateTime deadline;
     private int percentageOfCompletion;
     private int priority;
     private int totalTime;
     private int complexity;
-
     private int skippedSessions = 0;
     private int consecutiveSkippedSessions = 0;
     private boolean isInProgress = false;
-
-
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ElementCollection(fetch = FetchType.EAGER, targetClass = Timetable.class)
     @Enumerated(EnumType.STRING)
-    private Set<Timetable> timetable;
+    private Timetable timetable;
 
-    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Subtask> subtasks = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -64,7 +57,7 @@ public abstract class Task {
 
     public Task(String name,@NotNull User user, String description,@Nullable List<Subtask> subtasks, List<Session> sessions,
                 @Nullable LocalDateTime deadline, int percentageOfCompletion, int priority, int totalTime, Topic topic,
-               Set<Timetable> timetable, List<StrategyInstance> strategies, List<Resource> resources) {
+                Timetable timetable, List<StrategyInstance> strategies, List<Resource> resources) {
         this.name = name;
         this.description = description;
         this.deadline = deadline;
@@ -77,7 +70,7 @@ public abstract class Task {
         this.user = user;
         this.resources = resources;
         this.subtasks = subtasks;
-        setStrategies(strategies);
+        this.strategies = strategies;
         complexity = calculateComplexity();
         this.sessions = sessions;
     }
@@ -131,13 +124,13 @@ public abstract class Task {
     public void setState(TaskState state) {
         this.state = state;
     }
-    public Set<Timetable> getTimetable() {
+    public Timetable getTimetable() {
         return timetable;
     }
     public List<StrategyInstance> getStrategies() {
         return strategies;
     }
-    public void setTimetable(Set<Timetable> timetable) {
+    public void setTimetable(Timetable timetable) {
         this.timetable = timetable;
     }
     public User getUser() {
@@ -170,7 +163,7 @@ public abstract class Task {
     public void setResources(List<Resource> resources) {
         this.resources = resources;
     }
-    public boolean isInProgress() {
+    public boolean getIsInProgress() {
         return isInProgress;
     }
 
@@ -179,16 +172,22 @@ public abstract class Task {
         if (session.getState() != SessionState.PROGRAMMED) {
             throw new IllegalStateException("Only sessions programmed can be completed.");
         }
-        session.setState(SessionState.COMPLETED);
-        resetConsecutiveSkippedSessions();
-        int completedCounter = 0;
-        for(Session taskSession : sessions) {
-            if(taskSession.getState() != SessionState.COMPLETED) {
-                completedCounter += 1;
-            }
+        if(!doExistNextSession(session)) {
+            completeTaskBySessions();
         }
-        percentageOfCompletion = (completedCounter / sessions.size())*100;
-        this.setPercentageOfCompletion(percentageOfCompletion);
+        else {
+            session.setState(SessionState.COMPLETED);
+            resetConsecutiveSkippedSessions();
+            int completedCounter = 0;
+            for (Session taskSession : sessions) {
+                if (taskSession.getState() != SessionState.COMPLETED) {
+                    completedCounter += 1;
+                }
+            }
+
+            int percentageOfCompletion = (completedCounter / sessions.size()) * 100;
+            this.setPercentageOfCompletion(percentageOfCompletion);
+        }
     }
 
     public int calculateComplexity() {
@@ -260,59 +259,35 @@ public abstract class Task {
         }
     }
 
-
     protected void commonToCalendarLogic(User user) {
-        if (this.isInProgress()) {
+        if (this.getIsInProgress()) {
             throw new UnsupportedOperationException("It's already in calendar");
         }
         if (this.getState() == TaskState.FINISHED) {
             throw new UnsupportedOperationException("It can't be brought to inProgress");
         }
-        this.updateIsInProgress();
+        this.setIsInProgress(true);
+        this.setState(TaskState.INPROGRESS);
         user.getCalendar().addSessions(this.getSessions());
-        List<Folder> folders = user.getFolders();
-        boolean taskRemoved = false;
-        for (Folder folder : folders) {
-            for (Subfolder subfolder : folder.getSubfolders()) {
-                if (!taskRemoved && subfolder.getTasks().contains(this)) {
-                    subfolder.getTasks().remove(this);
-                    taskRemoved = true;
-                }
-                if (subfolder.getType() == INPROGRESS) {
-                    subfolder.getTasks().add(this);
-                }
-            }
-        }
+
     }
+
     public void commonModifyLogic(User user){
         if (this.getState() == TaskState.FINISHED) {
             throw new UnsupportedOperationException("It can't be brought to freezed");
         }
-        this.setState(TaskState.FREEZED);
-        this.isInProgress = false;
-
-        user.getCalendar().removeSessions(this);
-
-        List<Folder> folders = user.getFolders();
-        boolean taskRemoved = false;
-        for (Folder folder : folders) {
-            for (Subfolder subfolder : folder.getSubfolders()) {
-                if (!taskRemoved && subfolder.getTasks().contains(this)) {
-                    subfolder.getTasks().remove(this);
-                    taskRemoved = true;
-                }
-                if (subfolder.getType() == FREEZED) {
-                    subfolder.getTasks().add(this);
-                }
-            }
+        if(this.getIsInProgress() && this.getState() == TaskState.INPROGRESS) {
+            user.getCalendar().removeSessions(this);
+            this.setState(TaskState.FREEZED);
         }
+        this.isInProgress = false;
 
     }
 
     public void commonCompleteBySessionsLogic(User user) {
         // Ottieni la sessione con l'ultima endDate
         Session lastSession = this.getSessions().stream()
-                .max((s1, s2) -> s1.getEndDate().compareTo(s2.getEndDate()))
+                .max(Comparator.comparing(Session::getEndDate))
                 .orElseThrow(() -> new IllegalStateException("No sessions available for this task"));
 
         // Verifica che tutte le sessioni tranne l'ultima siano COMPLETED
@@ -330,7 +305,6 @@ public abstract class Task {
         lastSession.setState(SessionState.COMPLETED);
 
         for (Subtask subtask : this.getSubtasks()) {
-            boolean found = false; // Variabile per tracciare se troviamo la sessione finale nel subtask
             for (Session session : subtask.getSessions()) {
                 if(session.getState()!=SessionState.COMPLETED) {
                     session.setState(SessionState.COMPLETED);
@@ -348,21 +322,9 @@ public abstract class Task {
         user.getCalendar().removeSessions(this);
         this.percentageOfCompletion = 100;
         this.setState(TaskState.FINISHED);
+        this.isInProgress = false;
 
-        // Aggiorna le cartelle
-        List<Folder> folders = user.getFolders();
-        boolean taskRemoved = false;
-        for (Folder folder : folders) {
-            for (Subfolder subfolder : folder.getSubfolders()) {
-                if (!taskRemoved && subfolder.getTasks().contains(this)) {
-                    subfolder.getTasks().remove(this);
-                    taskRemoved = true;
-                }
-                if (subfolder.getType() == FINISHED) {
-                    subfolder.getTasks().add(this);
-                }
-            }
-        }
+
     }
 
 
@@ -382,19 +344,7 @@ public abstract class Task {
         this.setState(TaskState.FINISHED);
         this.percentageOfCompletion = 100;
         user.getCalendar().removeSessions(this);
-        List<Folder> folders = user.getFolders();
-        boolean taskRemoved = false;
-        for (Folder folder : folders) {
-            for (Subfolder subfolder : folder.getSubfolders()) {
-                if (!taskRemoved && subfolder.getTasks().contains(this)) {
-                    subfolder.getTasks().remove(this);
-                    taskRemoved = true;
-                }
-                if (subfolder.getType() == FINISHED) {
-                    subfolder.getTasks().add(this);
-                }
-            }
-        }
+
     }
 
     // METODI PER LE SESSIONI SALTATE
@@ -415,6 +365,24 @@ public abstract class Task {
         }
         if (!sessionFound) {
             throw new IllegalStateException("Session not found in any subtask. CLASS TASK skipSession");
+        }
+
+        // Verifica se la strategia specifica è abilitata
+        boolean shouldAddAtEnd = strategies.stream()
+                .anyMatch(strategyInstance -> strategyInstance.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING
+                        && !strategyInstance.getStrategy().requiresTot()
+                        && !strategyInstance.getStrategy().requiresMaxConsecSkipped());
+
+        if (shouldAddAtEnd) {
+            // Calcola la nuova data per la sessione saltata
+            LocalDateTime newStartDate = calculateNewSessionDate(session);
+            LocalDateTime newEndDate = newStartDate.plusMinutes(session.getDurationMinutes());
+
+            // Crea la nuova sessione
+            Session newSession = new Session(newStartDate, newEndDate);
+
+            // Aggiungi la nuova sessione
+            addSessionAtEnd(newSession);
         }
 
         skippedSessions++;
@@ -442,6 +410,64 @@ public abstract class Task {
             handleLimitExceeded();
         }
     }
+
+    private LocalDateTime calculateNewSessionDate(Session skippedSession) {
+        LocalDateTime lastSessionEnd = sessions.stream()
+                .map(Session::getEndDate)
+                .max(LocalDateTime::compareTo)
+                .orElse(LocalDateTime.now());
+
+        // Inizia con due giorni dopo la fine dell'ultima sessione
+        LocalDateTime candidateDate = lastSessionEnd.plusDays(2).withHour(skippedSession.getStartDate().getHour())
+                .withMinute(skippedSession.getStartDate().getMinute());
+
+        // Trova una data e un orario validi
+        while (!isValidSessionTime(candidateDate, skippedSession.getDurationMinutes())) {
+            candidateDate = candidateDate.plusMinutes(30); // Slitta di 30 minuti
+        }
+
+        return candidateDate;
+    }
+
+    private boolean isValidSessionTime(LocalDateTime startDate, int durationMinutes) {
+        LocalDateTime endDate = startDate.plusMinutes(durationMinutes);
+
+        // Verifica se la sessione rientra nella timetable del task
+        boolean isWithinTimetable = isWithinTimeSlot(startDate.toLocalTime(), endDate.toLocalTime());
+
+        // Verifica se non ci sono conflitti con sessioni esistenti
+        boolean hasNoConflict = sessions.stream().noneMatch(session ->
+                startDate.isBefore(session.getEndDate()) && endDate.isAfter(session.getStartDate()));
+
+        return isWithinTimetable && hasNoConflict;
+    }
+
+    private boolean isWithinTimeSlot(LocalTime startTime, LocalTime endTime) {
+        return switch (timetable) {
+            case MORNING -> !startTime.isBefore(LocalTime.of(6, 0)) && endTime.isBefore(LocalTime.of(12, 0));
+            case AFTERNOON -> !startTime.isBefore(LocalTime.of(12, 0)) && endTime.isBefore(LocalTime.of(18, 0));
+            case EVENING -> !startTime.isBefore(LocalTime.of(18, 0)) && endTime.isBefore(LocalTime.of(23, 59));
+            case NIGHT -> !startTime.isBefore(LocalTime.of(0, 0)) && endTime.isBefore(LocalTime.of(6, 0));
+            case MORNING_AFTERNOON ->
+                    (!startTime.isBefore(LocalTime.of(6, 0)) && endTime.isBefore(LocalTime.of(18, 0)));
+            case AFTERNOON_EVENING ->
+                    (!startTime.isBefore(LocalTime.of(12, 0)) && endTime.isBefore(LocalTime.of(23, 59)));
+            case EVENING_NIGHT ->
+                    (!startTime.isBefore(LocalTime.of(18, 0)) && endTime.isBefore(LocalTime.of(6, 0)));
+            case NIGHT_MORNING ->
+                    (!startTime.isBefore(LocalTime.of(0, 0)) && endTime.isBefore(LocalTime.of(12, 0)));
+            case ALL_DAY -> true;  // Copre l'intera giornata
+        };
+    }
+
+
+
+
+    private void addSessionAtEnd(Session newSession) {
+        sessions.add(newSession); // Aggiungi la sessione alla lista
+        sessions.sort(Comparator.comparing(Session::getStartDate)); // Riordina per data
+    }
+
 
     public void resetConsecutiveSkippedSessions() {
         consecutiveSkippedSessions = 0;
@@ -477,44 +503,22 @@ public abstract class Task {
                 .orElse(null);
     }
 
+    public boolean doExistNextSession(Session session) {
+        return sessions.stream()
+                .filter(s -> !s.getStartDate().isBefore(session.getEndDate()))
+                .min(Comparator.comparing(Session::getStartDate))
+                .isPresent();
+    }
 
 
-    protected void removeAndFreezeTask(User user, Task task) {
+
+
+    protected void removeAndFreezeTask(User user) {
         // Rimuove le sessioni del task dal calendario
-        user.getCalendar().removeSessions(task);
-
+        user.getCalendar().removeSessions(this);
         // Imposta lo stato del task a FREEZED
-        task.setState(TaskState.FREEZED);
+        this.setState(TaskState.FREEZED);
         this.isInProgress = false;
-
-        // Trova la subfolder corrente del task e lo rimuove
-        List<Folder> folders = user.getFolders();
-        boolean taskMoved = false;
-
-        for (Folder folder : folders) {
-            for (Subfolder subfolder : folder.getSubfolders()) {
-                if (subfolder.getTasks().remove(task)) {
-                    taskMoved = true;
-                    break; // Una volta rimosso, possiamo interrompere il ciclo
-                }
-            }
-            if (taskMoved) {
-                break; // Una volta trovato il folder, possiamo interrompere il ciclo
-            }
-        }
-
-        // Aggiunge il task alla subfolder FREEZED
-        for (Folder folder : folders) {
-            for (Subfolder subfolder : folder.getSubfolders()) {
-                if (subfolder.getType() == SubfolderType.FREEZED) {
-                    subfolder.getTasks().add(task);
-                    return; // Task aggiunto, fine del metodo
-                }
-            }
-        }
-
-        // Se non esiste una subfolder FREEZED, lancia un'eccezione
-        throw new IllegalStateException("No FREEZED subfolder found to move the task.");
     }
 
 
@@ -526,12 +530,24 @@ public abstract class Task {
         this.state = TaskState.INPROGRESS;
     }
 
+    public void setIsInProgress(boolean isIt){
+        this.isInProgress = isIt;
+    }
+
     public abstract void deleteTask();
     public abstract void modifyTask();
 
     public abstract void completeTaskBySessions();
 
     public abstract void forcedCompletion();
+
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Objects.equals(this.getName(), task.getName()) && this.getTopic() == task.getTopic() && this.getTotalTime() == task.getTotalTime();
+    }
+
 }
 
 

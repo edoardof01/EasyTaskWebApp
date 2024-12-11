@@ -12,10 +12,8 @@ public class Subtask {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-
     private String name;
     private Integer level;
-    @Column(length = 1000)
     private String description;
     private int totalTime;
 
@@ -24,6 +22,7 @@ public class Subtask {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Resource> resources = new ArrayList<>();
+
 
 
     public Subtask() {}
@@ -36,6 +35,7 @@ public class Subtask {
         this.sessions = sessions;
     }
 
+/*
     public Subtask(Subtask original) {
         if (original == null) {
             throw new IllegalArgumentException("Original subtask cannot be null");
@@ -47,7 +47,7 @@ public class Subtask {
         this.totalTime = original.totalTime;
         this.resources = original.resources;
         this.sessions = original.sessions != null ? new ArrayList<>(original.sessions) : new ArrayList<>();
-    }
+    }*/
 
     public Long getId() {
         return id;
@@ -90,26 +90,18 @@ public class Subtask {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Subtask subtask = (Subtask) o;
         if (!Objects.equals(level, subtask.level)) return false;
         if (totalTime != subtask.totalTime) return false;
         if (!name.equals(subtask.name)) return false;
-        if (!description.equals(subtask.description)) return false;
-        if (!sessions.equals(subtask.sessions)) return false;
-        return resources.equals(subtask.resources);
-    }
+        return description.equals(subtask.description);
+        /// FORSE DEVO AGGIUNGERE CONTROLLO SU SESSIONI E RISORSE
 
+    }
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + level;
-        result = 31 * result + description.hashCode();
-        result = 31 * result + totalTime;
-        result = 31 * result + sessions.hashCode();
-        result = 31 * result + resources.hashCode();
-        return result;
+        return Objects.hash(id, name, level, description, totalTime, sessions, resources);
     }
+
 
 }
