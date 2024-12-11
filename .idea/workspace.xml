@@ -10,7 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="Pom change">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/GroupSubtaskWrapperDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/TakenSubtaskDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/orm/TaskCalendarDAO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +69,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "extract.method.default.visibility": "private",
-    "git-widget-placeholder": "temp-branch",
+    "git-widget-placeholder": "master",
     "jdk.selected.JAVA_MODULE": "corretto-21",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/edoar/OneDrive/Desktop/IntelliJ Projects/EasyTask/src/main/docker-compose.yml",
