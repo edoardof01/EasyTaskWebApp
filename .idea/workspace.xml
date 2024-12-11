@@ -65,7 +65,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "extract.method.default.visibility": "private",
-    "git-widget-placeholder": "3c9240ea",
+    "git-widget-placeholder": "08e5732b",
     "jdk.selected.JAVA_MODULE": "corretto-21",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/edoar/OneDrive/Desktop/IntelliJ Projects/EasyTask/src/main/docker-compose.yml",
@@ -356,7 +356,7 @@
       <workItem from="1732829219483" duration="5410000" />
       <workItem from="1732870666130" duration="2358000" />
       <workItem from="1733930849557" duration="1046000" />
-      <workItem from="1733931915755" duration="1321000" />
+      <workItem from="1733931915755" duration="1681000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -638,7 +638,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733933237978</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Pom change">
+      <option name="closed" value="true" />
+      <created>1733933294722</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1733933294722</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
