@@ -9,83 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="Pom change">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/81057390-208a-478b-acff-672d7dba1aa9.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/81057390-208a-478b-acff-672d7dba1aa9.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/81057390-208a-478b-acff-672d7dba1aa9/storage_v2/_src_/database/easyTask.pzwh0g/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/81057390-208a-478b-acff-672d7dba1aa9/storage_v2/_src_/database/easyTask.pzwh0g/schema/public.abK9xQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/GroupEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/GroupEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/PersonalEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/PersonalEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/SharedEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/SharedEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/UserEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/UserEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/AuthEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/AuthEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/JwtFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/JwtSecurityContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/JwtSecurityContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/JwtUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Calendar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Calendar.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Comment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/CommentedFolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/CommentedFolder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Feed.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Feed.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Folder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/FolderType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Group.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Group.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Personal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Personal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Profile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Session.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Session.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Shared.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Shared.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/StrategyInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/StrategyInstance.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Subfolder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/SubfolderType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Subtask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Subtask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/TakenSubtask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/TakenSubtask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/TaskCalendar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/TaskCalendar.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Timetable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Timetable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Topic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Topic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/CalendarDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/CalendarDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/CommentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/CommentDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/CommentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/CommentMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/CommentedFolderDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/CommentedFolderDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/FolderDAO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/FolderDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/FolderMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/GroupDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/GroupDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/GroupDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/GroupDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/GroupMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/GroupMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/PersonalDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/PersonalMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/PersonalMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/ProfileDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/ProfileMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/ResourceDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/ResourceDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SharedDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SharedDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SharedMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SharedMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SubFolderDAO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SubfolderDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SubfolderMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SubtaskDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SubtaskDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SubtaskMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SubtaskMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/registration/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/registration/EmailService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/registration/RegisterEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/registration/RegisterEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/registration/RegisterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/registration/RegisterService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/registration/RegistrationDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/registration/RegistrationDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/GroupService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/GroupService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/PersonalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/PersonalService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/SharedService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/SharedService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/beans.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/META-INF/beans.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
-    </list>
+    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="Pom change" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -134,35 +58,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Docker.compose.executor&quot;: &quot;Run&quot;,
-    &quot;JBoss/WildFly Server.JBoss/WildFly 34.0.0.Final1.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;48af37b1&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;corretto-21&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/edoar/OneDrive/Desktop/IntelliJ Projects/EasyTask/src/main/docker-compose.yml&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Docker.compose.executor": "Run",
+    "JBoss/WildFly Server.JBoss/WildFly 34.0.0.Final1.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "extract.method.default.visibility": "private",
+    "git-widget-placeholder": "3c9240ea",
+    "jdk.selected.JAVA_MODULE": "corretto-21",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/edoar/OneDrive/Desktop/IntelliJ Projects/EasyTask/src/main/docker-compose.yml",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;,
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql",
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="domain" />
@@ -432,7 +356,7 @@
       <workItem from="1732829219483" duration="5410000" />
       <workItem from="1732870666130" duration="2358000" />
       <workItem from="1733930849557" duration="1046000" />
-      <workItem from="1733931915755" duration="1002000" />
+      <workItem from="1733931915755" duration="1321000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -706,7 +630,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732737467799</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Pom change">
+      <option name="closed" value="true" />
+      <created>1733933237978</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1733933237978</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
