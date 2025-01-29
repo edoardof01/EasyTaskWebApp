@@ -31,7 +31,7 @@ public class UserDTO {
 
     }
 
-    public UserDTO(long id, int age, String profession, List<String> qualifications, String descriptions, Sex sex, ProfileDTO personalProfile, Role userRole) {
+    public UserDTO(long id, int age, String profession, List<String> qualifications, String descriptions, Sex sex, ProfileDTO personalProfile) {
         this.id = id;
         this.age = age;
         this.profession = profession;
