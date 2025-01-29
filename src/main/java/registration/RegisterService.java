@@ -2,10 +2,14 @@
 package registration;
 
 import domain.Profile;
+import domain.RegisteredUser;
 import domain.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.mindrot.jbcrypt.BCrypt;
+import orm.ProfileDAO;
+import orm.RegisterDAO;
 import orm.UserDAO;
 
 import java.util.UUID;
@@ -16,14 +20,22 @@ public class RegisterService {
     @Inject
     private UserDAO userDAO;
 
+    @Inject
+    private RegisterDAO registerDAO;
 
-
+    @Transactional
     public void register(RegistrationDTO registrationDTO) {
-        if (userDAO.findByUsername(registrationDTO.getUsername()) != null) {
+        if (registerDAO.findByUsername(registrationDTO.getUsername()) != null) {
             throw new IllegalArgumentException("Username already exists");
         }
 
         String hashedPassword = BCrypt.hashpw(registrationDTO.getPassword(), BCrypt.gensalt());
+
+        RegisteredUser registeredUser = new RegisteredUser();
+        registeredUser.setUsername(registrationDTO.getUsername());
+        registeredUser.setPassword(hashedPassword);
+        registerDAO.save(registeredUser);
+
 
         // Crea il Profile
         Profile profile = new Profile(
@@ -41,15 +53,5 @@ public class RegisterService {
 
     }
 
-   /* public void confirmEmail(String token) {
-        User user = userDAO.findByVerificationToken(token);
-        if (user == null) {
-            throw new IllegalArgumentException("Invalid or expired token");
-        }
-
-        // Aggiorna lo stato dell'email dell'utente
-        Profile profile = user.getPersonalProfile();
-        userDAO.update(user);
-    }*/
 }
 

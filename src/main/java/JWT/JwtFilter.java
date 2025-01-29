@@ -7,6 +7,7 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 import io.jsonwebtoken.Claims;
+import orm.RegisterDAO;
 import service.UserService;
 @ApplicationScoped
 @Provider
@@ -14,6 +15,9 @@ public class JwtFilter implements ContainerRequestFilter {
 
     @Inject
     private JwtUtil jwtUtil;
+
+    @Inject
+    RegisterDAO registerDAO;
 
     @Inject
     private UserService userService; // Servizio per controllare lo stato del profilo
@@ -38,7 +42,7 @@ public class JwtFilter implements ContainerRequestFilter {
         Claims claims = jwtUtil.getClaims(token);
 
         // Verifica l'Issuer del token
-        if (!claims.getIssuer().equals("your-application")) {
+        if (!claims.getIssuer().equals("EasyTask")) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("Invalid token issuer").build());
             return;
@@ -81,7 +85,8 @@ public class JwtFilter implements ContainerRequestFilter {
     }
 
     private boolean isProfileComplete(String username) {
-        // Usa il servizio per controllare se l'utente ha completato il profilo
-        return userService.hasUserProfile(username);
+        // Se l'utente esiste in registered_users ma non in users, il profilo non è ancora completo
+        return userService.hasUserProfile(username) /*|| registerDAO.findByUsername(username) != null*/;
     }
+
 }

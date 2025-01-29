@@ -21,6 +21,7 @@
     <class>domain.Resource</class>
     <class>domain.Comment</class>
     <class>domain.Group</class>
+    <class>domain.RegisteredUser</class>
     <class>domain.Profile</class>
     <class>domain.Request</class>
     <class>domain.CommentedFolder</class>
@@ -32,9 +33,6 @@
     <properties>
       <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
       <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/easyTask"/>
-<!--  <property name="jakarta.persistence.jdbc.user" value="Edoardo"/>
-      <property name="jakarta.persistence.jdbc.password" value="Edofanciu01!"/>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>-->
       <property name="hibernate.hbm2ddl.auto" value="create"/>
       <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.format_sql" value="true"/>
