@@ -7,9 +7,8 @@
   <persistence-unit name="EasyTask-1.0-SNAPSHOT" transaction-type="JTA">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
+    <!-- Assicurati che il JTA DataSource sia configurato nel server -->
     <jta-data-source>java:jboss/datasources/PostgresXADS</jta-data-source>
-
-
 
     <!-- Classi di dominio -->
     <class>domain.User</class>
@@ -29,14 +28,19 @@
     <class>domain.Personal</class>
     <class>domain.TaskCalendar</class>
 
-
     <properties>
+      <!-- Configurazione JDBC -->
       <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/easyTask"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/easytaskapp"/>
+<!--      <property name="jakarta.persistence.jdbc.user" value="edoardo"/>
+      <property name="jakarta.persistence.jdbc.password" value="Edofanciu01!"/>-->
+
+      <!-- Configurazioni Hibernate -->
       <property name="hibernate.hbm2ddl.auto" value="create"/>
       <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.format_sql" value="true"/>
       <property name="hibernate.jdbc.time_zone" value="UTC"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
     </properties>
   </persistence-unit>
 </persistence>

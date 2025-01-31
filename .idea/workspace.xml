@@ -10,15 +10,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="Pom change">
-      <change afterPath="$PROJECT_DIR$/src/main/java/domain/RegisteredUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/orm/RegisterDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/81057390-208a-478b-acff-672d7dba1aa9.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/81057390-208a-478b-acff-672d7dba1aa9.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/81057390-208a-478b-acff-672d7dba1aa9/storage_v2/_src_/database/easyTask.pzwh0g/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/81057390-208a-478b-acff-672d7dba1aa9/storage_v2/_src_/database/easyTask.pzwh0g/schema/public.abK9xQ.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/JwtFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/JwtUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/registration/RegisterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/registration/RegisterService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -403,7 +399,9 @@
       <workItem from="1738051053665" duration="8849000" />
       <workItem from="1738082148479" duration="2656000" />
       <workItem from="1738140052554" duration="3989000" />
-      <workItem from="1738164954866" duration="6400000" />
+      <workItem from="1738164954866" duration="6902000" />
+      <workItem from="1738226403443" duration="17343000" />
+      <workItem from="1738311093842" duration="14675000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -701,7 +699,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737995631463</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="Pom change">
+      <option name="closed" value="true" />
+      <created>1738182839381</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1738182839381</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
