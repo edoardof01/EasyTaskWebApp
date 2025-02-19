@@ -3,7 +3,7 @@
        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
        http://xmlns.jcp.org/xml/ns/javaee/beans_1_0.xsd"
        version="1.0"
-       bean-discovery-mode="all"> <!-- Aggiungi questo attributo -->
+       bean-discovery-mode="all">
 
     <!-- Puoi aggiungere qui altre configurazioni, se necessario -->
 </beans>

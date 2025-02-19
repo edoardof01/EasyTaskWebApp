@@ -29,7 +29,7 @@ public abstract class Task {
     private int consecutiveSkippedSessions = 0;
     private boolean isInProgress = false;
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    /*@JoinColumn(name = "user_id", nullable = false)*/
     private User user;
 
     @Enumerated(EnumType.STRING)
@@ -172,35 +172,48 @@ public abstract class Task {
         if (session.getState() != SessionState.PROGRAMMED) {
             throw new IllegalStateException("Only sessions programmed can be completed.");
         }
-        if(!doExistNextSession(session)) {
+        if (!doExistNextSession(session)) {
             completeTaskBySessions();
-        }
-        else {
+        } else {
             session.setState(SessionState.COMPLETED);
             resetConsecutiveSkippedSessions();
+
             int completedCounter = 0;
             for (Session taskSession : sessions) {
-                if (taskSession.getState() != SessionState.COMPLETED) {
-                    completedCounter += 1;
+                if (taskSession.getState() == SessionState.COMPLETED) {
+                    completedCounter++;
                 }
             }
-
-            int percentageOfCompletion = (completedCounter / sessions.size()) * 100;
+            int percentageOfCompletion = (completedCounter * 100) / sessions.size();
             this.setPercentageOfCompletion(percentageOfCompletion);
         }
     }
 
+
     public int calculateComplexity() {
         int subtaskScore;
-        if (subtasks.size() <= 3) subtaskScore = 1;
-        else if (subtasks.size() <= 5) subtaskScore = 2;
-        else if (subtasks.size() <= 10) subtaskScore = 3;
-        else if (subtasks.size() <= 20) subtaskScore = 4;
-        else subtaskScore = 5;
-
+        if (subtasks == null || subtasks.isEmpty()) {
+            // Se non ci sono subtasks, ad esempio usa 0 o un altro valore (o considera soltanto le risorse)
+            subtaskScore = 0;
+        } else if (subtasks.size() <= 3) {
+            subtaskScore = 1;
+        } else if (subtasks.size() <= 5) {
+            subtaskScore = 2;
+        } else if (subtasks.size() <= 10) {
+            subtaskScore = 3;
+        } else if (subtasks.size() <= 20) {
+            subtaskScore = 4;
+        } else {
+            subtaskScore = 5;
+        }
         int resourceScore = calculateResourceScore();
-        return (subtaskScore + resourceScore) / 2;
+        if (subtasks == null || subtasks.isEmpty()) {
+            return resourceScore;
+        } else {
+            return (subtaskScore + resourceScore) / 2;
+        }
     }
+
 
     public int calculateResourceScore() {
         int totalScore = resources.stream()
@@ -452,8 +465,10 @@ public abstract class Task {
                     (!startTime.isBefore(LocalTime.of(6, 0)) && endTime.isBefore(LocalTime.of(18, 0)));
             case AFTERNOON_EVENING ->
                     (!startTime.isBefore(LocalTime.of(12, 0)) && endTime.isBefore(LocalTime.of(23, 59)));
-            case EVENING_NIGHT ->
-                    (!startTime.isBefore(LocalTime.of(18, 0)) && endTime.isBefore(LocalTime.of(6, 0)));
+            case NIGHT_AFTERNOON ->
+                    (!startTime.isBefore(LocalTime.of(0, 0)) && endTime.isBefore(LocalTime.of(18, 0)));
+            case MORNING_EVENING ->
+                    (!startTime.isBefore(LocalTime.of(6, 0)) && endTime.isBefore(LocalTime.of(0, 0)));
             case NIGHT_MORNING ->
                     (!startTime.isBefore(LocalTime.of(0, 0)) && endTime.isBefore(LocalTime.of(12, 0)));
             case ALL_DAY -> true;  // Copre l'intera giornata

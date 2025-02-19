@@ -8,7 +8,8 @@ public enum Timetable {
     NIGHT,
     MORNING_AFTERNOON,
     AFTERNOON_EVENING,
-    EVENING_NIGHT,
+    NIGHT_AFTERNOON,
+    MORNING_EVENING,
     NIGHT_MORNING,
     ALL_DAY
 }

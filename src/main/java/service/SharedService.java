@@ -278,15 +278,20 @@ public class SharedService {
                 slotStart = LocalTime.of(6, 0);
                 slotEnd = LocalTime.of(18, 0);
             }
+            case MORNING_EVENING -> {
+                // Combina le due fasce orarie
+                slotStart = LocalTime.of(6, 0);
+                slotEnd = LocalTime.of(0, 0);
+            }
             case AFTERNOON_EVENING -> {
                 // Combina le due fasce orarie
                 slotStart = LocalTime.of(12, 0);
                 slotEnd = LocalTime.of(23, 59);
             }
-            case EVENING_NIGHT -> {
+            case NIGHT_AFTERNOON -> {
                 // Combina le due fasce orarie
-                slotStart = LocalTime.of(18, 0);
-                slotEnd = LocalTime.of(6, 0); // Considera la fine della notte, cioè il mattino
+                slotStart = LocalTime.of(0, 0);
+                slotEnd = LocalTime.of(18, 0); // Considera la fine della notte, cioè il mattino
             }
             case NIGHT_MORNING -> {
                 // Combina le due fasce orarie
@@ -512,7 +517,7 @@ public class SharedService {
             sharedTask.getSubtasks().addAll(subtasks);
         }
 
-        if (subtasks!=null && !compareSubtasks(subtasks,sharedTask.getSubtasks())){
+        if (subtasks!=null && !subtasks.isEmpty() && !compareSubtasks(subtasks,sharedTask.getSubtasks())){
             sharedTask.getSubtasks().clear();
             sharedTask.getSubtasks().addAll(subtasks);
             int totalMoney = 0;

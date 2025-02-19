@@ -18,7 +18,7 @@ public class Subtask {
     private int totalTime;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Session> sessions = new ArrayList<>();
+    private List<Session> subSessions = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Resource> resources = new ArrayList<>();
@@ -32,7 +32,7 @@ public class Subtask {
         this.description = description;
         this.resources = resources;
         this.totalTime = totalTime;
-        this.sessions = sessions;
+        this.subSessions = sessions;
     }
 
 /*
@@ -77,10 +77,10 @@ public class Subtask {
         this.description = description;
     }
     public List<Session> getSessions() {
-        return sessions;
+        return subSessions;
     }
     public void setSessions(List<Session> sessions) {
-        this.sessions = sessions;
+        this.subSessions = sessions;
     }
     public List<Resource> getResources() {
         return resources;
@@ -100,7 +100,7 @@ public class Subtask {
     }
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, level, description, totalTime, sessions, resources);
+        return Objects.hash(id, name, level, description, totalTime, subSessions, resources);
     }
 
 

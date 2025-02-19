@@ -14,8 +14,8 @@ public class SubtaskDTO {
     private int totalTime;
     private String description;
     private Integer level;
-    private List<ResourceDTO> resources = new ArrayList<>();
-    private List<SessionDTO> sessions = new ArrayList<>();
+    private List<ResourceDTO> subResources = new ArrayList<>();
+    private List<SessionDTO> subSessions = new ArrayList<>();
 
 
     public SubtaskDTO(){
@@ -27,8 +27,8 @@ public class SubtaskDTO {
         this.totalTime = subtask.getTotalTime();
         this.description = subtask.getDescription();
         this.level = subtask.getLevel();
-        this.resources = subtask.getResources().stream().map(ResourceDTO::new).collect(Collectors.toList());
-        this.sessions = subtask.getSessions().stream().map(SessionDTO::new).collect(Collectors.toList());
+        this.subResources = subtask.getResources().stream().map(ResourceDTO::new).collect(Collectors.toList());
+        this.subSessions = subtask.getSessions().stream().map(SessionDTO::new).collect(Collectors.toList());
     }
     public long getId() {
         return id;
@@ -51,11 +51,11 @@ public class SubtaskDTO {
     public void setLevel(int level) {
         this.level = level;
     }
-    public List<ResourceDTO> getResources() {
-        return resources;
+    public List<ResourceDTO> getSubResources() {
+        return subResources;
     }
     public void setResources(List<ResourceDTO> resources) {
-        this.resources = resources;
+        this.subResources = resources;
     }
     public int getTotalTime() {
         return totalTime;
@@ -63,7 +63,7 @@ public class SubtaskDTO {
     public void setTotalTime(int totalTime) {
         this.totalTime = totalTime;
     }
-    public List<SessionDTO> getSessions() {
-        return sessions;
+    public List<SessionDTO> getSubSessions() {
+        return subSessions;
     }
 }

@@ -291,15 +291,20 @@ public class PersonalService {
                 slotStart = LocalTime.of(6, 0);
                 slotEnd = LocalTime.of(18, 0);
             }
+            case MORNING_EVENING -> {
+                // Combina le due fasce orarie
+                slotStart = LocalTime.of(6, 0);
+                slotEnd = LocalTime.of(0, 0);
+            }
             case AFTERNOON_EVENING -> {
                 // Combina le due fasce orarie
                 slotStart = LocalTime.of(12, 0);
                 slotEnd = LocalTime.of(23, 59);
             }
-            case EVENING_NIGHT -> {
+            case NIGHT_AFTERNOON -> {
                 // Combina le due fasce orarie
-                slotStart = LocalTime.of(18, 0);
-                slotEnd = LocalTime.of(6, 0); // Considera la fine della notte, cioè il mattino
+                slotStart = LocalTime.of(0, 0);
+                slotEnd = LocalTime.of(18, 0); // Considera la fine della notte, cioè il mattino
             }
             case NIGHT_MORNING -> {
                 // Combina le due fasce orarie
@@ -321,19 +326,28 @@ public class PersonalService {
 
 
 
-    private int calculateComplexity(@Nullable List<Subtask> subtasks, List<Resource> resources) {
-        if (subtasks == null || subtasks.isEmpty()) {
-            return calculateResourceScore(resources) / 2;
-        }
+    public int calculateComplexity(List<Subtask> subtasks, List<Resource> resources) {
         int subtaskScore;
-        if (subtasks.size() <= 3) subtaskScore = 1;
-        else if (subtasks.size() <= 5) subtaskScore = 2;
-        else if (subtasks.size() <= 10) subtaskScore = 3;
-        else if (subtasks.size() <= 20) subtaskScore = 4;
-        else subtaskScore = 5;
-
-        int resourceScore = calculateResourceScore(resources);
-        return (subtaskScore + resourceScore) / 2;
+        if (subtasks == null || subtasks.isEmpty()) {
+            // Se non ci sono subtasks, usa solo il punteggio delle risorse
+            subtaskScore = 0; // oppure imposta un valore che rifletta l'assenza di suddivisione
+        } else if (subtasks.size() <= 3) {
+            subtaskScore = 1;
+        } else if (subtasks.size() <= 5) {
+            subtaskScore = 2;
+        } else if (subtasks.size() <= 10) {
+            subtaskScore = 3;
+        } else if (subtasks.size() <= 20) {
+            subtaskScore = 4;
+        } else {
+            subtaskScore = 5;
+        }
+        int resourceScore = calculateResourceScore(resources); // Supponiamo di avere questo metodo aggiornato
+        if (subtasks == null || subtasks.isEmpty()) {
+            return resourceScore;
+        } else {
+            return (subtaskScore + resourceScore) / 2;
+        }
     }
 
 
@@ -462,10 +476,6 @@ public class PersonalService {
         // Validazione delle sessioni aggiornate
         validateSessions(personalTask.getSessions(), timeSlots, totalTime);
 
-
-        /*// Aggiorna il calendario
-        user.getCalendar().addSessions(personalTask.getSessions());*/  //LE SESSIONI VERRANNO AGGIUNTE SOLO DOPO QUANDO CHIAMO TOCALENDAR()
-
         userDAO.update(user);
         calendarDAO.update(user.getCalendar());
 
@@ -484,7 +494,7 @@ public class PersonalService {
         }
 
         // Suddivisione delle sessioni tra i subtasks
-        if (subtasks != null) {
+        if (subtasks != null && !subtasks.isEmpty()) {
             Set<Session> allAssignedSessions = new HashSet<>();
             // Distribuisci le sessioni tra i subtasks
             for (Subtask subtask : subtasks) {

@@ -23,12 +23,12 @@ public class SubtaskMapper {
     }
     public Subtask toSubtaskEntity(SubtaskDTO subtaskDTO) {
         if (subtaskDTO == null) return null;
-        List<Resource> resources = new ArrayList<>(subtaskDTO.getResources()
+        List<Resource> resources = new ArrayList<>(subtaskDTO.getSubResources()
                 .stream()
                 .map(resourceMapper::toResourceEntity)
                 .toList());
 
-        List<Session> sessions = new ArrayList<>(subtaskDTO.getSessions()
+        List<Session> sessions = new ArrayList<>(subtaskDTO.getSubSessions()
                 .stream()
                 .map(sessionMapper::toSessionEntity)
                 .toList());

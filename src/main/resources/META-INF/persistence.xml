@@ -31,8 +31,8 @@
     <properties>
       <!-- Configurazione JDBC -->
       <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/easytaskapp"/>
-<!--      <property name="jakarta.persistence.jdbc.user" value="edoardo"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/easyTask"/>
+<!--<property name="jakarta.persistence.jdbc.user" value="edoardo"/>
       <property name="jakarta.persistence.jdbc.password" value="Edofanciu01!"/>-->
 
       <!-- Configurazioni Hibernate -->
