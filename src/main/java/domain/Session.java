@@ -34,6 +34,9 @@ public class Session {
     public Long getId() {
         return id;
     }
+    public void setId(long id) {
+        this.id = id;
+    }
     public LocalDateTime getStartDate() {
         return startDate;
     }
@@ -66,11 +69,10 @@ public class Session {
 
     @Override
     public int hashCode() {
-        return Objects.hash(startDate, endDate, state);
+        return Objects.hash(startDate, endDate);
     }
 
     public boolean overlaps(Session other) {
-        // Verifica se le sessioni si sovrappongono
         return (this.startDate.isBefore(other.endDate) && this.endDate.isAfter(other.startDate));
     }
 
@@ -81,6 +83,5 @@ public class Session {
             throw new IllegalStateException("Start date or end date is null");
         }
     }
-
 
 }

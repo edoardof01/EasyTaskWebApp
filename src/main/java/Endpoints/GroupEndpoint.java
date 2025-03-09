@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Path("/group")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+
 @RequestScoped
 public class GroupEndpoint {
 
@@ -91,7 +92,7 @@ public class GroupEndpoint {
             // Passa i campi estratti e le entità al servizio
             GroupDTO createdGroup = groupService.createGroup(
                     name, groupDTO.getUserId(), topic, dateOnFeed, deadline, totalTime, timeSlots, strategies, priority,
-                    description, resources, subtasks, chosenSubtask, sessions, null, numUsers);
+                    description, resources, subtasks, chosenSubtask, sessions, numUsers);
 
             return Response.status(Response.Status.CREATED)
                     .entity(createdGroup)
@@ -160,19 +161,20 @@ public class GroupEndpoint {
         }
     }
 
+
     @PUT
-    @Path("/completeSession/{groupId}")
-    @Transactional
-    public Response completeSession(@PathParam("groupId") long groupId, @QueryParam("sessionId") long sessionId) {
-        try {
-            groupService.completeSession(groupId, sessionId);
+    @Path("/toFeed/{groupId}")
+    public Response toFeed(@PathParam("groupId") long groupId) {
+        try{
+            groupService.moveToFeed(groupId);
             return Response.status(Response.Status.OK).build();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e){
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(e.getMessage())
                     .build();
         }
     }
+
 
     @PUT
     @Path("/completeSubtaskSession/{userId}/{groupId}/{subtaskId}")
@@ -195,7 +197,7 @@ public class GroupEndpoint {
     @Transactional
     public Response completeGroupBySessions(@PathParam("groupId") long groupId) {
         try {
-            groupService.completeSharedBySessions(groupId);
+            groupService.completeGroupBySessions(groupId);
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -231,6 +233,7 @@ public class GroupEndpoint {
                     .build();
         }
     }
+
     @PUT
     @Path("/joinGroup/{groupId}/users/{userId}/subtasks/{subtaskId}")
     public Response joinGroup(
@@ -260,46 +263,6 @@ public class GroupEndpoint {
         }
     }
 
-    @POST
-    @Path("/{groupId}/exchangeRequest")
-    @Transactional
-    public Response sendExchangeRequest(
-            @PathParam("groupId") long groupId,
-            @QueryParam("senderId") long senderId,
-            @QueryParam("receiverId") long receiverId) {
-        try {
-            groupService.sendExchangeRequest(groupId, senderId, receiverId);
-            return Response.ok().build();
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-        }
-    }
-
-    @GET
-    @Path("/exchangeRequest/{userId}")
-    public Response getPendingExchangeRequests(@PathParam("userId") long userId) {
-        try {
-            List<RequestDTO> requests = groupService.getPendingExchangeRequests(userId);
-            return Response.ok(requests).build();
-        } catch (Exception e){
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-        }
-    }
-
-    @PUT
-    @Path("/{groupId}/exchangeRequest/{requestId}/process")
-    @Transactional
-    public Response processExchangeRequest(
-            @PathParam("groupId") long groupId,
-            @PathParam("requestId") long requestId,
-            @QueryParam("accept") boolean accept) {
-        try {
-            groupService.processExchangeRequest(groupId, requestId, accept);
-            return Response.ok().build();
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-        }
-    }
 
     @DELETE
     @Path("/{groupId}/remove/{adminId}/{userId}")

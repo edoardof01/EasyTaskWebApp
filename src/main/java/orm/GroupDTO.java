@@ -213,6 +213,9 @@ public class GroupDTO {
     public void setUserId(long userid) {
         this.userId = userid;
     }
+    public void setId(long id) {
+        this.id = id;
+    }
 }
 
 

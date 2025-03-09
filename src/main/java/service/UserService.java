@@ -100,38 +100,7 @@ public class UserService {
         return userMapper.toUserDTO(user);
     }
 
-   /* @Transactional
-    public UserDTO createUser(int age, Sex sex, String description, List<String> qualifications, String profession, String username) {
-        User user = userDAO.findByUsername(username);
-        // Verifica se l'utente ha già un profilo
-        if (user.isProfileComplete()) {
-            throw new IllegalArgumentException("User profile already exists for this account.");
-        }
-        if(age<16){
-            throw new IllegalArgumentException("you must be at least 16 years old.");
-        }
-        if(age>100){
-            throw new IllegalArgumentException("you can't be that old.");
-        }
 
-        // Crea il profilo e lo associa all'utente
-        user.setAge(age);
-        user.setSex(sex);
-        user.setDescription(description);
-        user.setQualifications(qualifications);
-        user.setProfession(profession);
-        user.setProfileComplete(true);
-        userDAO.update(user);
-        CommentedFolder commentedFolder = user.getCommentedFolder();
-        commentedFolder.setUser(user);
-        commentedFolderDAO.save(commentedFolder);
-        Calendar calendar = user.getCalendar();
-        calendar.setUser(user);
-        calendarDAO.save(calendar);
-
-        return userMapper.toUserDTO(user);
-    }
-*/
     public boolean hasUserProfile(String username) {
         User user = userDAO.findByUsername(username);
         return user.isProfileComplete();

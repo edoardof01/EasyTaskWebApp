@@ -13,8 +13,7 @@ import service.PersonalService;
 import service.UserService;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Path("/personal")
@@ -43,9 +42,9 @@ public class PersonalEndpoint {
 
 
     @GET
-    public Response getAllSharedTasks() {
-        List<PersonalDTO> sharedList = personalService.getAllPersonal();
-        return Response.ok(sharedList).build();
+    public Response getAllPersonalTasks() {
+        List<PersonalDTO> personalList = personalService.getAllPersonal();
+        return Response.ok(personalList).build();
     }
 
     @GET
@@ -60,6 +59,78 @@ public class PersonalEndpoint {
         }
         return Response.ok(personalDTO).build();
     }
+
+    @GET
+    @Path("/sessions")
+    public Response getAllSessions() {
+        List<PersonalDTO> allPersonal = personalService.getAllPersonal();
+        List<SessionWithTaskDTO> allSessionDTOs = new ArrayList<>();
+
+        for (PersonalDTO personal : allPersonal) {
+
+            // 1) Mappa delle sessioni top-level: (startDate+endDate) -> SessionDTO
+            Map<String, SessionDTO> topLevelMap = new HashMap<>();
+            for (SessionDTO topSession : personal.getSessions()) {
+                String key = topSession.getStartDate() + "#" + topSession.getEndDate();
+                topLevelMap.put(key, topSession);
+            }
+
+            // 2) Crea i DTO per ogni sessione top-level
+            List<SessionWithTaskDTO> partialList = new ArrayList<>();
+            for (SessionDTO topSession : personal.getSessions()) {
+                SessionWithTaskDTO dto = new SessionWithTaskDTO();
+                dto.setId(topSession.getId());                // <== ID del task
+                dto.setStartDate(topSession.getStartDate());
+                dto.setEndDate(topSession.getEndDate());
+                dto.setState(topSession.getState());
+
+                dto.setTaskId(personal.getId());
+                dto.setTaskName(personal.getName());
+                dto.setTaskType("PERSONAL");
+
+                // Nessun subtask di default
+                dto.setSubtaskId(null);
+                dto.setSubtaskName(null);
+
+                partialList.add(dto);
+            }
+
+            // 3) Per ogni sessione del subtask, se esiste una sessione “equivalente” tra i top-level,
+            //    aggiorniamo subtaskId/subtaskName del DTO corrispondente
+            if (personal.getSubtasks() != null) {
+                for (SubtaskDTO subtask : personal.getSubtasks()) {
+                    if (subtask.getSubSessions() != null) {
+                        for (SessionDTO subSession : subtask.getSubSessions()) {
+                            // Chiave con startDate+endDate
+                            String key = subSession.getStartDate() + "#" + subSession.getEndDate();
+
+                            // Se la mappa top-level ha una sessione “equivalente”
+                            if (topLevelMap.containsKey(key)) {
+                                // Troviamo il DTO corrispondente in partialList
+                                for (SessionWithTaskDTO existing : partialList) {
+                                    boolean sameStart = existing.getStartDate().equals(subSession.getStartDate());
+                                    boolean sameEnd   = existing.getEndDate().equals(subSession.getEndDate());
+                                    if (sameStart && sameEnd) {
+                                        // Aggiorna subtaskId e subtaskName
+                                        existing.setSubtaskId(subtask.getId());
+                                        existing.setSubtaskName(subtask.getName());
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 4) Aggiungiamo i DTO creati per questo task alla lista globale
+            allSessionDTOs.addAll(partialList);
+        }
+        return Response.ok(allSessionDTOs).build();
+    }
+
+
+
 
     @POST
     @Transactional
@@ -88,7 +159,7 @@ public class PersonalEndpoint {
             // Passa i campi estratti
             PersonalDTO createdPersonal = personalService.createPersonal(
                     name, personalDTO.getUserId(), topic, deadline, totalTime, timeSlots, strategies, priority,  //ricorda che quì ora hai user.getId()
-                    description, resources, subtasks, sessions,null, null
+                    description, resources, subtasks, sessions
             );
             return Response.status(Response.Status.CREATED)
                     .entity(createdPersonal)
@@ -97,6 +168,19 @@ public class PersonalEndpoint {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
                     .build();
+        }
+    }
+
+    @PUT
+    @Path("/freeze/{personalId}")
+    @Transactional
+    public Response freezePersonal(@PathParam("personalId") long personalId) {
+        try {
+            personalService.freezeTask(personalId);
+            return Response.status(Response.Status.OK).build();
+        }
+        catch(Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -195,7 +279,6 @@ public class PersonalEndpoint {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
                     .build();
-
         }
     }
 
@@ -212,4 +295,6 @@ public class PersonalEndpoint {
                     .build();
         }
     }
+
+
 }

@@ -17,20 +17,15 @@ public class JwtFilter implements ContainerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Inject
-    RegisterDAO registerDAO;
-
-    @Inject
     private UserService userService; // Servizio per controllare lo stato del profilo
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
         String path = requestContext.getUriInfo().getPath();
 
-        // Escludi gli endpoint pubblici
         if (isPublicEndpoint(path)) {
-            return; // Continua senza richiedere il token
+            return;
         }
-
         String token = requestContext.getHeaderString("Authorization");
 
         if (token == null || !jwtUtil.validateToken(token)) {

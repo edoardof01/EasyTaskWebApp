@@ -42,4 +42,7 @@ public class GroupDAO {
         }
     }
 
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 }

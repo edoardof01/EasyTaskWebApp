@@ -14,6 +14,10 @@ public class SubtaskDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     public SubtaskDAO() {}
 
     public Subtask findById(long id) {

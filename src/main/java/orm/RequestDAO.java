@@ -1,3 +1,4 @@
+/*
 package orm;
 
 import domain.Request;
@@ -32,3 +33,4 @@ public class RequestDAO {
         Request request = findById(id);
     }
 }
+*/

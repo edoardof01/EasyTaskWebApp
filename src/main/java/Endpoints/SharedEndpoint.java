@@ -96,7 +96,7 @@ public class SharedEndpoint {
             // Passa i campi estratti
             SharedDTO createdShared = sharedService.createShared(
                     name, sharedDTO.getUserId(), topic, deadline, totalTime, timeSlots, strategies, priority,
-                    description, resources, subtasks, sessions, null, userGuidance
+                    description, resources, subtasks, sessions, userGuidance
             );
 
             return Response.status(Response.Status.CREATED)

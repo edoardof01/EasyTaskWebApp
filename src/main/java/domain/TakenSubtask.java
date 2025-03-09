@@ -21,6 +21,12 @@ public class TakenSubtask {
         this.subtask = subtask;
     }
 
+    public long getId() {
+        return id;
+    }
+    public void setId(long id) {
+        this.id = id;
+    }
     public Subtask getSubtask() {
         return subtask;
     }

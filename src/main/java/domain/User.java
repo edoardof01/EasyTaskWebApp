@@ -44,9 +44,9 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private  List<Task> tasks = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    /* @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Request> requests = new ArrayList<>();
-
+    */
 
     public User() {}
 
@@ -118,9 +118,9 @@ public class User {
     public void setCalendar(Calendar calendar) {
         this.calendar = calendar;
     }
-    public List<Request> getPendingRequests(){
+    /*public List<Request> getPendingRequests(){
         return requests;
-    }
+    }*/
 
     
     public List<Task> getTasks() {
@@ -170,7 +170,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, age, sex, description, qualifications, profession, personalProfile.getUsername());
+        return Objects.hash(age, sex, description, qualifications, profession, personalProfile.getUsername());
     }
 
 

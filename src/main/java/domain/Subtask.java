@@ -35,22 +35,12 @@ public class Subtask {
         this.subSessions = sessions;
     }
 
-/*
-    public Subtask(Subtask original) {
-        if (original == null) {
-            throw new IllegalArgumentException("Original subtask cannot be null");
-        }
-        this.id = original.id; // Assumendo che l'ID non cambi
-        this.name = original.name;
-        this.description = original.description;
-        this.level = original.level;
-        this.totalTime = original.totalTime;
-        this.resources = original.resources;
-        this.sessions = original.sessions != null ? new ArrayList<>(original.sessions) : new ArrayList<>();
-    }*/
 
     public Long getId() {
         return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
     public String getName() {
         return name;
@@ -85,6 +75,9 @@ public class Subtask {
     public List<Resource> getResources() {
         return resources;
     }
+    public void setResources(List<Resource> resources) {
+        this.resources = resources;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -92,7 +85,6 @@ public class Subtask {
         if (o == null || getClass() != o.getClass()) return false;
         Subtask subtask = (Subtask) o;
         if (!Objects.equals(level, subtask.level)) return false;
-        if (totalTime != subtask.totalTime) return false;
         if (!name.equals(subtask.name)) return false;
         return description.equals(subtask.description);
         /// FORSE DEVO AGGIUNGERE CONTROLLO SU SESSIONI E RISORSE

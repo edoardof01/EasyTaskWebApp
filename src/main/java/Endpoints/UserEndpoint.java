@@ -1,11 +1,9 @@
 package Endpoints;
 
-import domain.Profile;
-import domain.Role;
+
 import domain.Sex;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
@@ -13,14 +11,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import orm.CommentDTO;
-import orm.ProfileMapper;
 import orm.UserDTO;
-import orm.UserMapper;
 import service.UserService;
-
 import java.util.List;
-
-import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -31,8 +24,6 @@ public class UserEndpoint {
     @Inject
     private UserService userService;
 
-    @Inject
-    private ProfileMapper profileMapper;
 
     // Get all users
     @GET

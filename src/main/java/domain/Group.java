@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,7 @@ public class Group extends Task {
     private TaskCalendar calendar;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TakenSubtask> takenSubtasks = new ArrayList<>();
+    private boolean isOnFeed = false;
 
 
     public Group() {
@@ -46,54 +48,55 @@ public class Group extends Task {
     public int getNumUsers() {
         return numUsers;
     }
-
     public int getActualMembers() {
         return actualMembers;
     }
-
+    public void setActualMembers(int actualMembers) {
+        this.actualMembers = actualMembers;
+    }
     public void setNumUsers(int numUsers) {
         this.numUsers = numUsers;
     }
-
     public LocalDateTime getDateOnFeed() {
         return dateOnFeed;
     }
-
     public void setDateOnFeed(LocalDateTime dateOnFeed) {
         this.dateOnFeed = dateOnFeed;
     }
-
     public TaskCalendar getCalendar() {
         return calendar;
     }
-
     public void setCalendar(TaskCalendar calendar) {
         this.calendar = calendar;
     }
-
     public List<User> getMembers() {
         return members;
     }
-
     public List<TakenSubtask> getTakenSubtasks() {
         return takenSubtasks;
     }
-
+    public void setTakenSubtasks(List<TakenSubtask> takenSubtasks) {
+        this.takenSubtasks = takenSubtasks;
+    }
     public List<Subtask> getAvailableSubtasks() {
         return this.getSubtasks().stream()
                 .filter(subtask -> takenSubtasks.stream()
                         .noneMatch(takenSubtask -> takenSubtask.getSubtask().equals(subtask)))
                 .collect(Collectors.toList());
     }
-
-
+    public boolean getIsOnFeed() {
+        return isOnFeed;
+    }
+    public void setIsOnFeed(boolean onFeed) {
+        isOnFeed = onFeed;
+    }
     public boolean getIsComplete() {
         return isComplete;
     }
-
     public void setIsComplete(boolean isComplete) {
         this.isComplete = isComplete;
     }
+
 
 
     public void addMember(User member) {
@@ -120,20 +123,14 @@ public class Group extends Task {
 
     @Override
     public void handleLimitExceeded() {
-
         for (User member : this.getMembers()) {
-            // Trovo il TakenSubtask che contiene il subtask del membro
             TakenSubtask takenSubtask = takenSubtasks.stream()
                     .filter(ts -> ts.getUser().equals(member))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("No subtask assigned to member"));
 
             Subtask subtaskOfCompetence = takenSubtask.getSubtask();
-
-            // Rimuovo il subtask dal calendario del membro
             member.getCalendar().removeSubtaskSessionsForGroups(subtaskOfCompetence);
-
-            // Rimuovo il subtask dal calendario del gruppo
             this.getCalendar().removeSessions(member);
         }
         this.setState(TaskState.FREEZED);
@@ -143,7 +140,7 @@ public class Group extends Task {
 
     @Override
     public void toCalendar() {
-        if (this.getIsInProgress()) {
+        if (this.getState()==TaskState.INPROGRESS ) {
             throw new UnsupportedOperationException("It's already in calendar");
         }
         if (this.getState() == TaskState.FINISHED) {
@@ -153,29 +150,21 @@ public class Group extends Task {
             throw new UnsupportedOperationException("The group is not complete");
         }
 
-        // Itera su tutti i membri, inclusi l'amministratore
+        this.setIsOnFeed(false);
+        this.setState(TaskState.INPROGRESS);
         for (User member : this.getMembers()) {
-            // Troviamo il TakenSubtask associato all'utente
             TakenSubtask takenSubtask = takenSubtasks.stream()
                     .filter(ts -> ts.getUser().equals(member))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("No subtask assigned to the user: " + member));
 
             Subtask subtask = takenSubtask.getSubtask();
-
-            // Aggiungi le sessioni al calendario del gruppo
             this.getCalendar().addSessions(member, subtask);
-
-            // Aggiungi le sessioni al calendario dell'utente
             member.getCalendar().addSubtaskSessionsForGroups(subtask);
-
-            // Controlla e aggiorna lo stato del task di gruppo
             if (!this.getIsInProgress()) {
                 this.updateIsInProgress();
             }
         }
-
-        // Rimuovi il task dal feed del gruppo
         Feed.getInstance().getGroup().remove(this);
     }
 
@@ -184,21 +173,31 @@ public class Group extends Task {
     @Override
     public void deleteTask() {
         for (User member : this.getMembers()) {
-            // Troviamo il TakenSubtask associato al membro
             TakenSubtask takenSubtask = takenSubtasks.stream()
                     .filter(ts -> ts.getUser().equals(member))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("No subtask assigned to member"));
-
             Subtask subtaskOfCompetence = takenSubtask.getSubtask();
-
-            // Rimuoviamo le sessioni dal calendario dell'utente e dal calendario del gruppo
             member.getCalendar().removeSubtaskSessionsForGroups(subtaskOfCompetence);
             this.getCalendar().removeSessions(member);
         }
-            // Rimuove il task dal feed del gruppo
-            Feed.getInstance().getGroup().remove(this);
+        this.setIsInProgress(false);
+        this.setIsOnFeed(false);
+        Feed.getInstance().getGroup().remove(this);
     }
+
+    public void toFeed(){
+        if(this.getState() == TaskState.FINISHED || this.getState() == TaskState.INPROGRESS) {
+            throw new UnsupportedOperationException("It can't go on feed");
+        }
+        if(this.getIsOnFeed()){
+            throw new UnsupportedOperationException("It is already on feed");
+        }
+        this.setIsOnFeed(true);
+        Feed.getInstance().getGroup().add(this);
+        this.setDateOnFeed(LocalDateTime.now());
+    }
+
 
 
     @Override
@@ -209,6 +208,11 @@ public class Group extends Task {
         this.setState(TaskState.FREEZED);
         this.setIsInProgress(false);
 
+        if(this.getIsOnFeed()){
+            Feed.getInstance().getGroup().remove(this);
+        }
+        this.setIsOnFeed(false);
+
         for (User member : this.getMembers()) {
             TakenSubtask takenSubtask = takenSubtasks.stream()
                     .filter(ts -> ts.getUser().equals(member))
@@ -217,17 +221,12 @@ public class Group extends Task {
 
             Subtask subtaskInstance = takenSubtask.getSubtask();
 
-            // Sostituire l'istanza "cattiva" con quella corretta
             Subtask correctSubtask = this.getSubtasks().stream()
                     .filter(subtask -> subtask.equals(subtaskInstance))
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("No matching subtask found in task"));
 
-            // Aggiornare l'istanza nel TakenSubtask
             takenSubtask.setSubtask(correctSubtask);
-
-            // Rimuovere le sessioni dal calendario del membro
-            member.getCalendar().removeSubtaskSessionsForGroups(correctSubtask);
         }
     }
 
@@ -236,6 +235,9 @@ public class Group extends Task {
 
     @Override
     public void completeTaskBySessions() {
+        if(this.getState() != TaskState.INPROGRESS) {
+            throw new IllegalStateException("It must be in progress");
+        }
         // Ottieni la sessione con l'ultima endDate
         Session lastSession = this.getSessions().stream()
                 .max(Comparator.comparing(Session::getEndDate))
@@ -266,25 +268,22 @@ public class Group extends Task {
                 }
             }
         }
-
+        this.setIsInProgress(false);
         setState(TaskState.FINISHED);
-        for (User member : this.getMembers()) {
-            TakenSubtask takenSubtask = takenSubtasks.stream()
-                    .filter(ts -> ts.getUser().equals(member))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("No subtask assigned to member"));
-
-            Subtask subtaskOfCompetence = takenSubtask.getSubtask();
-            /// Calendario utente
-            member.getCalendar().removeSubtaskSessionsForGroups(subtaskOfCompetence);
+        if(this.getIsOnFeed()){
+            Feed.getInstance().getGroup().remove(this);
         }
+        this.setIsOnFeed(false);
+        this.setPercentageOfCompletion(100);
     }
 
 
     @Override
     public void forcedCompletion() {
+        if(this.getState()!=TaskState.INPROGRESS){
+            throw new IllegalStateException("It is not in INPROGRESS state.");
+        }
         for (User member : this.getMembers()) {
-            // Troviamo il TakenSubtask associato al membro
             TakenSubtask takenSubtask = takenSubtasks.stream()
                     .filter(ts -> ts.getUser().equals(member))
                     .findFirst()
@@ -296,66 +295,16 @@ public class Group extends Task {
                 }
             }
         }
+        if(this.getIsOnFeed()){
+            Feed.getInstance().getGroup().remove(this);
+        }
+        this.setIsOnFeed(false);
+        this.setPercentageOfCompletion(100);
+
         this.setState(TaskState.FINISHED);
         for (Session session: this.getSessions()){
             if(session.getState() != SessionState.COMPLETED){
                 session.setState(SessionState.COMPLETED);
-            }
-        }
-
-
-    }
-
-    @Override
-    public void completeSession(Session session) {
-        if (session.getState() != SessionState.PROGRAMMED) {
-            throw new IllegalStateException("Only sessions programmed can be completed.");
-        }
-        session.setState(SessionState.COMPLETED);
-
-        boolean found = false;
-        for(Session taskSession:this.getSessions()){
-            if (taskSession.equals(session)) {
-                found = true;
-                break;
-            }
-        }
-        if(!found){
-            throw new IllegalStateException("the session you want to complete doesn't belong to this group task");
-        }
-        if(this.doExistNextSession(session)){
-            completeTaskBySessions();
-        }
-        else {
-            for (User member : this.getMembers()) {
-                TakenSubtask takenSubtask = takenSubtasks.stream()
-                        .filter(ts -> ts.getUser().equals(member))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("No subtask assigned to member"));
-                Subtask subtaskOfCompetence = takenSubtask.getSubtask();
-                for (Session subSession : subtaskOfCompetence.getSessions()) {
-                    if (subSession.equals(session)) {
-                        subSession.setState(SessionState.COMPLETED);
-                    }
-                }
-            }
-            resetConsecutiveSkippedSessions();
-            int completedCounter = 0;
-            for (Session taskSession : this.getSessions()) {
-                if (taskSession.getState() == SessionState.COMPLETED) {
-                    completedCounter += 1;
-                }
-            }
-            int percentageOfCompletion = (completedCounter / this.getSessions().size()) * 100;
-            this.setPercentageOfCompletion(percentageOfCompletion);
-
-            for (User member : this.getMembers()) {
-                for (Session subSession : member.getCalendar().getSessions()) {
-                    if (subSession.equals(session)) {
-                        subSession.setState(SessionState.COMPLETED);
-                        break;
-                    }
-                }
             }
         }
     }
@@ -364,34 +313,43 @@ public class Group extends Task {
         if (session.getState() != SessionState.PROGRAMMED) {
             throw new IllegalStateException("Only sessions programmed can be completed.");
         }
-        session.setState(SessionState.COMPLETED);
+        boolean found = false;
         for(Session taskSession: this.getSessions()) {
             if(taskSession.equals(session)){
                 this.completeSession(taskSession);
+                found = true;
                 break;
             }
+        }
+        if(!found){
+            throw new EntityNotFoundException("No such session in task");
         }
     }
 
     public void joinGroup(@NotNull User user, @NotNull Subtask subtask) {
+
+        if(this.getState() == TaskState.FINISHED){
+            throw new IllegalStateException("The group is already finished.");
+        }
+
         boolean isSubtaskTaken = takenSubtasks.stream()
                 .anyMatch(takenSubtask -> takenSubtask.getSubtask().equals(subtask));
 
+        if(!this.getIsOnFeed()){
+            throw new IllegalArgumentException("the task must be on feed for joining");
+        }
         if (isSubtaskTaken) {
             throw new IllegalArgumentException("Subtask does not exist or is already taken.");
         }
         if (isComplete) {
             throw new UnsupportedOperationException("The group is already complete.");
         }
-
         if (members.contains(user)) {
             throw new IllegalArgumentException("User is already member of this group.");
         }
         this.assignSubtaskToUser(user, subtask);
         this.addMember(user);
 
-        // è il TaskCalendar
-        this.calendar.addSessions(user, subtask);
         if(actualMembers == numUsers){
             isComplete = true;
         }
@@ -403,6 +361,9 @@ public class Group extends Task {
 
 
     public void leaveGroupTask(User user) {
+        if(this.getState() == TaskState.FINISHED){
+            throw new IllegalStateException("The group is already finished.");
+        }
         if (!members.contains(user)) {
             throw new IllegalArgumentException("the user is not part of the group");
         }
@@ -410,11 +371,16 @@ public class Group extends Task {
         this.getCalendar().removeSessions(user);
         user.getTasks().remove(this);
         this.setState(TaskState.FREEZED);
+        this.setIsInProgress(false);
+        this.setIsComplete(false);
+
         TakenSubtask takenLeftSubtask = takenSubtasks.stream()
                 .filter(t -> t.getUser().equals(user))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("TakenSubtask not found for the user"));
         this.getTakenSubtasks().remove(takenLeftSubtask);
+        user.getCalendar().removeSubtaskSessionsForGroups(takenLeftSubtask.getSubtask());
+        this.getCalendar().removeSessions(user);
         this.getMembers().remove(user);
         for (User member : this.getMembers()) {
             // Ottieni il subtask assegnato a questo membro
@@ -423,130 +389,219 @@ public class Group extends Task {
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Subtask not found for member"));
             Subtask subtaskOfCompetence = takenSubtask.getSubtask();
+            this.getCalendar().removeSessions(member);
             member.getCalendar().removeSubtaskSessionsForGroups(subtaskOfCompetence);
         }
+        this.setIsOnFeed(true);
         Feed.getInstance().getGroup().add(this);
     }
 
 
-    public void sendExchangeRequest(User sender, User receiver) {
-        if (!members.contains(sender) || !members.contains(receiver)) {
-            throw new IllegalArgumentException("both the users must be members of the group");
+
+
+    @Override
+    public void skipSession(Session session) {
+        if(!this.getSessions().contains(session)){
+            throw new EntityNotFoundException("The session does not exist.");
         }
-        TakenSubtask senderTakenSubtask = takenSubtasks.stream()
-                .filter(t -> t.getUser().equals(sender))
-                .findFirst()
-                .orElse(null);
-        if (senderTakenSubtask == null || senderTakenSubtask.getSubtask() == null) {
-            throw new IllegalArgumentException("the sender doesn't have a subtask to offer");
-        }
-        TakenSubtask receiverTakenSubtask = takenSubtasks.stream()
-                .filter(t -> t.getUser().equals(receiver))
-                .findFirst()
-                .orElse(null);
-        if (receiverTakenSubtask == null || receiverTakenSubtask.getSubtask() == null) {
-            throw new IllegalArgumentException("the receiver doesn't have a subtask to exchange");
-        }
-        Request exchangeRequest = new Request(sender, receiver, this, senderTakenSubtask.getSubtask(), receiverTakenSubtask.getSubtask());
-        receiver.getPendingRequests().add(exchangeRequest);
-    }
-
-
-
-    public void processExchangeRequest(User receiver, Request request, boolean accept) {
-        if (accept) {
-            Subtask senderSubtask = this.getSubtasks().stream()
-                    .filter(subtask -> subtask.equals(request.getGivenSubtask()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Given subtask not found in group's subtasks."));
-
-            Subtask receiverSubtask = this.getSubtasks().stream()
-                    .filter(subtask -> subtask.equals(request.getSubtaskToReceive()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Subtask to receive not found in group's subtasks."));
-
-            TakenSubtask senderTakenSubtask = this.getTakenSubtasks().stream()
-                    .filter(t -> t.getSubtask().equals(senderSubtask))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Sender does not have an assigned subtask."));
-
-            TakenSubtask receiverTakenSubtask = this.getTakenSubtasks().stream()
-                    .filter(t -> t.getSubtask().equals(receiverSubtask))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Receiver does not have an assigned subtask."));
-
-            if (!senderTakenSubtask.getSubtask().equals(senderSubtask) || !receiverTakenSubtask.getSubtask().equals(receiverSubtask)) {
-                throw new IllegalArgumentException("Current TakenSubtasks do not match the requested exchange.");
+        session.setState(SessionState.SKIPPED);
+        Subtask incriminatedSubtask = null;
+        boolean sessionFound = false;
+        for (Subtask subtask : this.getSubtasks()) {
+            for (Session subSession : subtask.getSessions()) {
+                if (subSession.equals(session)) {
+                    incriminatedSubtask = subtask;
+                    subSession.setState(SessionState.SKIPPED);
+                    sessionFound = true;
+                    break;
+                }
             }
+        }
+        if (!sessionFound) {
+            throw new IllegalStateException("Session not found in any subtask. CLASS TASK skipSession");
+        }
+
+        boolean shouldAddAtEnd = getStrategies().stream()
+                .anyMatch(strategyInstance ->
+                        strategyInstance.getStrategy() == DefaultStrategy.EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING
+                                && !strategyInstance.getStrategy().requiresTot()
+                                && !strategyInstance.getStrategy().requiresMaxConsecSkipped()
+                );
+
+        Subtask finalIncriminatedSubtask = incriminatedSubtask;
+        TakenSubtask foundTakenSubtask = takenSubtasks.stream()
+                .filter(ts -> ts.getSubtask().equals(finalIncriminatedSubtask))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No TakenSubtask found for the given Subtask"));
+        if (shouldAddAtEnd) {
+            LocalDateTime newStartDate = calculateNewSessionDate(session);
+            LocalDateTime newEndDate = newStartDate.plusMinutes(session.getDurationMinutes());
 
 
-            takenSubtasks.remove(senderTakenSubtask);
-            takenSubtasks.remove(receiverTakenSubtask);
+            if (this.getDeadline() != null && newEndDate.isAfter(this.getDeadline())) {
 
-            TakenSubtask newSenderTakenSubtask = new TakenSubtask(request.getSender(), receiverSubtask);
-            TakenSubtask newReceiverTakenSubtask = new TakenSubtask(receiver, senderSubtask);
+                foundTakenSubtask.getUser().getCalendar().getSessions().stream()
+                        .filter(s -> s.equals(session))
+                        .forEach(s -> s.setState(SessionState.SKIPPED));
+            } else {
 
-            takenSubtasks.add(newSenderTakenSubtask);
-            takenSubtasks.add(newReceiverTakenSubtask);
+                this.getSessions().remove(session);
+                incriminatedSubtask.getSessions().remove(session);
+                foundTakenSubtask.getUser().getCalendar().getSessions().remove(session);
+                this.getCalendar().getUserSessions().removeIf(us -> us.getSession().equals(session));
 
-            this.calendar.moveSessions(request.getSender(), request.getReceiver());
+                Session newSession = new Session(newStartDate, newEndDate);
+                newSession.setState(SessionState.PROGRAMMED);
 
-            receiver.getCalendar().removeSubtaskSessionsForGroups(receiverSubtask);
-            request.getSender().getCalendar().removeSubtaskSessionsForGroups(senderSubtask);
+                this.getSessions().add(newSession);
+                incriminatedSubtask.getSessions().add(newSession);
+                foundTakenSubtask.getUser().getCalendar().getSessions().add(newSession);
+                UserSession newUserSession = new UserSession(foundTakenSubtask.getUser(),newSession);
+                this.getCalendar().getUserSessions().add(newUserSession);
 
-            receiver.getCalendar().addSubtaskSessionsForGroups(senderSubtask);
-            request.getSender().getCalendar().addSubtaskSessionsForGroups(receiverSubtask);
+                this.getSessions().sort(Comparator.comparing(Session::getStartDate));
+            }
+        }
 
-            receiver.getPendingRequests().remove(request);
-        } else {
-            receiver.getPendingRequests().remove(request);
+        this.setSkippedSessions(this.getSkippedSessions()+1);
+        this.setConsecutiveSkippedSessions(this.getConsecutiveSkippedSessions()+1);
+
+        boolean limitExceeded = getStrategies().stream()
+                .filter(strategyInstance -> strategyInstance.getStrategy().requiresTot()) // Filtra strategie che richiedono TOT
+                .map(StrategyInstance::getTot)
+                .filter(Objects::nonNull)
+                .max(Integer::compare)
+                .map(max -> this.getSkippedSessions() > max)
+                .orElse(false);
+
+        limitExceeded = limitExceeded || getStrategies().stream()
+                .filter(strategyInstance -> strategyInstance.getStrategy().requiresMaxConsecSkipped())
+                .map(StrategyInstance::getMaxConsecSkipped)
+                .filter(Objects::nonNull)
+                .max(Integer::compare)
+                .map(max -> this.getConsecutiveSkippedSessions() > max)
+                .orElse(false);
+
+        if (limitExceeded) {
+            handleLimitExceeded();
         }
     }
 
-    public void addTakenSubtasksAndSessions(User receiver, Request request) {
-        Subtask senderSubtask = this.getSubtasks().stream()
-                .filter(subtask -> subtask.equals(request.getGivenSubtask()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Given subtask not found in group's subtasks."));
+    private LocalDateTime calculateNewSessionDate(Session skippedSession) {
 
-        Subtask receiverSubtask = this.getSubtasks().stream()
-                .filter(subtask -> subtask.equals(request.getSubtaskToReceive()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Subtask to receive not found in group's subtasks."));
+        LocalDateTime lastSessionEnd = getSessions().stream()
+                .map(Session::getEndDate)
+                .max(LocalDateTime::compareTo)
+                .orElse(LocalDateTime.now());
+
+        // Recupera la fascia d'inizio e di fine del timetable (modifica in base alle tue esigenze)
+        LocalTime timetableStart = getTimetableStart();
+        LocalTime timetableEnd = getTimetableEnd();
+
+        // Iniziamo due giorni dopo la fine dell'ultima sessione, all'orario d'inizio del timetable
+        LocalDateTime candidateDate = lastSessionEnd.plusDays(2)
+                .withHour(timetableStart.getHour())
+                .withMinute(timetableStart.getMinute())
+                .withSecond(0)
+                .withNano(0);
+
+        // Trova uno slot valido: aumenta di 30 minuti fino a quando non trovi un orario compatibile
+        while (!isValidSessionTime(candidateDate, skippedSession.getDurationMinutes())) {
+            candidateDate = candidateDate.plusMinutes(30);
+            // Se l'orario corrente supera il limite del timetable, passa al giorno successivo
+            if (candidateDate.toLocalTime().isAfter(timetableEnd)) {
+                candidateDate = candidateDate.plusDays(1)
+                        .withHour(timetableStart.getHour())
+                        .withMinute(timetableStart.getMinute())
+                        .withSecond(0)
+                        .withNano(0);
+            }
+        }
+        return candidateDate;
+    }
+
+    // Esempi di metodi helper per ottenere l'orario d'inizio e fine in base al timetable del task
+    private LocalTime getTimetableStart() {
+        return switch (this.getTimetable()) {
+            case MORNING, MORNING_AFTERNOON, MORNING_EVENING -> LocalTime.of(6, 0);
+            case AFTERNOON, AFTERNOON_EVENING -> LocalTime.of(12, 0);
+            case EVENING -> LocalTime.of(18, 0);
+            case NIGHT, NIGHT_AFTERNOON, NIGHT_MORNING, ALL_DAY -> LocalTime.of(0, 0);
+
+        };
+    }
+
+    private LocalTime getTimetableEnd() {
+        return switch (this.getTimetable()) {
+            case MORNING, NIGHT_MORNING -> LocalTime.of(12, 0);
+            case AFTERNOON, MORNING_AFTERNOON, NIGHT_AFTERNOON -> LocalTime.of(18, 0);
+            case EVENING, AFTERNOON_EVENING, MORNING_EVENING, ALL_DAY -> LocalTime.of(23, 59);
+            case NIGHT -> LocalTime.of(6, 0);
+        };
+    }
 
 
-        TakenSubtask newSenderTakenSubtask = new TakenSubtask(request.getSender(), receiverSubtask);
-        TakenSubtask newReceiverTakenSubtask = new TakenSubtask(receiver, senderSubtask);
+    private boolean isValidSessionTime(LocalDateTime startDate, int durationMinutes) {
+        LocalDateTime endDate = startDate.plusMinutes(durationMinutes);
 
-        takenSubtasks.add(newSenderTakenSubtask);
-        takenSubtasks.add(newReceiverTakenSubtask);
+        // Verifica se la sessione rientra nella timetable del task
+        boolean isWithinTimetable = isWithinTimeSlot(startDate.toLocalTime(), endDate.toLocalTime());
 
-        receiver.getCalendar().addSubtaskSessionsForGroups(senderSubtask);
-        request.getSender().getCalendar().addSubtaskSessionsForGroups(receiverSubtask);
+        // Verifica se non ci sono conflitti con sessioni esistenti
+        boolean hasNoConflict = this.getSessions().stream().noneMatch(session ->
+                startDate.isBefore(session.getEndDate()) && endDate.isAfter(session.getStartDate()));
+
+        return isWithinTimetable && hasNoConflict;
+    }
+
+    private boolean isWithinTimeSlot(LocalTime startTime, LocalTime endTime) {
+        return switch (this.getTimetable()) {
+            case MORNING -> !startTime.isBefore(LocalTime.of(6, 0)) && endTime.isBefore(LocalTime.of(12, 0));
+            case AFTERNOON -> !startTime.isBefore(LocalTime.of(12, 0)) && endTime.isBefore(LocalTime.of(18, 0));
+            case EVENING -> !startTime.isBefore(LocalTime.of(18, 0)) && endTime.isBefore(LocalTime.of(23, 59));
+            case NIGHT -> !startTime.isBefore(LocalTime.of(0, 0)) && endTime.isBefore(LocalTime.of(6, 0));
+            case MORNING_AFTERNOON ->
+                    (!startTime.isBefore(LocalTime.of(6, 0)) && endTime.isBefore(LocalTime.of(18, 0)));
+            case AFTERNOON_EVENING ->
+                    (!startTime.isBefore(LocalTime.of(12, 0)) && endTime.isBefore(LocalTime.of(23, 59)));
+            case NIGHT_AFTERNOON ->
+                    (!startTime.isBefore(LocalTime.of(0, 0)) && endTime.isBefore(LocalTime.of(18, 0)));
+            case MORNING_EVENING ->
+                    (!startTime.isBefore(LocalTime.of(6, 0)) && endTime.isBefore(LocalTime.of(0, 0)));
+            case NIGHT_MORNING ->
+                    (!startTime.isBefore(LocalTime.of(0, 0)) && endTime.isBefore(LocalTime.of(12, 0)));
+            case ALL_DAY -> true;  // Copre l'intera giornata
+        };
+    }
+
+
+    @Override
+    public void removeAndFreezeTask(User user){
+        if(user != this.getUser()){
+            throw new UnsupportedOperationException("the user must be the admin");
+        }
+        takenSubtasks.forEach(ts -> ts.getUser().getCalendar().removeSubtaskSessionsForGroups(ts.getSubtask()));
+        this.getCalendar().removeTaskSessions(this);
+        this.setState(TaskState.FREEZED);
+        this.setIsInProgress(false);
     }
 
 
 
 
 
+    public void removeMember(User admin, User member, boolean substitute) {
 
-
-
-
-    public void removeMember(User admin,User member, boolean substitute) {
-
+        if(this.getState() == TaskState.FINISHED || this.getState() == TaskState.TODO){
+            throw new IllegalStateException("you can't remove members now");
+        }
         if(this.getUser().equals(member)){
             throw new IllegalArgumentException("Only admin users can remove members");
         }
-        // Verifica che il membro sia effettivamente parte del gruppo
         if (!members.contains(member) || !members.contains(admin)) {
             throw new IllegalArgumentException("The member is not part of the group");
         }
-
-
-        // Se si sta sostituendo il membro, esegui le operazioni correlate
         if (substitute) {
-            // Aggiungi il gruppo al Feed se non è già presente
             boolean found = false;
             for(Group group:Feed.getInstance().getGroup()){
                 if (group.equals(this)) {
@@ -556,40 +611,74 @@ public class Group extends Task {
             }
             if(!found){
                 Feed.getInstance().getGroup().add(this);
+                this.setIsOnFeed(true);
             }
-
+            this.setIsInProgress(false);
             this.setState(TaskState.FREEZED);
+            this.setIsComplete(false);
+            this.setIsOnFeed(true);
 
-            // Ottieni il TakenSubtask del membro e rimuovilo dalla lista
+
             TakenSubtask takenSubtask = getTakenSubtaskForMember(member);
-            getAvailableSubtasks().add(takenSubtask.getSubtask());  // Ripristina il subtask tra quelli disponibili
-            takenSubtasks.remove(takenSubtask);  // Rimuovi il TakenSubtask
+            getAvailableSubtasks().add(takenSubtask.getSubtask());
+            takenSubtasks.remove(takenSubtask);
 
-            // Rimuovi le sessioni del membro dal calendario del gruppo e dell'utente
             this.getCalendar().removeSessions(member);
 
             member.getCalendar().removeSubtaskSessionsForGroups(takenSubtask.getSubtask());
             this.getMembers().remove(member);
-            // Per ogni membro restante, aggiorna il calendario
+
             for (User user : this.getMembers()) {
-                // Rimuovi le sessioni dal calendario dell'utente
                 this.getCalendar().removeSessions(user);
                 TakenSubtask subtaskOfCompetence = getTakenSubtaskForMember(user);
-                // Rimuovi le sessioni del subtask dal calendario dell'utente
                 user.getCalendar().removeSubtaskSessionsForGroups(subtaskOfCompetence.getSubtask());
             }
             actualMembers--;
 
-        } else {
-            // Se non si sta sostituendo il membro, rimuovi il TakenSubtask senza sostituirlo
-            TakenSubtask takenSubtask = getTakenSubtaskForMember(member);
-            this.getSubtasks().remove(takenSubtask.getSubtask());  // Rimuovi il subtask dal gruppo
-            takenSubtasks.remove(takenSubtask);  // Rimuovi il TakenSubtask
+        }
+        else {
+
+        TakenSubtask takenSubtask = getTakenSubtaskForMember(member);
+        Subtask subtaskToRemove = takenSubtask.getSubtask();
+        member.getCalendar().removeSubtaskSessionsForGroups(subtaskToRemove);
+
+        TaskCalendar groupCalendar = this.getCalendar();
+        if (groupCalendar != null) {
+            for (Session subSession : subtaskToRemove.getSessions()) {
+                groupCalendar.getUserSessions().removeIf(userSession ->
+                        userSession.getUser().equals(member) && userSession.getSession().equals(subSession)
+                );
+            }
+        }
+
+        this.getMembers().remove(member);
+
+        int subtaskTimeHours = 0;
+        for (Session subSession : subtaskToRemove.getSessions()) {
+            int hours = subSession.getDurationMinutes() / 60;
+            subtaskTimeHours += hours;
+
+            this.getSessions().remove(subSession);
+        }
+        int newTotalTime = this.getTotalTime() - subtaskTimeHours;
+        if (newTotalTime < 0) {
+            newTotalTime = 0;
+        }
+        this.setTotalTime(newTotalTime);
+        this.getSubtasks().remove(subtaskToRemove);
+        takenSubtasks.remove(takenSubtask);
+        if (this.getIsOnFeed()) {
+            Feed.getInstance().getGroup().remove(this);
+        }
+        this.setIsOnFeed(false);
+        actualMembers--;
+        numUsers--;
+        this.setIsComplete(true);
         }
     }
 
     private TakenSubtask getTakenSubtaskForMember(User member) {
-        // Iteriamo sulla lista per trovare il TakenSubtask associato al membro
+
         for (TakenSubtask ts : takenSubtasks) {
             if (ts.getUser().equals(member)) {
                 return ts;

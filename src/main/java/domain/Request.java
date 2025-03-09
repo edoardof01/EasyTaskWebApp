@@ -1,3 +1,4 @@
+/*
 package domain;
 
 import jakarta.persistence.*;
@@ -46,5 +47,6 @@ public class Request {
         return receiver;
     }
 }
+*/
 
 

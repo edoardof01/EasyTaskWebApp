@@ -3,6 +3,7 @@ package domain;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class TaskCalendar {
@@ -17,7 +18,6 @@ public class TaskCalendar {
     private List<UserSession> userSessions = new ArrayList<>();
 
     public TaskCalendar() {}
-
     public TaskCalendar(Group group) {
         this.group = group;
     }
@@ -25,11 +25,35 @@ public class TaskCalendar {
     public Group getGroup() {
         return group;
     }
-
     public List<UserSession> getUserSessions() {
         return userSessions;
     }
-
+    public void setUserSessions(List<UserSession> userSessions) {
+        this.userSessions = userSessions;
+    }
+    public List<Session> getSessions(){
+        List<Session> sessions = new ArrayList<>();
+        for(UserSession userSession : userSessions){
+            sessions.add(userSession.getSession());
+        }
+        return sessions;
+    }
+    public List<Session> getSessionsPerUser(User user){
+        List<Session> sessions = new ArrayList<>();
+        for(UserSession userSession : userSessions){
+            if(userSession.getUser().equals(user)){
+                sessions.add(userSession.getSession());
+            }
+        }
+        return sessions;
+    }
+    public List<User> getUsers(){
+        List<User> users = new ArrayList<>();
+        for(UserSession userSession : userSessions){
+            users.add(userSession.getUser());
+        }
+        return users;
+    }
     public Long getId() {
         return id;
     }
@@ -40,14 +64,15 @@ public class TaskCalendar {
     }
 
     public void addSessions(User user, Subtask subtask) {
-        // Verifica che l'utente sia membro del gruppo e che il task sia attivo
+
         if (!group.getIsComplete()) {
             throw new UnsupportedOperationException(" il task non è completo");
         }
         boolean found = false;
         for(User member : group.getMembers()) {
-            if(member.equals(user)) {
+            if (member.equals(user)) {
                 found = true;
+                break;
             }
         }
         if(!found) {
@@ -82,28 +107,14 @@ public class TaskCalendar {
         userSessions.removeIf(userSession -> userSession.getUser().equals(user));
     }
 
-    public List<Session> getUserSessions(User user) {
-        List<Session> sessions = new ArrayList<>();
-        for (UserSession userSession : userSessions) {
-            if (userSession.getUser().equals(user)) {
-                sessions.add(userSession.getSession());
-            }
-        }
-        return sessions;
+    public List<Session> getUserSession(User user) {
+        return userSessions.stream()
+                .filter(userSession -> userSession.getUser().equals(user))
+                .map(UserSession::getSession)
+                .collect(Collectors.toList());
     }
 
-    public void moveSessions(User sender, User receiver) {
-        List<Session> senderSessions = getUserSessions(sender);
-        List<Session> receiverSessions = getUserSessions(receiver);
-
-        removeSessions(sender);
-        removeSessions(receiver);
-
-        for (Session session : senderSessions) {
-            userSessions.add(new UserSession(receiver, session));
-        }
-        for (Session session : receiverSessions) {
-            userSessions.add(new UserSession(sender, session));
-        }
+    public void removeTaskSessions(Group group){
+        this.getSessions().removeIf(session -> group.getSessions().contains(session));
     }
 }

@@ -17,6 +17,10 @@ public class CalendarDAO {
 
     public CalendarDAO(){}
 
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     public Calendar findById(long id){
         return entityManager.find(Calendar.class, id);
     }

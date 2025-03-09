@@ -16,6 +16,10 @@ public class PersonalDAO {
 
     public PersonalDAO() {}
 
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     public Personal findById(long id) {
         return entityManager.find(Personal.class, id);
     }

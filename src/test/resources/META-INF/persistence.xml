@@ -1,0 +1,55 @@
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="EasyTaskTestPU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Le stesse classi di dominio di produzione -->
+        <class>domain.User</class>
+        <class>domain.Calendar</class>
+        <class>domain.Resource</class>
+        <class>domain.Session</class>
+        <class>domain.Task</class>
+        <class>domain.Shared</class>
+        <class>domain.Subtask</class>
+        <class>domain.Comment</class>
+        <class>domain.Group</class>
+        <class>domain.RegisteredUser</class>
+        <class>domain.Profile</class>
+        <class>domain.CommentedFolder</class>
+        <class>domain.UserSession</class>
+        <class>domain.Personal</class>
+        <class>domain.TaskCalendar</class>
+        <class>domain.TakenSubtask</class>
+        <class>domain.StrategyInstance</class>
+
+
+        <properties>
+            <!-- Configurazione per H2 in-memory -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="hibernate.hbm2ddl.import_files" value="import.sql"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:easyTaskTest;DB_CLOSE_DELAY=-1"/>
+            <property name="jakarta.persistence.jdbc.user" value="sa"/>
+            <property name="jakarta.persistence.jdbc.password" value=""/>
+            <property name="hibernate.globally_quoted_identifiers" value="true"/>
+            <property name="hibernate.implicit_naming_strategy"
+                      value="org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl"/>
+            <property name="hibernate.physical_naming_strategy"
+                      value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>
+
+
+
+            <!-- Hibernate dialect per H2 -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+
+            <!-- Genera e droppa lo schema a inizio/fine test -->
+            <property name="jakarta.persistence.schema-generation.create-source" value="metadata"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+            <property name="hibernate.schema_generation.scripts.create-target" value="schema.sql"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>

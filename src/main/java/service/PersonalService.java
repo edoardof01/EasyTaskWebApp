@@ -10,6 +10,7 @@ import orm.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
 import java.util.*;
 
 public class PersonalService {
@@ -40,6 +41,10 @@ public class PersonalService {
         return personalMapper.toPersonalDTO(personal);
     }
 
+    public List<Personal> getAllPersonalEntities() {
+        return personalDAO.findAll(); // ad esempio
+    }
+
 
     public List<PersonalDTO> getAllPersonal() {
         return personalDAO.findAll().stream()
@@ -47,10 +52,9 @@ public class PersonalService {
                 .toList();
     }
 
-    public PersonalDTO createPersonal(String name, long userId, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
+    public PersonalDTO createPersonal(String name, long userId, Topic topic, @Nullable LocalDateTime deadline, Integer totalTime,
                                       Timetable timeSlots, List<StrategyInstance> strategies, int priority,
-                                      String description, List<Resource> resources, @Nullable List<Subtask> subtasks, List<Session> sessions,
-                                      @Nullable Integer requiredUsers, @Nullable String userGuidance) {
+                                      String description, List<Resource> resources, @Nullable List<Subtask> subtasks, List<Session> sessions) {
 
 
         if(subtasks != null){
@@ -66,58 +70,23 @@ public class PersonalService {
         if(sessions==null || sessions.isEmpty()){
             throw new IllegalArgumentException("you must specify Personal's sessions");
         }
-        if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null) {
+        if (name == null || topic == null || totalTime == null || totalTime <= 0 || timeSlots == null || strategies == null
+        || strategies.isEmpty() || priority<=0 || priority>5 || description == null ) {
             throw new IllegalArgumentException("Mandatory fields missing or invalid fields");
         }
-        if (requiredUsers != null || userGuidance != null) {
-            throw new IllegalArgumentException("Users number can be set only for group tasks and teh userGuidance for shared tasks");
-        }
 
 
-        if (strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
-            if (deadline != null) {
-                throw new IllegalArgumentException("If this strategy is set, a deadline can't be selected");
+        if(deadline != null){
+            if(strategies.stream().anyMatch(strategy ->
+                    strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS)){
+                throw new IllegalArgumentException("you cannot choose this strategy if a deadline is set");
             }
         }
-        if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)){
-            if(strategies.size()>1){
-                throw new IllegalArgumentException("If this strategy is set, an other strategy can't be selected");
-            }
-        }
+
         if(strategies.stream().anyMatch(strategy ->
                 strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS)){
             if(strategies.size()>1){
                 throw new IllegalArgumentException("If this strategy is set, an other strategy can't be selected");
-            }
-        }
-        if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.FREEZE_TASK_AFTER_TOT_SKIPPED_SESSIONS)){
-            if(strategies.size()>1){
-                for(StrategyInstance strategy : strategies){
-                    if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS ||
-                            strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING){
-                        throw new IllegalArgumentException("If this strategy is set, just an other type strategy can be selected");
-                    }
-                }
-            }
-        }
-        if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.FREEZE_TASK_AFTER_TOT_CONSECUTIVE_SKIPPED_SESSIONS)){
-            if(strategies.size()>1){
-                for(StrategyInstance strategy : strategies){
-                    if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS ||
-                            strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING){
-                        throw new IllegalArgumentException("If this strategy is set, just an other type strategy can be selected");
-                    }
-                }
-            }
-        }
-        if (deadline != null) {
-            if (strategies.stream().anyMatch(strategy ->
-                    strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
-                throw new IllegalArgumentException("If a deadline is set, this strategy can't be selected");
             }
         }
 
@@ -137,7 +106,6 @@ public class PersonalService {
                 }
             }
         }
-
 
 
         if (subtasks != null) {
@@ -184,6 +152,7 @@ public class PersonalService {
                 }
             }
         }
+
         // CONTROLLO SESSIONI SUBTASK
         if (subtasks != null && !subtasks.isEmpty()) {
             Set<Session> allAssignedSessions = new HashSet<>(); // Per tenere traccia delle sessioni assegnate
@@ -214,13 +183,15 @@ public class PersonalService {
         // Validazione finale delle sessioni
         validateSessions(sessions, timeSlots, totalTime);
 
-
         Personal personalTask = new Personal(name, existingUser, topic, deadline, description, subtasks, sessions, 0, priority, timeSlots, totalTime, strategies, resources);
         personalTask.setComplexity(calculateComplexity(subtasks,resources));
         personalDAO.save(personalTask);
         userDAO.update(existingUser);
         return personalMapper.toPersonalDTO(personalTask);
     }
+
+
+
 
     private void validateSessions(List<Session> sessions, Timetable timeSlots, int totalTime) {
         if (sessions == null || sessions.isEmpty()) {
@@ -326,7 +297,7 @@ public class PersonalService {
 
 
 
-    public int calculateComplexity(List<Subtask> subtasks, List<Resource> resources) {
+    private int calculateComplexity(List<Subtask> subtasks, List<Resource> resources) {
         int subtaskScore;
         if (subtasks == null || subtasks.isEmpty()) {
             // Se non ci sono subtasks, usa solo il punteggio delle risorse
@@ -351,7 +322,7 @@ public class PersonalService {
     }
 
 
-    public int calculateResourceScore(List<Resource> resources) {
+    private int calculateResourceScore(List<Resource> resources) {
         int totalScore = resources.stream()
                 .mapToInt(resource -> {
                     if (resource.getType() == ResourceType.MONEY) {
@@ -368,67 +339,45 @@ public class PersonalService {
         else return 5;
     }
 
-    public PersonalDTO modifyPersonal(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
-                                    Timetable timeSlots, List<StrategyInstance> strategies, int priority, String description,
-                                    List<Resource> resources,@Nullable List<Subtask> subtasks, List<Session> sessions, @Nullable Integer requiredUsers, @Nullable String userGuidance) {
+    public PersonalDTO modifyPersonal(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, Integer totalTime,
+                                      Timetable timeSlots, List<StrategyInstance> strategies, int priority, String description,
+                                      List<Resource> resources,@Nullable List<Subtask> subtasks, List<Session> sessions, @Nullable Integer requiredUsers, @Nullable String userGuidance) {
 
         if(subtasks != null){
             for(Subtask subtask:subtasks){
                 if (subtask.getName()==null || subtask.getLevel()==null || subtask.getDescription()==null) throw new IllegalArgumentException("you must fill this fields");
             }
         }
-        if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null) {
+        if(sessions != null){
+            for(Session session:sessions){
+                if(session.getStartDate()==null || session.getEndDate()==null) throw new IllegalArgumentException("you must fill this fields");
+            }
+        }
+        if(sessions==null || sessions.isEmpty()){
+            throw new IllegalArgumentException("you must specify Personal's sessions");
+        }
+        if (name == null || topic == null || totalTime == null || totalTime <= 0 || timeSlots == null || strategies == null) {
             throw new IllegalArgumentException("Mandatory fields missing or invalid fields");
         }
         if (requiredUsers != null || userGuidance != null) {
             throw new IllegalArgumentException("Users number can be set only for group tasks and teh userGuidance for shared tasks");
         }
-        if (strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
-            if (deadline != null) {
-                throw new IllegalArgumentException("If this strategy is set, a deadline can't be selected");
+
+        if(deadline != null){
+            if(strategies.stream().anyMatch(strategy ->
+                    strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS)){
+                throw new IllegalArgumentException("you cannot choose this strategy if a deadline is set");
             }
         }
-        if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)){
-            if(strategies.size()>1){
-                throw new IllegalArgumentException("If this strategy is set, an other strategy can't be selected");
-            }
-        }
+
         if(strategies.stream().anyMatch(strategy ->
                 strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS)){
             if(strategies.size()>1){
                 throw new IllegalArgumentException("If this strategy is set, an other strategy can't be selected");
             }
         }
-        if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.FREEZE_TASK_AFTER_TOT_SKIPPED_SESSIONS)){
-            if(strategies.size()>1){
-                for(StrategyInstance strategy : strategies){
-                    if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS ||
-                            strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING){
-                        throw new IllegalArgumentException("If this strategy is set, just an other type strategy can be selected");
-                    }
-                }
-            }
-        }
-        if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.FREEZE_TASK_AFTER_TOT_CONSECUTIVE_SKIPPED_SESSIONS)){
-            if(strategies.size()>1){
-                for(StrategyInstance strategy : strategies){
-                    if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS ||
-                            strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING){
-                        throw new IllegalArgumentException("If this strategy is set, just an other type strategy can be selected");
-                    }
-                }
-            }
-        }
-        if (deadline != null) {
-            if (strategies.stream().anyMatch(strategy ->
-                    strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
-                throw new IllegalArgumentException("If a deadline is set, this strategy can't be selected");
-            }
-        }
+
+
 
         Personal personalTask = personalDAO.findById(taskId);
         if (personalTask == null) {
@@ -650,6 +599,7 @@ public class PersonalService {
         personalDAO.update(personal);
     }
 
+    @Transactional
     public void forceCompletion(long personalId) {
         Personal personal = personalDAO.findById(personalId);
         if(personal == null) return;
@@ -659,6 +609,17 @@ public class PersonalService {
         for(Session session : personal.getSessions()) {
             sessionDAO.update(session);
         }
+    }
+
+    @Transactional
+    public void freezeTask(long personalId){
+        Personal personal = personalDAO.findById(personalId);
+        if (personal == null) {
+            throw new IllegalArgumentException("Personal task with ID " + personalId + " not found.");
+        }
+        personal.handleLimitExceeded();
+        personalDAO.update(personal);
+        calendarDAO.update(personal.getUser().getCalendar());
     }
 
     @Transactional

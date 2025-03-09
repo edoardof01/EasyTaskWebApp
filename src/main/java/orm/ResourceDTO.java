@@ -11,7 +11,7 @@ public class ResourceDTO {
     private ResourceType type;
 
 
-    public ResourceDTO() {// Valore di default
+    public ResourceDTO() {
     }
 
     public ResourceDTO(Resource resource) {

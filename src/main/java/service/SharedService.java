@@ -62,33 +62,25 @@ public class SharedService {
 
     public SharedDTO createShared(String name, long userId, Topic topic, @Nullable LocalDateTime deadline, int totalTime,
                                   Timetable timeSlots, List<StrategyInstance> strategies, int priority,
-                                  String description, List<Resource> resources, @Nullable List<Subtask> subtasks, List<Session> sessions,
-                                  @Nullable Integer requiredUsers, @Nullable String userGuidance) {
+                                  String description, List<Resource> resources, @Nullable List<Subtask> subtasks, List<Session> sessions, String userGuidance) {
 
-        if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null) {
+        if (name == null || topic == null || totalTime <= 0 || timeSlots == null || strategies == null || sessions == null || priority<=0 || priority>5
+                || description == null || strategies.isEmpty() || sessions.isEmpty()|| userGuidance == null ) {
             throw new IllegalArgumentException("mandatory fields missing or invalid fields");
         }
-        if (requiredUsers != null) {
-            throw new IllegalArgumentException("Users number can be set only for shared tasks");
-        }
+
         if (strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
+                strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS)) {
             if (deadline != null) {
                 throw new IllegalArgumentException("If this strategy is set, a deadline can't be selected");
             }
         }
-        if (deadline != null) {
-            if (strategies.stream().anyMatch(strategy ->
-                    strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
-                throw new IllegalArgumentException("If a deadline is set, this strategy can't be selected");
-            }
-        }
+
         if(strategies.stream().anyMatch(strategy ->
                 strategy.getStrategy() == DefaultStrategy.FREEZE_TASK_AFTER_TOT_SKIPPED_SESSIONS)){
             if(strategies.size()>1){
                 for(StrategyInstance strategy : strategies){
-                    if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS ||
-                            strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING){
+                    if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS){
                         throw new IllegalArgumentException("If this strategy is set, just an other type strategy can be selected");
                     }
                 }
@@ -98,8 +90,7 @@ public class SharedService {
                 strategy.getStrategy() == DefaultStrategy.FREEZE_TASK_AFTER_TOT_CONSECUTIVE_SKIPPED_SESSIONS)){
             if(strategies.size()>1){
                 for(StrategyInstance strategy : strategies){
-                    if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS ||
-                            strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING){
+                    if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS){
                         throw new IllegalArgumentException("If this strategy is set, just an other type strategy can be selected");
                     }
                 }
@@ -362,13 +353,13 @@ public class SharedService {
             throw new IllegalArgumentException("Users number can be set only for shared tasks");
         }
         if (strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
+                strategy.getStrategy() == DefaultStrategy.EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
             if (deadline != null) {
                 throw new IllegalArgumentException("If this strategy is set, a deadline can't be selected");
             }
         }
         if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)){
+                strategy.getStrategy() == DefaultStrategy.EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)){
             if(strategies.size()>1){
                 throw new IllegalArgumentException("If this strategy is set, an other strategy can't be selected");
             }
@@ -384,7 +375,7 @@ public class SharedService {
             if(strategies.size()>1){
                 for(StrategyInstance strategy : strategies){
                     if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS ||
-                            strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING){
+                            strategy.getStrategy() == DefaultStrategy.EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING){
                         throw new IllegalArgumentException("If this strategy is set, just an other type strategy can be selected");
                     }
                 }
@@ -395,7 +386,7 @@ public class SharedService {
             if(strategies.size()>1){
                 for(StrategyInstance strategy : strategies){
                     if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS ||
-                            strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING){
+                            strategy.getStrategy() == DefaultStrategy.EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING){
                         throw new IllegalArgumentException("If this strategy is set, just an other type strategy can be selected");
                     }
                 }
@@ -403,7 +394,7 @@ public class SharedService {
         }
         if (deadline != null) {
             if (strategies.stream().anyMatch(strategy ->
-                    strategy.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
+                    strategy.getStrategy() == DefaultStrategy.EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
                 throw new IllegalArgumentException("If a deadline is set, this strategy can't be selected");
             }
         }
@@ -630,18 +621,16 @@ public class SharedService {
                 throw new IllegalArgumentException("Shared with ID " + sharedId + " not found. SHARED SERVICE complete...withComment");
             }
             Comment comment = commentDAO.findById(commentId);
-            shared.bestComment(comment);
+           /* shared.bestComment(comment);*/
             shared.completeBySessionsAndChooseBestComment(comment);
             userDAO.update(shared.getUser());
             sharedDAO.update(shared);
             calendarDAO.update(shared.getUser().getCalendar());
         } catch (IllegalArgumentException e) {
-            // Log the error or handle it appropriately
             log.error("Error during transaction: " + e.getMessage());
         } catch (Exception e) {
-            // Handle any unexpected exceptions that could cause a rollback
             log.error("Unexpected error: " + e.getMessage());
-            throw e; // Rethrow the exception if it's critical
+            throw e;
         }
     }
 

@@ -10,12 +10,11 @@ public class Resource {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
+
     private Long id;
-
     private String name;
-
-    // Per COMPETENCE e EQUIPMENT
     private Integer value;
+
 
     // Per MONEY
     private Integer money;
@@ -86,6 +85,9 @@ public class Resource {
         return money;
     }
     public void setMoney(Integer money) {
+        if(type != ResourceType.MONEY) {
+            throw new IllegalArgumentException("money should not be set for not MONEY resources");
+        }
         this.money = money;
     }
     public ResourceType getType() {

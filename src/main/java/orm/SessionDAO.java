@@ -13,6 +13,10 @@ import java.util.List;
 @ApplicationScoped
 public class SessionDAO {
 
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -42,8 +46,5 @@ public class SessionDAO {
             entityManager.remove(session);
         }
     }
-
-
-
 
 }

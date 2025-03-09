@@ -13,7 +13,7 @@ public class Calendar {
     @OneToOne
     private User user;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Session> sessions = new ArrayList<>();
 
     public Calendar(){}
@@ -24,8 +24,14 @@ public class Calendar {
     public long getId() {
         return id;
     }
+    public void setId(long id) {
+        this.id = id;
+    }
     public List<Session> getSessions() {
         return sessions;
+    }
+    public void setSessions(List<Session> sessions) {
+        this.sessions = sessions;
     }
     public User getUser() {
         return user;
@@ -33,15 +39,23 @@ public class Calendar {
     public void setUser(User user) {
         this.user = user;
     }
+
     public void addSessions(List<Session> newSessions) {
         for (Session newSession : newSessions) {
             if (sessions.stream().anyMatch(existingSession -> existingSession.equals(newSession))) {
                 throw new IllegalArgumentException("Session already exists in the calendar: " + newSession);
             }
+            boolean collision = sessions.stream().anyMatch(existingSession ->
+                    newSession.getStartDate().isBefore(existingSession.getEndDate()) &&
+                            newSession.getEndDate().isAfter(existingSession.getStartDate())
+            );
+            if (collision) {
+                throw new IllegalArgumentException("Session collides with an existing session: " + newSession);
+            }
         }
-        // Se non ci sono duplicati, aggiungi le nuove sessioni
         sessions.addAll(newSessions);
     }
+
 
 
     public void removeSessions(Task task) {
@@ -53,24 +67,31 @@ public class Calendar {
                     break;
                 }
             }
-           /* if (!found) {
+            if (!found) {
                 throw new IllegalArgumentException("The task isn't in the calendar. Missing session: " + taskSession+ ". ClASS CALENDAR removeSessions");
-            }*/
+            }
         }
         sessions.removeAll(task.getSessions());
     }
 
-    public void addSubtaskSessionsForGroups(Subtask subtask){
+    public void addSubtaskSessionsForGroups(Subtask subtask) {
+        for (Session newSession : subtask.getSessions()) {
+            boolean alreadyExists = sessions.stream().anyMatch(existing -> existing.equals(newSession));
+            if (alreadyExists) {
+                throw new IllegalArgumentException("Session " + newSession + " already exists in the calendar.");
+            }
+            boolean collision = sessions.stream().anyMatch(existing ->
+                    newSession.getStartDate().isBefore(existing.getEndDate())
+                            && newSession.getEndDate().isAfter(existing.getStartDate()));
+            if (collision) {
+                throw new IllegalArgumentException("Session " + newSession + " collides with an existing session in the calendar.");
+            }
+        }
         this.sessions.addAll(subtask.getSessions());
     }
+
     public void removeSubtaskSessionsForGroups(Subtask subtask) {
-        subtask.getSessions().forEach(session -> {
-
-            this.sessions.remove(session);
-        });
+        sessions.removeIf(session -> subtask.getSessions().contains(session));
     }
-
-
-
 
 }

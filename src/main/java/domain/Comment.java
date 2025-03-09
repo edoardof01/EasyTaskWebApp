@@ -14,6 +14,7 @@ public class Comment {
 
     @ManyToOne
     private User author;
+
     @ManyToOne
     private Shared commentedTask;
 
@@ -28,6 +29,9 @@ public class Comment {
 
     public Long getId() {
       return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
     public String getContent() {
         return content;

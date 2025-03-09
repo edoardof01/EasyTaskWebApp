@@ -187,5 +187,7 @@ public class PersonalDTO {
     public void setResources(List<ResourceDTO> resources) {
         this.resources = resources;
     }
-
+    public void setId(long id) {
+        this.id = id;
+    }
 }

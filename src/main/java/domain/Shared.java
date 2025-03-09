@@ -27,7 +27,6 @@ public class Shared extends Task {
                   Timetable timeTable, int totalTime, List<StrategyInstance> strategies, List<Resource> resources,@Nullable String userGuidance) {
         super(name,user, description, subtasks, sessions, deadline, percentageOfCompletion, priority, totalTime, topic, timeTable, strategies, resources);
         Feed.getInstance().getShared().add(this);
-        this.dateOnFeed = LocalDateTime.now();
         this.userGuidance = userGuidance;
     }
 
@@ -51,9 +50,9 @@ public class Shared extends Task {
         return comments;
     }
 
-    public void bestComment(Comment comment) {
+    private void bestComment(Comment comment) {
         for (Task task : this.getUser().getTasks()) {
-            if (task.getName().equals(this.getName())) {
+            if (task.equals(this)) {
                 for (Comment c : this.getComments()) {
                     if (c.getIsBest()) {
                         throw new UnsupportedOperationException("The best comment has been already selected");
@@ -64,7 +63,6 @@ public class Shared extends Task {
             }
         }
     }
-
 
 
     @Override
@@ -90,6 +88,10 @@ public class Shared extends Task {
             Feed.getInstance().getShared().remove(this);
             Feed.getInstance().getContributors().remove((this.getUser()));
         }
+        if(this.getState() == TaskState.FINISHED) {
+            this.getUser().getCalendar().removeSessions(this);
+        }
+
     }
 
     @Override
@@ -107,12 +109,14 @@ public class Shared extends Task {
     }
 
     public void completeBySessionsAndChooseBestComment(Comment comment) {
-        if (comments.contains(comment)) {
-            this.commonCompleteBySessionsLogic(this.getUser());
-            Feed.getInstance().getShared().remove(this);
-            Feed.getInstance().getContributors().add((this.getUser()));
-            bestComment(comment);
-        }
+         if(!comments.contains(comment)){
+            throw new EntityNotFoundException("The comment selected is not found");
+         }
+         if(this.getState() != TaskState.INPROGRESS) {
+             throw new IllegalStateException("The shared task is not in progress");
+         }
+        this.commonCompleteBySessionsLogic(this.getUser());
+        bestComment(comment);
     }
 
     @Override

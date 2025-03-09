@@ -29,7 +29,6 @@ public abstract class Task {
     private int consecutiveSkippedSessions = 0;
     private boolean isInProgress = false;
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    /*@JoinColumn(name = "user_id", nullable = false)*/
     private User user;
 
     @Enumerated(EnumType.STRING)
@@ -78,6 +77,9 @@ public abstract class Task {
 
     public Long getId() {
         return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
     public String getName() {
         return name;
@@ -136,6 +138,9 @@ public abstract class Task {
     public User getUser() {
         return user;
     }
+    public void setUser(User user) {
+        this.user = user;
+    }
     public List<Subtask> getSubtasks() {
         return subtasks;
     }
@@ -166,28 +171,71 @@ public abstract class Task {
     public boolean getIsInProgress() {
         return isInProgress;
     }
+    public int getConsecutiveSkippedSessions(){
+        return consecutiveSkippedSessions;
+    }
+    public void setConsecutiveSkippedSessions(int consecutiveSkippedSessions) {
+        this.consecutiveSkippedSessions = consecutiveSkippedSessions;
+    }
+    public int getSkippedSessions(){return skippedSessions;}
+    public void setSkippedSessions(int skippedSessions){
+        this.skippedSessions = skippedSessions;
+    }
+
 
 
     public void completeSession(Session session) {
+        if(this.getState() != TaskState.INPROGRESS){
+            throw new IllegalStateException("The task must be in calendar");
+        }
+        if(!sessions.contains(session)){
+            throw new EntityNotFoundException("The session does not exist.");
+        }
         if (session.getState() != SessionState.PROGRAMMED) {
             throw new IllegalStateException("Only sessions programmed can be completed.");
         }
         if (!doExistNextSession(session)) {
-            completeTaskBySessions();
+            Session lastSession = this.getSessions().stream()
+                    .max(Comparator.comparing(Session::getEndDate))
+                    .orElseThrow(() -> new IllegalStateException("No sessions available for this task"));
+
+
+            boolean control = this.getSessions().stream()
+                    .filter(s -> !s.equals(lastSession))
+                    .anyMatch(s -> s.getState() != SessionState.COMPLETED);
+
+            if(!control) {
+                completeTaskBySessions();
+            }
+            if(control){
+                forcedCompletion();}
         } else {
             session.setState(SessionState.COMPLETED);
             resetConsecutiveSkippedSessions();
 
-            int completedCounter = 0;
-            for (Session taskSession : sessions) {
-                if (taskSession.getState() == SessionState.COMPLETED) {
-                    completedCounter++;
-                }
-            }
-            int percentageOfCompletion = (completedCounter * 100) / sessions.size();
-            this.setPercentageOfCompletion(percentageOfCompletion);
+            long completedCounter = sessions.stream()
+                    .filter(s -> s.getState() == SessionState.COMPLETED)
+                    .count();
+
+            double percentage = ((double) completedCounter / sessions.size()) * 100;
+            int roundedPercentage = (percentage % 1 < 0.5) ? (int) Math.floor(percentage) : (int) Math.ceil(percentage);
+            this.setPercentageOfCompletion(roundedPercentage);
         }
     }
+
+    /*public boolean doExistNextSession(Session session) {
+        return sessions.stream()
+                .filter(s -> !s.getStartDate().isBefore(session.getEndDate()))
+                .min(Comparator.comparing(Session::getStartDate))
+                .isPresent();
+    }*/
+
+    public boolean doExistNextSession(Session current) {
+        return this.getSessions().stream()
+                .anyMatch(s -> s.getStartDate().isAfter(current.getEndDate()));
+    }
+
+
 
 
     public int calculateComplexity() {
@@ -215,7 +263,7 @@ public abstract class Task {
     }
 
 
-    public int calculateResourceScore() {
+    private int calculateResourceScore() {
         int totalScore = resources.stream()
                 .mapToInt(resource -> {
                     if (resource.getType() == ResourceType.MONEY) {
@@ -232,7 +280,6 @@ public abstract class Task {
         else if (totalScore <= 40) return 4;
         else return 5;
     }
-
 
 
     // Metodo per impostare le strategie e validare la selezione
@@ -267,12 +314,13 @@ public abstract class Task {
         boolean hasFreezeTaskAfterConsecutiveSkippedSessions = strategies.stream()
                 .anyMatch(strategy -> strategy.getStrategy() == DefaultStrategy.FREEZE_TASK_AFTER_TOT_CONSECUTIVE_SKIPPED_SESSIONS);
 
-        if (hasFreezeTaskAfterTotSkippedSessions && hasFreezeTaskAfterConsecutiveSkippedSessions && strategies.size() > 2) {
+        if (hasFreezeTaskAfterTotSkippedSessions && hasFreezeTaskAfterConsecutiveSkippedSessions && strategies.size() > 3) {
             throw new IllegalArgumentException("La combinazione di strategie non è valida.");
         }
     }
 
-    protected void commonToCalendarLogic(User user) {
+
+    public void commonToCalendarLogic(User user) {
         if (this.getIsInProgress()) {
             throw new UnsupportedOperationException("It's already in calendar");
         }
@@ -282,34 +330,33 @@ public abstract class Task {
         this.setIsInProgress(true);
         this.setState(TaskState.INPROGRESS);
         user.getCalendar().addSessions(this.getSessions());
-
     }
 
     public void commonModifyLogic(User user){
         if (this.getState() == TaskState.FINISHED) {
             throw new UnsupportedOperationException("It can't be brought to freezed");
         }
-        if(this.getIsInProgress() && this.getState() == TaskState.INPROGRESS) {
+        if (this.getIsInProgress() && this.getState() == TaskState.INPROGRESS) {
             user.getCalendar().removeSessions(this);
             this.setState(TaskState.FREEZED);
         }
         this.isInProgress = false;
-
     }
 
     public void commonCompleteBySessionsLogic(User user) {
-        // Ottieni la sessione con l'ultima endDate
+        if(this.state != TaskState.INPROGRESS ){
+            throw new IllegalStateException("It can't be finished");
+        }
         Session lastSession = this.getSessions().stream()
                 .max(Comparator.comparing(Session::getEndDate))
                 .orElseThrow(() -> new IllegalStateException("No sessions available for this task"));
 
-        // Verifica che tutte le sessioni tranne l'ultima siano COMPLETED
         for (Session session : this.getSessions()) {
             if (!session.equals(lastSession) && session.getState() != SessionState.COMPLETED) {
                 throw new IllegalStateException("All sessions except the last one must be completed.");
             }
         }
-        // Verifica che l'ultima sessione sia PROGRAMMED
+
         if (lastSession.getState() != SessionState.PROGRAMMED) {
             throw new IllegalStateException("The last session must be in PROGRAMMED state.");
         }
@@ -331,17 +378,17 @@ public abstract class Task {
                 throw new UnsupportedOperationException("The task can't be completed normally");
             }
         }
-        // Rimuovi le sessioni dal calendario
-        user.getCalendar().removeSessions(this);
+        /*user.getCalendar().removeSessions(this);*/  // SCEGLI SE TOGLIERLE O MENO
         this.percentageOfCompletion = 100;
         this.setState(TaskState.FINISHED);
         this.isInProgress = false;
-
-
     }
 
 
     public void commonForcedCompletionLogic(User user){
+        if(this.getState() != TaskState.INPROGRESS){
+            throw new IllegalStateException("It can't be finished");
+        }
         for(Session session : this.getSessions()){
             if(session.getState() != SessionState.COMPLETED){
                 session.setState(SessionState.COMPLETED);
@@ -356,91 +403,138 @@ public abstract class Task {
         }
         this.setState(TaskState.FINISHED);
         this.percentageOfCompletion = 100;
-        user.getCalendar().removeSessions(this);
+      /*  user.getCalendar().removeSessions(this);*/  // VALUTA SE VUOI RIMETTERLO (anche in commonCompleteBySessionLogic)
 
     }
 
     // METODI PER LE SESSIONI SALTATE
     public void skipSession(Session session) {
-
-        // Cambia lo stato della sessione specifica
+        if(!sessions.contains(session)){
+            throw new EntityNotFoundException("The session does not exist.");
+        }
         session.setState(SessionState.SKIPPED);
-
+        Subtask incriminatedSubtask = null;
         boolean sessionFound = false;
         for (Subtask subtask : this.getSubtasks()) {
             for (Session subSession : subtask.getSessions()) {
                 if (subSession.equals(session)) {
+                    incriminatedSubtask = subtask;
                     subSession.setState(SessionState.SKIPPED);
                     sessionFound = true;
                     break;
                 }
             }
         }
-        if (!sessionFound) {
+        if (!sessionFound && !subtasks.isEmpty()) {
             throw new IllegalStateException("Session not found in any subtask. CLASS TASK skipSession");
         }
-
-        // Verifica se la strategia specifica è abilitata
         boolean shouldAddAtEnd = strategies.stream()
-                .anyMatch(strategyInstance -> strategyInstance.getStrategy() == DefaultStrategy.IF_THE_EXPIRATION_DATE_IS_NOT_SET_EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING
-                        && !strategyInstance.getStrategy().requiresTot()
-                        && !strategyInstance.getStrategy().requiresMaxConsecSkipped());
+                .anyMatch(strategyInstance ->
+                        strategyInstance.getStrategy() == DefaultStrategy.EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING
+                                && !strategyInstance.getStrategy().requiresTot()
+                                && !strategyInstance.getStrategy().requiresMaxConsecSkipped()
+                );
 
         if (shouldAddAtEnd) {
-            // Calcola la nuova data per la sessione saltata
             LocalDateTime newStartDate = calculateNewSessionDate(session);
             LocalDateTime newEndDate = newStartDate.plusMinutes(session.getDurationMinutes());
 
-            // Crea la nuova sessione
-            Session newSession = new Session(newStartDate, newEndDate);
+            if (this.getDeadline() != null && (newEndDate.isAfter(this.getDeadline()))) {
+                // Rimane SKIPPED definitivamente, non faccio nulla
+                System.out.println("La sessione supera la deadline, resta SKIPPED");
+            } else {
+                sessions.remove(session); // rimuovi dall’elenco
+                if(incriminatedSubtask != null) {
+                    incriminatedSubtask.getSessions().remove(session);
+                }
 
-            // Aggiungi la nuova sessione
-            addSessionAtEnd(newSession);
+                session.setStartDate(newStartDate);
+                session.setEndDate(newEndDate);
+                if(incriminatedSubtask != null) {
+                    incriminatedSubtask.getSessions().add(session);
+                }
+                sessions.add(session);
+                session.setState(SessionState.PROGRAMMED);
+                sessions.sort(Comparator.comparing(Session::getStartDate));
+            }
         }
-
         skippedSessions++;
         consecutiveSkippedSessions++;
 
         boolean limitExceeded = strategies.stream()
                 .filter(strategyInstance -> strategyInstance.getStrategy().requiresTot()) // Filtra strategie che richiedono TOT
-                .map(StrategyInstance::getTot) // Ottieni il valore di TOT
-                .filter(Objects::nonNull) // Evita valori null
-                .max(Integer::compare) // Trova il valore massimo di TOT
-                .map(max -> skippedSessions > max) // Verifica se il limite è stato superato
+                .map(StrategyInstance::getTot)
+                .filter(Objects::nonNull)
+                .max(Integer::compare)
+                .map(max -> skippedSessions > max)
                 .orElse(false);
 
-        // Verifica e applica le strategie relative al numero di sessioni consecutive saltate
         limitExceeded = limitExceeded || strategies.stream()
-                .filter(strategyInstance -> strategyInstance.getStrategy().requiresMaxConsecSkipped()) // Filtra strategie che richiedono max consecutive skipped
-                .map(StrategyInstance::getMaxConsecSkipped) // Ottieni il valore di max consecutive skipped
-                .filter(Objects::nonNull) // Evita valori null
-                .max(Integer::compare) // Trova il valore massimo di max consecutive skipped
-                .map(max -> consecutiveSkippedSessions > max) // Verifica se il limite è stato superato
+                .filter(strategyInstance -> strategyInstance.getStrategy().requiresMaxConsecSkipped())
+                .map(StrategyInstance::getMaxConsecSkipped)
+                .filter(Objects::nonNull)
+                .max(Integer::compare)
+                .map(max -> consecutiveSkippedSessions > max)
                 .orElse(false);
 
-        // Gestisce il limite superato
         if (limitExceeded) {
             handleLimitExceeded();
         }
     }
 
     private LocalDateTime calculateNewSessionDate(Session skippedSession) {
+        // Calcola la fine dell'ultima sessione o usa ora se non ci sono sessioni
         LocalDateTime lastSessionEnd = sessions.stream()
                 .map(Session::getEndDate)
                 .max(LocalDateTime::compareTo)
                 .orElse(LocalDateTime.now());
 
-        // Inizia con due giorni dopo la fine dell'ultima sessione
-        LocalDateTime candidateDate = lastSessionEnd.plusDays(2).withHour(skippedSession.getStartDate().getHour())
-                .withMinute(skippedSession.getStartDate().getMinute());
+        // Recupera la fascia d'inizio e di fine del timetable (modifica in base alle tue esigenze)
+        LocalTime timetableStart = getTimetableStart();
+        LocalTime timetableEnd = getTimetableEnd();
 
-        // Trova una data e un orario validi
+        // Iniziamo due giorni dopo la fine dell'ultima sessione, all'orario d'inizio del timetable
+        LocalDateTime candidateDate = lastSessionEnd.plusDays(2)
+                .withHour(timetableStart.getHour())
+                .withMinute(timetableStart.getMinute())
+                .withSecond(0)
+                .withNano(0);
+
+        // Trova uno slot valido: aumenta di 30 minuti fino a quando non trovi un orario compatibile
         while (!isValidSessionTime(candidateDate, skippedSession.getDurationMinutes())) {
-            candidateDate = candidateDate.plusMinutes(30); // Slitta di 30 minuti
+            candidateDate = candidateDate.plusMinutes(30);
+            // Se l'orario corrente supera il limite del timetable, passa al giorno successivo
+            if (candidateDate.toLocalTime().isAfter(timetableEnd)) {
+                candidateDate = candidateDate.plusDays(1)
+                        .withHour(timetableStart.getHour())
+                        .withMinute(timetableStart.getMinute())
+                        .withSecond(0)
+                        .withNano(0);
+            }
         }
-
         return candidateDate;
     }
+
+    // Esempi di metodi helper per ottenere l'orario d'inizio e fine in base al timetable del task
+    private LocalTime getTimetableStart() {
+        return switch (timetable) {
+            case MORNING, MORNING_AFTERNOON, MORNING_EVENING -> LocalTime.of(6, 0);
+            case AFTERNOON, AFTERNOON_EVENING -> LocalTime.of(12, 0);
+            case EVENING -> LocalTime.of(18, 0);
+            case NIGHT, NIGHT_AFTERNOON, NIGHT_MORNING, ALL_DAY -> LocalTime.of(0, 0);
+
+        };
+    }
+
+    private LocalTime getTimetableEnd() {
+        return switch (timetable) {
+            case MORNING, NIGHT_MORNING -> LocalTime.of(12, 0);
+            case AFTERNOON, MORNING_AFTERNOON, NIGHT_AFTERNOON -> LocalTime.of(18, 0);
+            case EVENING, AFTERNOON_EVENING, MORNING_EVENING, ALL_DAY -> LocalTime.of(23, 59);
+            case NIGHT -> LocalTime.of(6, 0);
+        };
+    }
+
 
     private boolean isValidSessionTime(LocalDateTime startDate, int durationMinutes) {
         LocalDateTime endDate = startDate.plusMinutes(durationMinutes);
@@ -478,15 +572,11 @@ public abstract class Task {
 
 
 
-    private void addSessionAtEnd(Session newSession) {
-        sessions.add(newSession); // Aggiungi la sessione alla lista
-        sessions.sort(Comparator.comparing(Session::getStartDate)); // Riordina per data
-    }
-
 
     public void resetConsecutiveSkippedSessions() {
         consecutiveSkippedSessions = 0;
     }
+
     public abstract void handleLimitExceeded();
 
     public void autoSkipIfNotCompleted(Session session) {
@@ -500,13 +590,11 @@ public abstract class Task {
         if (!found) {
             throw new IllegalStateException("session not found in task. CLASS TASK autoSkip...");
         }
-
-        // Trova la prossima sessione dello stesso task o subtask
         Session nextSession = findNextSession(session);
-
-        // Verifica se la sessione corrente è non completata e se la prossima è già iniziata
         if (nextSession != null && LocalDateTime.now().isAfter(nextSession.getStartDate())) {
-            // Chiama skipSession per marcare la sessione come SKIPPED
+            skipSession(session);
+        }
+        if(nextSession == null && LocalDateTime.now().isAfter(session.getEndDate().plusDays(1))){
             skipSession(session);
         }
     }
@@ -518,29 +606,17 @@ public abstract class Task {
                 .orElse(null);
     }
 
-    public boolean doExistNextSession(Session session) {
-        return sessions.stream()
-                .filter(s -> !s.getStartDate().isBefore(session.getEndDate()))
-                .min(Comparator.comparing(Session::getStartDate))
-                .isPresent();
-    }
 
 
 
-
-    protected void removeAndFreezeTask(User user) {
-        // Rimuove le sessioni del task dal calendario
+    public void removeAndFreezeTask(User user) {
         user.getCalendar().removeSessions(this);
-        // Imposta lo stato del task a FREEZED
         this.setState(TaskState.FREEZED);
         this.isInProgress = false;
     }
 
 
-
-    public abstract void toCalendar();
-
-    protected void updateIsInProgress() {
+    public void updateIsInProgress() {
         this.isInProgress = true;
         this.state = TaskState.INPROGRESS;
     }
@@ -549,11 +625,10 @@ public abstract class Task {
         this.isInProgress = isIt;
     }
 
+    public abstract void toCalendar();
     public abstract void deleteTask();
     public abstract void modifyTask();
-
     public abstract void completeTaskBySessions();
-
     public abstract void forcedCompletion();
 
     public boolean equals(Object o){

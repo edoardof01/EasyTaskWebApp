@@ -14,6 +14,9 @@ public class UserDAO {
 
     public UserDAO() {}
 
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Transactional
     public User findById(long userId) {

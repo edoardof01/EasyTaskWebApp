@@ -22,25 +22,32 @@
     <class>domain.Group</class>
     <class>domain.RegisteredUser</class>
     <class>domain.Profile</class>
-    <class>domain.Request</class>
     <class>domain.CommentedFolder</class>
     <class>domain.UserSession</class>
     <class>domain.Personal</class>
     <class>domain.TaskCalendar</class>
 
+
     <properties>
       <!-- Configurazione JDBC -->
       <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/easyTask"/>
-<!--<property name="jakarta.persistence.jdbc.user" value="edoardo"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/easytaskapp"/>
+      <!--<property name="jakarta.persistence.jdbc.user" value="edoardo"/>
       <property name="jakarta.persistence.jdbc.password" value="Edofanciu01!"/>-->
+      <property name="hibernate.implicit_naming_strategy"
+                value="org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl"/>
+      <property name="hibernate.physical_naming_strategy"
+                value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>
+
 
       <!-- Configurazioni Hibernate -->
       <property name="hibernate.hbm2ddl.auto" value="create"/>
       <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.format_sql" value="true"/>
       <property name="hibernate.jdbc.time_zone" value="UTC"/>
+      <property name="jakarta.persistence.schema-generation.create-source" value="metadata"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+
     </properties>
   </persistence-unit>
 </persistence>

@@ -20,7 +20,13 @@ public class StrategyInstance {
         if (strategy.requiresTot() && tot == null) {
             throw new IllegalArgumentException("This strategy requires a TOT value.");
         }
+        if(!strategy.requiresTot() && tot != null) {
+            throw new IllegalArgumentException("This strategy mustn't have a tot value.");
+        }
         if (strategy.requiresMaxConsecSkipped() && maxConsecSkipped == null) {
+            throw new IllegalArgumentException("This strategy requires a max consecutive skipped sessions value.");
+        }
+         if (!strategy.requiresMaxConsecSkipped() && maxConsecSkipped != null) {
             throw new IllegalArgumentException("This strategy requires a max consecutive skipped sessions value.");
         }
         this.strategy = strategy;
@@ -31,11 +37,9 @@ public class StrategyInstance {
     public DefaultStrategy getStrategy() {
         return strategy;
     }
-
     public Integer getTot() {
         return tot;
     }
-
     public Integer getMaxConsecSkipped() {
         return maxConsecSkipped;
     }
@@ -51,6 +55,9 @@ public class StrategyInstance {
 
     public Long getId() {
         return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }
