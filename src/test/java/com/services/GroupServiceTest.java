@@ -701,7 +701,7 @@ public class GroupServiceTest {
         calendar.addSubtaskSessionsForGroups(subtask1);
         calendar2.addSubtaskSessionsForGroups(subtask2);
         group.setState(TaskState.INPROGRESS);
-        Feed.getInstance().getGroup().add(group);
+        group.setIsOnFeed(true);
         groupService.removeMemberFromGroup(group.getId(), group.getUser().getId(),member.getId(),true);
         assertAll(
                 ()-> assertThat(group.getState()).isEqualTo(TaskState.FREEZED),
@@ -720,7 +720,7 @@ public class GroupServiceTest {
         when(userDAO.findById(1L)).thenReturn(user);
         when(userDAO.findById(2L)).thenReturn(member);
         group.setState(TaskState.FREEZED);
-        Feed.getInstance().getGroup().add(group);
+        group.setIsOnFeed(true);
         groupService.removeMemberFromGroup(group.getId(), group.getUser().getId(),member.getId(),true);
         assertAll(
                 ()-> assertThat(group.getState()).isEqualTo(TaskState.FREEZED),

@@ -23,7 +23,7 @@ public class JwtUtil {
     private final Key SECRET_KEY;
 
     public JwtUtil() {
-        this.SECRET_KEY = loadSecretKey(); // 🔹 Ora viene inizializzato solo quando CDI crea l'istanza
+        this.SECRET_KEY = loadSecretKey(); //  Ora viene inizializzato solo quando CDI crea l'istanza
     }
 
     private Key loadSecretKey() {
@@ -45,7 +45,7 @@ public class JwtUtil {
     }
 
 
-    // 🔹 Genera un token JWT con HS256
+    // Genera un token JWT con HS256
     public String generateToken(String username) {
         return Jwts.builder()
                 .setIssuer(ISSUER)

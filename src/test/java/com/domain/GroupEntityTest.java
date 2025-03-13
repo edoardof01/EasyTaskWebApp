@@ -566,7 +566,7 @@ class GroupEntityTest {
         calendar2.addSubtaskSessionsForGroups(subtask2);
         calendar3.addSubtaskSessionsForGroups(subtask3);
         group.setState(TaskState.INPROGRESS);
-        Feed.getInstance().getGroup().add(group);
+        group.setIsOnFeed(true);
         group.removeMember(user,member,true);
         assertAll(
                 ()-> assertThat(group.getState()).isEqualTo(TaskState.FREEZED),
@@ -582,7 +582,7 @@ class GroupEntityTest {
    @Test
     void removeMemberTest_successSubstituteAndFoundFREEZED(){
         group.setState(TaskState.FREEZED);
-        Feed.getInstance().getGroup().add(group);
+        group.setIsOnFeed(true);
         group.removeMember(user,member,true);
         assertAll(
                 ()-> assertThat(group.getState()).isEqualTo(TaskState.FREEZED),

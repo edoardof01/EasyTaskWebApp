@@ -34,6 +34,12 @@ public class StrategyInstance {
         this.maxConsecSkipped = maxConsecSkipped;
     }
 
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
     public DefaultStrategy getStrategy() {
         return strategy;
     }
@@ -53,11 +59,6 @@ public class StrategyInstance {
                 '}';
     }
 
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
+
 
 }

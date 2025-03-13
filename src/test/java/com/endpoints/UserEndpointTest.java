@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.equalTo;
 
     @BeforeAll
     static void setup() {
-        // Imposta le info di base per RestAssured
         RestAssured.baseURI = "http://localhost:8080/EasyTask-1.0-SNAPSHOT";
         RestAssured.port = 8080;
         uniqueUsername = "testUser_" + UUID.randomUUID();
@@ -59,6 +58,30 @@ import static org.hamcrest.Matchers.equalTo;
                 .extract()
                 .path("token");
     }
+
+    private static void completeUserProfileForComment(String token) {
+        String jsonBody = """
+            {
+                "age": 25,
+                "sex": "MALE",
+                "description": "Profilo completato ad hoc per testare i commenti",
+                "qualifications": [
+                    "BSc in Computer Science"
+                ],
+                "profession": "Developer"
+            }
+        """;
+
+        given()
+                .header("Authorization", token)
+                .contentType(ContentType.JSON)
+                .body(jsonBody)
+                .when()
+                .post("/api/users/create")
+                .then()
+                .statusCode(201);
+    }
+
 
 
     @Test
@@ -171,5 +194,77 @@ import static org.hamcrest.Matchers.equalTo;
                 .get("/api/users/{id}")
                 .then()
                 .statusCode(500);
+    }
+
+    @Test
+    @Order(6)
+    void testMakeComment() {
+
+        completeUserProfileForComment(jwtToken);
+
+        String jsonCreate = """
+                {
+                    "name": "Freezable Personal Task",
+                    "topic": "PROGRAMMING",
+                    "totalTime": 2,
+                    "timetable": "ALL_DAY",
+                    "userId": 1,
+                    "strategies": [
+                       {
+                          "strategy":"SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS",
+                          "tot":null,
+                          "maxConsecSkipped":null
+                      }
+                    ],
+                    "priority": 1,
+                    "description": "A task that we want to freeze",
+                    "resources": [],
+                    "subtasks": [],
+                    "sessions": [
+                     {
+                          "startDate": "2026-03-29T19:30:00",
+                          "endDate": "2026-03-29T20:30:00"
+                        },
+                        {
+                          "startDate": "2026-03-30T22:30:00",
+                          "endDate": "2026-03-30T23:30:00"
+                        }
+                    ],
+                    "userGuidance": "i'm not sure about it"
+                }
+                """;
+
+        String commentJson = """
+                {
+                    "content": "Questo è il mio commento",
+                    "authorId": 1,
+                    "sharedId": 1
+                }
+                """;
+
+        int id = given()
+                .header("Authorization", jwtToken)
+                .contentType(ContentType.JSON)
+                .body(jsonCreate)
+                .when()
+                .post("/api/shared")
+                .then()
+                .log().all()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        given()
+                .header("Authorization", jwtToken)
+                .contentType(ContentType.JSON)
+                .body(commentJson)
+                .pathParam("sharedId", id)
+                .when()
+                .post("/api/users/{sharedId}/comments")
+                .then()
+                .log().all()
+                .statusCode(201)
+                // Verifichiamo che il campo "content" nel JSON di risposta corrisponda a quello inviato
+                .body("content", equalTo("Questo è il mio commento"));
     }
 }

@@ -161,7 +161,7 @@ public class GroupService {
 
         validateSessions(sessions, timeSlots, totalTime);
 
-        Group group = new Group(requiredUsers, user, dateOnFeed, name, topic, deadline, description, subtasks, sessions, 0, priority, timeSlots,
+        Group group = new Group(requiredUsers, user, name, topic, deadline, description, subtasks, sessions, 0, priority, timeSlots,
                 totalTime, strategies, resources);
 
         for(Subtask subtask : subtasks) {
@@ -172,8 +172,7 @@ public class GroupService {
 
 
         group.setComplexity(calculateComplexity(subtasks, resources));
-        Feed.getInstance().getGroup().add(group);
-        for (User member : group.getMembers()) Feed.getInstance().getContributors().add(member);
+        group.setIsOnFeed(true);
         taskCalendarDAO.save(group.getCalendar());
         groupDAO.save(group);
         userDAO.update(user);
@@ -414,7 +413,7 @@ public class GroupService {
 
 
         if (numUsers > group.getNumUsers()) {
-            Feed.getInstance().getGroup().add(group);
+            group.setIsOnFeed(true);
             group.setNumUsers(numUsers);
             group.setIsComplete(false);
         }
@@ -424,16 +423,16 @@ public class GroupService {
         }
         group.setName(name);
         group.setTopic(topic);
-        group.getStrategies().clear(); // Rimuove tutti gli elementi esistenti
-        group.getStrategies().addAll(strategies); // Aggiunge i nuovi elementi
+        group.getStrategies().clear();
+        group.getStrategies().addAll(strategies);
         if (deadline != null) group.setDeadline(deadline);
         group.setTotalTime(totalTime);
         group.setTimetable(timeSlots);
         group.setPriority(priority);
         group.setDescription(description);
         if (resources != null) {
-            group.getResources().clear(); // Rimuove tutti gli elementi esistenti
-            group.getResources().addAll(resources); // Aggiunge i nuovi elementi
+            group.getResources().clear();
+            group.getResources().addAll(resources);
         }
         group.setNumUsers(numUsers);
         group.setComplexity(group.calculateComplexity());
@@ -441,14 +440,12 @@ public class GroupService {
 
         Set<Session> allAssignedSessions = new HashSet<>();
         for (Subtask subtask : subtasks) {
-            // Lista riconciliata di sessioni davvero valide per questo Subtask
+
             List<Session> reconciledSessions = new ArrayList<>();
             for (Session sSub : subtask.getSessions()) {
-                // La sessione dev'essere presente nel Task
                 boolean existsInTask = group.getSessions().stream()
                         .anyMatch(sTask -> sTask.equals(sSub));
                 if (existsInTask) {
-                    // Inoltre, non deve essere già assegnata a un altro subtask
                     boolean alreadyAssigned = allAssignedSessions.stream()
                             .anyMatch(s -> s.equals(sSub));
                     if (alreadyAssigned) {
@@ -468,10 +465,9 @@ public class GroupService {
             );
         }
 
-        // 3) Controlla le sovrapposizioni nei calendari DOPO aver stabilito chi usa cosa
         for (TakenSubtask takenSubtask : group.getTakenSubtasks()) {
-            User owner = takenSubtask.getUser();      // l'utente proprietario
-            Subtask subtask = takenSubtask.getSubtask(); // il Subtask assegnato a quell'utente
+            User owner = takenSubtask.getUser();
+            Subtask subtask = takenSubtask.getSubtask();
 
             for (Session subtaskSession : subtask.getSessions()) {
                 for (Session calendarSession : owner.getCalendar().getSessions()) {
@@ -495,17 +491,17 @@ public class GroupService {
         group.modifyTask();
 
         if (!compareSubtasks(subtasks, group.getSubtasks())) {
-            // Mappe di supporto per la gestione delle risorse
+
             Map<Resource, Boolean> resourceUsage = new HashMap<>();
             Map<String, Resource> resourceMap = new HashMap<>();
             int totalMoney = 0;
 
-            // Inizializza le mappe delle risorse
+
             assert resources != null;
             for (Resource resource : resources) {
                 resourceMap.put(resource.getName(), resource);
                 if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
-                    resourceUsage.put(resource, false); // Risorsa non ancora usata
+                    resourceUsage.put(resource, false);
                 }
             }
 
@@ -528,7 +524,7 @@ public class GroupService {
                         if (Boolean.TRUE.equals(resourceUsage.get(mainTaskResource))) {
                             throw new IllegalArgumentException("Resource " + resource.getName() + " has already been used by another subtask");
                         }
-                        resourceUsage.put(mainTaskResource, true); // Marca la risorsa come usata
+                        resourceUsage.put(mainTaskResource, true);
                     } else if (!resources.contains(resource)) {
                         throw new IllegalArgumentException("Subtasks can't contain resource " + resource.getName());
                     }
@@ -575,7 +571,7 @@ public class GroupService {
             throw new IllegalArgumentException("User con ID " + userId + " non trovato.");
         }
         if (group.getUser().equals(user)) {
-            group.toCalendar(); // Metodo per l'amministratore
+            group.toCalendar();
             for(User member: group.getMembers()){
                 calendarDAO.update(member.getCalendar());
             }

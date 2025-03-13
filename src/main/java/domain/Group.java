@@ -31,17 +31,15 @@ public class Group extends Task {
     public Group() {
     }
 
-    public Group(int numUsers, @NotNull User user, LocalDateTime dateOnFeed, String name, Topic topic, @Nullable LocalDateTime deadline,
+    public Group(int numUsers, @NotNull User user, String name, Topic topic, @Nullable LocalDateTime deadline,
                  String description, @NotNull List<Subtask> subtasks, List<Session> sessions, int percentageOfCompletion, int priority,
                  Timetable timeTable, int totalTime, List<StrategyInstance> strategies, List<Resource> resources) {
-        super(name, user, description, subtasks, sessions, deadline, percentageOfCompletion, priority, totalTime, topic, timeTable, strategies, resources);
+        super(name, user, description, subtasks, sessions, deadline, priority, totalTime, topic, timeTable, strategies, resources);
         this.numUsers = numUsers;
-        this.dateOnFeed = dateOnFeed;
         this.members.add(this.getUser());
         this.calendar = new TaskCalendar();
         this.getCalendar().setGroup(this);
-        Feed.getInstance().getGroup().add(this);
-        Feed.getInstance().getContributors().add(this.getUser());
+
     }
 
 
@@ -150,6 +148,7 @@ public class Group extends Task {
             throw new UnsupportedOperationException("The group is not complete");
         }
 
+
         this.setIsOnFeed(false);
         this.setState(TaskState.INPROGRESS);
         for (User member : this.getMembers()) {
@@ -161,11 +160,10 @@ public class Group extends Task {
             Subtask subtask = takenSubtask.getSubtask();
             this.getCalendar().addSessions(member, subtask);
             member.getCalendar().addSubtaskSessionsForGroups(subtask);
-            if (!this.getIsInProgress()) {
-                this.updateIsInProgress();
-            }
+
+            this.setIsInProgress(true);
+            this.setState(TaskState.INPROGRESS);
         }
-        Feed.getInstance().getGroup().remove(this);
     }
 
 
@@ -183,7 +181,6 @@ public class Group extends Task {
         }
         this.setIsInProgress(false);
         this.setIsOnFeed(false);
-        Feed.getInstance().getGroup().remove(this);
     }
 
     public void toFeed(){
@@ -194,7 +191,6 @@ public class Group extends Task {
             throw new UnsupportedOperationException("It is already on feed");
         }
         this.setIsOnFeed(true);
-        Feed.getInstance().getGroup().add(this);
         this.setDateOnFeed(LocalDateTime.now());
     }
 
@@ -207,10 +203,6 @@ public class Group extends Task {
         }
         this.setState(TaskState.FREEZED);
         this.setIsInProgress(false);
-
-        if(this.getIsOnFeed()){
-            Feed.getInstance().getGroup().remove(this);
-        }
         this.setIsOnFeed(false);
 
         for (User member : this.getMembers()) {
@@ -270,9 +262,6 @@ public class Group extends Task {
         }
         this.setIsInProgress(false);
         setState(TaskState.FINISHED);
-        if(this.getIsOnFeed()){
-            Feed.getInstance().getGroup().remove(this);
-        }
         this.setIsOnFeed(false);
         this.setPercentageOfCompletion(100);
     }
@@ -294,9 +283,6 @@ public class Group extends Task {
                     session.setState(SessionState.COMPLETED);
                 }
             }
-        }
-        if(this.getIsOnFeed()){
-            Feed.getInstance().getGroup().remove(this);
         }
         this.setIsOnFeed(false);
         this.setPercentageOfCompletion(100);
@@ -393,7 +379,6 @@ public class Group extends Task {
             member.getCalendar().removeSubtaskSessionsForGroups(subtaskOfCompetence);
         }
         this.setIsOnFeed(true);
-        Feed.getInstance().getGroup().add(this);
     }
 
 
@@ -602,22 +587,10 @@ public class Group extends Task {
             throw new IllegalArgumentException("The member is not part of the group");
         }
         if (substitute) {
-            boolean found = false;
-            for(Group group:Feed.getInstance().getGroup()){
-                if (group.equals(this)) {
-                    found = true;
-                    break;
-                }
-            }
-            if(!found){
-                Feed.getInstance().getGroup().add(this);
-                this.setIsOnFeed(true);
-            }
             this.setIsInProgress(false);
             this.setState(TaskState.FREEZED);
             this.setIsComplete(false);
             this.setIsOnFeed(true);
-
 
             TakenSubtask takenSubtask = getTakenSubtaskForMember(member);
             getAvailableSubtasks().add(takenSubtask.getSubtask());
@@ -667,9 +640,6 @@ public class Group extends Task {
         this.setTotalTime(newTotalTime);
         this.getSubtasks().remove(subtaskToRemove);
         takenSubtasks.remove(takenSubtask);
-        if (this.getIsOnFeed()) {
-            Feed.getInstance().getGroup().remove(this);
-        }
         this.setIsOnFeed(false);
         actualMembers--;
         numUsers--;

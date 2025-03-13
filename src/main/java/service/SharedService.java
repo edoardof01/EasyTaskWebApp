@@ -42,7 +42,6 @@ public class SharedService {
 
 
 
-    // Restituisce un SharedDTO per ID
     public SharedDTO getSharedById(long id) {
         Shared shared = sharedDAO.findById(id);
         if (shared == null) {
@@ -51,7 +50,6 @@ public class SharedService {
         return sharedMapper.toSharedDTO(shared);
     }
 
-    // Restituisce tutti i task Shared come DTO
     public List<SharedDTO> getAllShared() {
         return sharedDAO.findAll().stream()
                 .map(sharedMapper::toSharedDTO)
@@ -69,31 +67,18 @@ public class SharedService {
             throw new IllegalArgumentException("mandatory fields missing or invalid fields");
         }
 
-        if (strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS)) {
-            if (deadline != null) {
-                throw new IllegalArgumentException("If this strategy is set, a deadline can't be selected");
+
+        if(deadline != null){
+            if(strategies.stream().anyMatch(strategy ->
+                    strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS)){
+                throw new IllegalArgumentException("you cannot choose this strategy if a deadline is set");
             }
         }
 
         if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.FREEZE_TASK_AFTER_TOT_SKIPPED_SESSIONS)){
+                strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS)){
             if(strategies.size()>1){
-                for(StrategyInstance strategy : strategies){
-                    if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS){
-                        throw new IllegalArgumentException("If this strategy is set, just an other type strategy can be selected");
-                    }
-                }
-            }
-        }
-        if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.FREEZE_TASK_AFTER_TOT_CONSECUTIVE_SKIPPED_SESSIONS)){
-            if(strategies.size()>1){
-                for(StrategyInstance strategy : strategies){
-                    if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS){
-                        throw new IllegalArgumentException("If this strategy is set, just an other type strategy can be selected");
-                    }
-                }
+                throw new IllegalArgumentException("If this strategy is set, an other strategy can't be selected");
             }
         }
 
@@ -103,7 +88,6 @@ public class SharedService {
         }
         if(!sessions.isEmpty()) {
             for (Session newSession : sessions) {
-                // Verifica se la nuova sessione si sovrappone a quelle già nel calendario
                 for (Session existingSession : existingUser.getCalendar().getSessions()) {
                     if (newSession.overlaps(existingSession)) {
                         throw new IllegalArgumentException("Session " + newSession + " overlaps with an existing session. CLASS SHARED SERVICE createShared");
@@ -160,28 +144,24 @@ public class SharedService {
 
         // CONTROLLO SESSIONI SUBTASK
         if (subtasks != null && !subtasks.isEmpty()) {
-            Set<Session> allAssignedSessions = new HashSet<>(); // Per tenere traccia delle sessioni assegnate
-            // Verifica che le sessioni dei subtasks combacino con quelle del task principale
+            Set<Session> allAssignedSessions = new HashSet<>();
             for (Subtask subtask : subtasks) {
                 List<Session> subtaskSessions = subtask.getSessions();
-                // Verifica che ogni sessione del subtask sia presente nel task principale
                 for (Session session : subtaskSessions) {
-                    // Controlla se la sessione corrente è uguale a una delle sessioni del task principale
                     boolean sessionExistsInTask = sessions.stream().anyMatch(taskSession -> taskSession.equals(session));
                     if (!sessionExistsInTask) {
                         throw new IllegalArgumentException("Session " + session + " in subtask does not exist in the main task. CLASS PERSONAL SERVICE createPersonal");
                     }
-                    // Controlla se la sessione è già stata assegnata a un altro subtask
+
                     boolean sessionAlreadyAssigned = allAssignedSessions.stream().anyMatch(assignedSession -> assignedSession.equals(session));
                     if (sessionAlreadyAssigned) {
                         throw new IllegalArgumentException("Session " + session + " is already assigned to another subtask.");
                     }
-                    // Aggiungi la sessione alla lista delle sessioni assegnate
+
                     allAssignedSessions.add(session);
                 }
             }
         }
-        // Validazione finale delle sessioni
         validateSessions(sessions, timeSlots, totalTime);
 
         assert subtasks != null;
@@ -215,14 +195,12 @@ public class SharedService {
                 throw new IllegalArgumentException("Session startDate must be before endDate");
             }
 
-            // Calcola la durata della sessione in ore
             long sessionDuration = Duration.between(session.getStartDate(), session.getEndDate()).toHours();
             if (sessionDuration <= 0) {
                 throw new IllegalArgumentException("Session duration must be greater than 0");
             }
             totalScheduledTime += sessionDuration;
 
-            // Verifica che la sessione sia all'interno delle fasce orarie permesse
             if (!isWithinAllowedTimeSlot(timeSlots, session)) {
                 throw new IllegalArgumentException("Session with start time " + session.getStartDate() +
                         " and end time " + session.getEndDate() + " is not within the allowed time slots");
@@ -246,7 +224,6 @@ public class SharedService {
         LocalTime slotStart;
         LocalTime slotEnd;
 
-        // Definiamo i limiti dei vari time slot
         switch (timeSlot) {
             case MORNING -> {
                 slotStart = LocalTime.of(6, 0);
@@ -258,7 +235,7 @@ public class SharedService {
             }
             case EVENING -> {
                 slotStart = LocalTime.of(18, 0);
-                slotEnd = LocalTime.of(23, 59); // Corretto per includere sessioni fino alla fine del giorno
+                slotEnd = LocalTime.of(23, 59);
             }
             case NIGHT -> {
                 slotStart = LocalTime.of(0, 0);
@@ -282,7 +259,7 @@ public class SharedService {
             case NIGHT_AFTERNOON -> {
                 // Combina le due fasce orarie
                 slotStart = LocalTime.of(0, 0);
-                slotEnd = LocalTime.of(18, 0); // Considera la fine della notte, cioè il mattino
+                slotEnd = LocalTime.of(18, 0);
             }
             case NIGHT_MORNING -> {
                 // Combina le due fasce orarie
@@ -297,7 +274,7 @@ public class SharedService {
             default -> throw new IllegalArgumentException("Unknown time slot: " + timeSlot);
         }
 
-        // Verifica sovrapposizione tra sessione e slot
+
         return sessionStartTime.isBefore(slotEnd) && sessionEndTime.isAfter(slotStart);
     }
 
@@ -305,7 +282,7 @@ public class SharedService {
 
     private int calculateComplexity(@Nullable List<Subtask> subtasks, List<Resource> resources) {
         if (subtasks == null || subtasks.isEmpty()) {
-            // Se subtasks è null o vuota, restituisce subito il calcolo basato solo sulle risorse.
+
             return calculateResourceScore(resources) / 2;
         }
         int subtaskScore;
@@ -352,53 +329,20 @@ public class SharedService {
         if (requiredUsers != null) {
             throw new IllegalArgumentException("Users number can be set only for shared tasks");
         }
-        if (strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
-            if (deadline != null) {
-                throw new IllegalArgumentException("If this strategy is set, a deadline can't be selected");
+        
+        if(deadline != null){
+            if(strategies.stream().anyMatch(strategy ->
+                    strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS)){
+                throw new IllegalArgumentException("you cannot choose this strategy if a deadline is set");
             }
         }
-        if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)){
-            if(strategies.size()>1){
-                throw new IllegalArgumentException("If this strategy is set, an other strategy can't be selected");
-            }
-        }
+
         if(strategies.stream().anyMatch(strategy ->
                 strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS)){
             if(strategies.size()>1){
                 throw new IllegalArgumentException("If this strategy is set, an other strategy can't be selected");
             }
         }
-        if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.FREEZE_TASK_AFTER_TOT_SKIPPED_SESSIONS)){
-            if(strategies.size()>1){
-                for(StrategyInstance strategy : strategies){
-                    if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS ||
-                            strategy.getStrategy() == DefaultStrategy.EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING){
-                        throw new IllegalArgumentException("If this strategy is set, just an other type strategy can be selected");
-                    }
-                }
-            }
-        }
-        if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.FREEZE_TASK_AFTER_TOT_CONSECUTIVE_SKIPPED_SESSIONS)){
-            if(strategies.size()>1){
-                for(StrategyInstance strategy : strategies){
-                    if (strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS ||
-                            strategy.getStrategy() == DefaultStrategy.EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING){
-                        throw new IllegalArgumentException("If this strategy is set, just an other type strategy can be selected");
-                    }
-                }
-            }
-        }
-        if (deadline != null) {
-            if (strategies.stream().anyMatch(strategy ->
-                    strategy.getStrategy() == DefaultStrategy.EACH_SESSION_LOST_WILL_BE_ADDED_AT_THE_END_OF_THE_SCHEDULING)) {
-                throw new IllegalArgumentException("If a deadline is set, this strategy can't be selected");
-            }
-        }
-
 
         Shared sharedTask = sharedDAO.findById(taskId);
         if (sharedTask == null) {
@@ -556,8 +500,7 @@ public class SharedService {
         calendarDAO.update(sharedTask.getUser().getCalendar());
         int complexity = calculateComplexity(subtasks, resources);
         sharedTask.setComplexity(complexity);
-        Feed.getInstance().getShared().add(sharedTask);
-        Feed.getInstance().getContributors().remove(sharedTask.getUser());
+        sharedTask.setIsOnFeed(true);
         sharedDAO.update(sharedTask);
         return sharedMapper.toSharedDTO(sharedTask);
     }
@@ -587,8 +530,6 @@ public class SharedService {
         if(guidance != null) {
             sharedTask.updateUserGuidance(guidance);
         }
-        Feed.getInstance().getShared().add(sharedTask);
-        Feed.getInstance().getContributors().add(sharedTask.getUser());
         sharedDAO.update(sharedTask);
     }
 

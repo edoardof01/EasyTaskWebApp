@@ -19,7 +19,7 @@ public class CommentedFolder {
     private User user;
 
     @OneToMany
-    private List<Comment> comment;
+    private List<Comment> comments;
 
     public CommentedFolder() {}
 
@@ -28,10 +28,10 @@ public class CommentedFolder {
     }
 
     public List<Comment> getComment() {
-        return comment;
+        return comments;
     }
-    public void setComment(List<Comment> comment) {
-        this.comment = comment;
+    public void setComment(List<Comment> comments) {
+        this.comments = comments;
     }
     public Long getId() {
         return id;

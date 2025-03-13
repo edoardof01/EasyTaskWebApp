@@ -17,7 +17,7 @@ public class JwtFilter implements ContainerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Inject
-    private UserService userService; // Servizio per controllare lo stato del profilo
+    private UserService userService;
 
     @Override
     public void filter(ContainerRequestContext requestContext) {

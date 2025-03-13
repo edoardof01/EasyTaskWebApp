@@ -23,11 +23,10 @@ public class SharedEntityTest {
     private Session session2;
     private User user;
     private Calendar calendar;
-    private Feed feed;
+
 
     @BeforeEach
     void setUp() {
-        feed = Feed.getInstance();
         shared = new Shared();
         user = new User();
         user.setId(1L);
@@ -173,7 +172,7 @@ public class SharedEntityTest {
                 ()-> assertSame(shared.getIsInProgress(),true),
                 ()-> assertThat(calendar.getSessions()).containsAll(shared.getSessions()),
                 ()-> assertThat(shared.getDateOnFeed()).isNotNull(),
-                ()-> assertThat(feed.getShared()).contains(shared)
+                ()-> assertThat(shared.getIsOnFeed()).isTrue()
         );
     }
 
@@ -205,7 +204,7 @@ public class SharedEntityTest {
         assertAll(
                 ()-> assertFalse(shared.getIsInProgress()),
                 ()-> assertSame(shared.getState(),TaskState.FREEZED),
-                ()-> assertThat(feed.getShared()).doesNotContain(shared)
+                ()-> assertThat(shared.getIsOnFeed()).isTrue()
         );
     }
 
@@ -225,7 +224,7 @@ public class SharedEntityTest {
                 ()-> assertSame(shared.getState(),TaskState.FINISHED),
                 ()-> assertFalse(shared.getIsInProgress()),
                 ()-> assertEquals(shared.getPercentageOfCompletion(),100),
-                ()-> assertThat(feed.getShared()).doesNotContain(shared)
+                ()-> assertThat(shared.getIsOnFeed()).isFalse()
         );
     }
 
@@ -292,7 +291,7 @@ public class SharedEntityTest {
                 ()-> assertSame(shared.getState(),TaskState.FINISHED),
                 ()-> assertFalse(shared.getIsInProgress()),
                 ()-> assertEquals(shared.getPercentageOfCompletion(),100),
-                ()-> assertThat(feed.getShared()).doesNotContain(shared),
+                ()-> assertThat(shared.getIsOnFeed()).isFalse(),
                 ()-> assertThat(comment.getIsBest()).isTrue()
         );
     }
@@ -341,7 +340,7 @@ public class SharedEntityTest {
         shared.forcedCompletion();
         assertAll(
                 ()-> assertSame(shared.getState(),TaskState.FINISHED),
-                ()-> assertThat(feed.getShared()).doesNotContain(shared),
+                ()-> assertThat(shared.getIsOnFeed()).isFalse(),
                 ()-> assertEquals(shared.getPercentageOfCompletion(),100)
         );
     }
@@ -473,7 +472,7 @@ public class SharedEntityTest {
                 ()-> assertFalse(user.getCalendar().getSessions().contains(session1)),
                 ()-> assertFalse(user.getCalendar().getSessions().contains(session2)),
                 ()-> assertEquals(TaskState.FREEZED, shared.getState()),
-                ()-> assertThat(feed.getShared()).doesNotContain(shared),
+                ()-> assertThat(shared.getIsOnFeed()).isFalse(),
                 ()-> assertFalse(shared.getIsInProgress())
         );
     }

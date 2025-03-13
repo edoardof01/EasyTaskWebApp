@@ -14,12 +14,6 @@ public class CommentDTO {
 
     public CommentDTO(){}
 
-    public CommentDTO(long id, String content,long authorId, long sharedId) {
-        this.id = id;
-        this.content = content;
-        this.authorId = authorId;
-        this.sharedId = sharedId;
-    }
 
     public CommentDTO(Comment comment) {
         this.id = comment.getId();

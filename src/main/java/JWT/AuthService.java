@@ -25,7 +25,6 @@ public class AuthService {
     private JwtUtil jwtUtil;
 
     public TokenResponse authenticate(CredentialsDTO credentials) {
-        // Log per tracciare l'inizio del processo di autenticazione
         logger.info("Authenticating user: {}", credentials.getUsername());
 
         RegisteredUser registeredUser = registerDAO.findByUsername(credentials.getUsername());

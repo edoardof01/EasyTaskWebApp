@@ -55,12 +55,12 @@ public abstract class Task {
     public Task() {}
 
     public Task(String name,@NotNull User user, String description,@Nullable List<Subtask> subtasks, List<Session> sessions,
-                @Nullable LocalDateTime deadline, int percentageOfCompletion, int priority, int totalTime, Topic topic,
+                @Nullable LocalDateTime deadline, int priority, int totalTime, Topic topic,
                 Timetable timetable, List<StrategyInstance> strategies, List<Resource> resources) {
         this.name = name;
         this.description = description;
         this.deadline = deadline;
-        this.percentageOfCompletion = percentageOfCompletion;
+        this.percentageOfCompletion = 0;
         this.priority = priority;
         this.totalTime = totalTime;
         this.topic = topic;
@@ -344,6 +344,9 @@ public abstract class Task {
     }
 
     public void commonCompleteBySessionsLogic(User user) {
+        if(!user.equals(this.getUser())) {
+            throw new IllegalArgumentException("user is not the owner");
+        }
         if(this.state != TaskState.INPROGRESS ){
             throw new IllegalStateException("It can't be finished");
         }
@@ -361,7 +364,6 @@ public abstract class Task {
             throw new IllegalStateException("The last session must be in PROGRAMMED state.");
         }
 
-        // Completa l'ultima sessione
         lastSession.setState(SessionState.COMPLETED);
 
         for (Subtask subtask : this.getSubtasks()) {
@@ -372,13 +374,11 @@ public abstract class Task {
             }
         }
 
-        // Verifica che tutte le sessioni siano ora COMPLETED
         for (Session session : this.getSessions()) {
             if (session.getState() != SessionState.COMPLETED) {
                 throw new UnsupportedOperationException("The task can't be completed normally");
             }
         }
-        /*user.getCalendar().removeSessions(this);*/  // SCEGLI SE TOGLIERLE O MENO
         this.percentageOfCompletion = 100;
         this.setState(TaskState.FINISHED);
         this.isInProgress = false;
@@ -386,6 +386,9 @@ public abstract class Task {
 
 
     public void commonForcedCompletionLogic(User user){
+        if(!user.equals(this.getUser())) {
+            throw new IllegalArgumentException("user is not the owner");
+        }
         if(this.getState() != TaskState.INPROGRESS){
             throw new IllegalStateException("It can't be finished");
         }
@@ -403,7 +406,7 @@ public abstract class Task {
         }
         this.setState(TaskState.FINISHED);
         this.percentageOfCompletion = 100;
-      /*  user.getCalendar().removeSessions(this);*/  // VALUTA SE VUOI RIMETTERLO (anche in commonCompleteBySessionLogic)
+
 
     }
 
@@ -483,27 +486,23 @@ public abstract class Task {
     }
 
     private LocalDateTime calculateNewSessionDate(Session skippedSession) {
-        // Calcola la fine dell'ultima sessione o usa ora se non ci sono sessioni
         LocalDateTime lastSessionEnd = sessions.stream()
                 .map(Session::getEndDate)
                 .max(LocalDateTime::compareTo)
                 .orElse(LocalDateTime.now());
 
-        // Recupera la fascia d'inizio e di fine del timetable (modifica in base alle tue esigenze)
         LocalTime timetableStart = getTimetableStart();
         LocalTime timetableEnd = getTimetableEnd();
 
-        // Iniziamo due giorni dopo la fine dell'ultima sessione, all'orario d'inizio del timetable
         LocalDateTime candidateDate = lastSessionEnd.plusDays(2)
                 .withHour(timetableStart.getHour())
                 .withMinute(timetableStart.getMinute())
                 .withSecond(0)
                 .withNano(0);
 
-        // Trova uno slot valido: aumenta di 30 minuti fino a quando non trovi un orario compatibile
         while (!isValidSessionTime(candidateDate, skippedSession.getDurationMinutes())) {
             candidateDate = candidateDate.plusMinutes(30);
-            // Se l'orario corrente supera il limite del timetable, passa al giorno successivo
+
             if (candidateDate.toLocalTime().isAfter(timetableEnd)) {
                 candidateDate = candidateDate.plusDays(1)
                         .withHour(timetableStart.getHour())
@@ -515,7 +514,6 @@ public abstract class Task {
         return candidateDate;
     }
 
-    // Esempi di metodi helper per ottenere l'orario d'inizio e fine in base al timetable del task
     private LocalTime getTimetableStart() {
         return switch (timetable) {
             case MORNING, MORNING_AFTERNOON, MORNING_EVENING -> LocalTime.of(6, 0);
@@ -539,10 +537,8 @@ public abstract class Task {
     private boolean isValidSessionTime(LocalDateTime startDate, int durationMinutes) {
         LocalDateTime endDate = startDate.plusMinutes(durationMinutes);
 
-        // Verifica se la sessione rientra nella timetable del task
         boolean isWithinTimetable = isWithinTimeSlot(startDate.toLocalTime(), endDate.toLocalTime());
 
-        // Verifica se non ci sono conflitti con sessioni esistenti
         boolean hasNoConflict = sessions.stream().noneMatch(session ->
                 startDate.isBefore(session.getEndDate()) && endDate.isAfter(session.getStartDate()));
 
@@ -577,7 +573,7 @@ public abstract class Task {
         consecutiveSkippedSessions = 0;
     }
 
-    public abstract void handleLimitExceeded();
+
 
     public void autoSkipIfNotCompleted(Session session) {
         boolean found = false;
@@ -606,19 +602,10 @@ public abstract class Task {
                 .orElse(null);
     }
 
-
-
-
     public void removeAndFreezeTask(User user) {
         user.getCalendar().removeSessions(this);
         this.setState(TaskState.FREEZED);
         this.isInProgress = false;
-    }
-
-
-    public void updateIsInProgress() {
-        this.isInProgress = true;
-        this.state = TaskState.INPROGRESS;
     }
 
     public void setIsInProgress(boolean isIt){
@@ -630,6 +617,7 @@ public abstract class Task {
     public abstract void modifyTask();
     public abstract void completeTaskBySessions();
     public abstract void forcedCompletion();
+    public abstract void handleLimitExceeded();
 
     public boolean equals(Object o){
         if (this == o) return true;

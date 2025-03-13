@@ -44,23 +44,18 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private  List<Task> tasks = new ArrayList<>();
 
-    /* @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Request> requests = new ArrayList<>();
-    */
 
     public User() {}
 
-    public User(int age, Sex sex, String description, List<String> qualifications, String profession/*, @NotNull Profile personalProfile*/) {
+    public User(int age, Sex sex, String description, List<String> qualifications, String profession) {
         this.age = age;
         this.description = description;
         this.sex = sex;
         this.qualifications = qualifications;
         this.profession = profession;
-       /* this.personalProfile = personalProfile;*/
-
 
         this.calendar = new Calendar();
-        calendar.setUser(this); ///Prima non c'era. Strano
+        calendar.setUser(this);
         CommentedFolder commentedFolder = new CommentedFolder();
         commentedFolder.setUser(this);
         this.commentedFolder = commentedFolder;
@@ -118,11 +113,6 @@ public class User {
     public void setCalendar(Calendar calendar) {
         this.calendar = calendar;
     }
-    /*public List<Request> getPendingRequests(){
-        return requests;
-    }*/
-
-    
     public List<Task> getTasks() {
         return tasks;
     }
@@ -137,7 +127,6 @@ public class User {
     }
 
 
-    // DA COMPLETARE, METODO RICHIAMATO POI
     public void incrementTopicScore(Topic topic){
         personalProfile.getTopics().put(topic, personalProfile.getTopics().get(topic)+1);
     }

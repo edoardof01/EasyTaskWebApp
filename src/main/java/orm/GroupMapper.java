@@ -54,7 +54,6 @@ public class GroupMapper {
         return new Group(
                 groupDTO.getNumUser(),
                 user,
-                groupDTO.getDateOnFeed(),
                 groupDTO.getName(),
                 groupDTO.getTopic(),
                 groupDTO.getDeadline(),

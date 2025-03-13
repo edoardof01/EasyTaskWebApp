@@ -66,21 +66,6 @@ public class Resource {
     public void setValue(Integer value) {
         this.value = value;
     }
-
-    public Integer calculateValueFromMoney() {
-        if (money <= 100) {
-            return 1;
-        } else if (money <= 500) {
-            return 2;
-        } else if (money <= 1000) {
-            return 3;
-        } else if (money <= 3000) {
-            return 4;
-        } else {
-            return 5;
-        }
-    }
-
     public Integer getMoney() {
         return money;
     }
@@ -95,6 +80,22 @@ public class Resource {
     }
     public void setType(ResourceType type) {
         this.type = type;
+    }
+
+
+
+    public Integer calculateValueFromMoney() {
+        if (money <= 100) {
+            return 1;
+        } else if (money <= 500) {
+            return 2;
+        } else if (money <= 1000) {
+            return 3;
+        } else if (money <= 3000) {
+            return 4;
+        } else {
+            return 5;
+        }
     }
 
 
