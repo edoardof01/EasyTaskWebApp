@@ -683,7 +683,6 @@ public class GroupServiceTest {
         noMember.setId(3L);
         Profile noMemberProfile = new Profile();
         noMemberProfile.setUsername("noMember");
-        noMemberProfile.setPassword("noMember123");
         Map<Topic, Integer> noMemberTopics = new HashMap<>();
         noMemberTopics.put(Topic.PROGRAMMING, 5);
         noMemberTopics.put(Topic.ART, 3);

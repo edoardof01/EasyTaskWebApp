@@ -31,8 +31,8 @@
     <properties>
       <!-- Configurazione JDBC -->
       <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/easytaskapp"/>
-      <!--<property name="jakarta.persistence.jdbc.user" value="edoardo"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/appeasytask"/>
+      <!--<property name="jakarta.persistence.jdbc.user" value="fanciullacci"/>
       <property name="jakarta.persistence.jdbc.password" value="Edofanciu01!"/>-->
       <property name="hibernate.implicit_naming_strategy"
                 value="org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl"/>

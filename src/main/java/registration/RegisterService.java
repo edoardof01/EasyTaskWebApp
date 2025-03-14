@@ -40,8 +40,7 @@ public class RegisterService {
         // Crea il Profile
         Profile profile = new Profile(
                 registrationDTO.getUsername(),
-                hashedPassword,
-                null /*, ci sarebbe la mail quì */
+                null
         );
 
         // Crea l'utente e imposta il profile

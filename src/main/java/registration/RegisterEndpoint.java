@@ -22,15 +22,5 @@ public class RegisterEndpoint {
         }
     }
 
-   /* @GET
-    @Path("/confirm")
-    public Response confirmEmail(@QueryParam("token") String token) {
-        try {
-            registerService.confirmEmail(token);
-            return Response.ok("Email confirmed successfully").build();
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-        }
-    }*/
 }
 

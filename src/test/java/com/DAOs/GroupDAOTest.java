@@ -45,12 +45,11 @@ public class GroupDAOTest {
     }
 
     @Test
-    void aveAndFindByIdTest() {
+    void saveAndFindByIdTest() {
         em.getTransaction().begin();
 
         Profile profile = new Profile();
         profile.setUsername("Edoardo");
-        profile.setPassword("HelloToEveryone");
         User user = new User();
         user.setPersonalProfile(profile);
         em.persist(user);
@@ -76,7 +75,7 @@ public class GroupDAOTest {
 
         Profile profile = new Profile();
         profile.setUsername("Edoardo");
-        profile.setPassword("HelloToEveryone");
+
         User user = new User();
         user.setPersonalProfile(profile);
         em.persist(user);
@@ -103,7 +102,6 @@ public class GroupDAOTest {
 
         Profile profile = new Profile();
         profile.setUsername("Edoardo");
-        profile.setPassword("HelloToEveryone");
         User user = new User();
         user.setPersonalProfile(profile);
         em.persist(user);
@@ -130,7 +128,6 @@ public class GroupDAOTest {
 
         Profile profile = new Profile();
         profile.setUsername("Edoardo");
-        profile.setPassword("HelloToEveryone");
         User user = new User();
         user.setPersonalProfile(profile);
         em.persist(user);

@@ -50,7 +50,7 @@ class UserDAOTest {
 
         Profile profile = new Profile();
         profile.setUsername("myUser");
-        profile.setPassword("myPass");
+
 
         User user = new User();
         user.setAge(30);
@@ -75,7 +75,6 @@ class UserDAOTest {
 
         Profile profile = new Profile();
         profile.setUsername("uniqueUser");
-        profile.setPassword("12345");
 
         User user = new User();
         user.setAge(25);
@@ -99,7 +98,6 @@ class UserDAOTest {
 
         Profile p1 = new Profile();
         p1.setUsername("user1");
-        p1.setPassword("pwd1");
 
         User u1 = new User();
         u1.setAge(20);
@@ -109,7 +107,6 @@ class UserDAOTest {
 
         Profile p2 = new Profile();
         p2.setUsername("user2");
-        p2.setPassword("pwd2");
 
         User u2 = new User();
         u2.setAge(40);
@@ -129,7 +126,6 @@ class UserDAOTest {
 
         Profile profile = new Profile();
         profile.setUsername("oldUsername");
-        profile.setPassword("oldPass");
 
         User user = new User();
         user.setAge(18);
@@ -156,7 +152,6 @@ class UserDAOTest {
 
         Profile profile = new Profile();
         profile.setUsername("toDelete");
-        profile.setPassword("pass");
 
         User user = new User();
         user.setAge(50);

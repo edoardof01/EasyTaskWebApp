@@ -1,6 +1,5 @@
 package orm;
 
-import domain.Group;
 import domain.Session;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
@@ -29,17 +28,14 @@ public class SessionDAO {
         return query.getResultList();
     }
 
-    @Transactional
     public void save(Session session) {
         entityManager.persist(session);
     }
 
-    @Transactional
     public void update(Session session) {
         entityManager.merge(session);
     }
 
-    @Transactional
     public void delete(long id) {
         Session session = findById(id);
         if (session != null) {

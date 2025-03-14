@@ -50,7 +50,6 @@ class PersonalDAOTest {
 
         Profile profile = new Profile();
         profile.setUsername("Edoardo");
-        profile.setPassword("HelloToEveryone");
         User user = new User();
         user.setPersonalProfile(profile);
         em.persist(user);
@@ -76,7 +75,6 @@ class PersonalDAOTest {
 
         Profile profile = new Profile();
         profile.setUsername("Edoardo");
-        profile.setPassword("HelloToEveryone");
         User user = new User();
         user.setPersonalProfile(profile);
         em.persist(user);
@@ -103,7 +101,6 @@ class PersonalDAOTest {
 
         Profile profile = new Profile();
         profile.setUsername("Edoardo");
-        profile.setPassword("HelloToEveryone");
         User user = new User();
         user.setPersonalProfile(profile);
         em.persist(user);
@@ -127,10 +124,8 @@ class PersonalDAOTest {
     @Test
     void testDelete() {
         em.getTransaction().begin();
-
         Profile profile = new Profile();
         profile.setUsername("Edoardo");
-        profile.setPassword("HelloToEveryone");
         User user = new User();
         user.setPersonalProfile(profile);
         em.persist(user);

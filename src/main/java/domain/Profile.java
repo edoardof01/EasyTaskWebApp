@@ -14,26 +14,18 @@ public class Profile {
     private Long id;
 
     private String username;
-    @NotNull
-    private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Map<Topic, Integer> topics;
 
     public Profile() {}
 
-    public Profile(String username,String password, Map<Topic,Integer> topics) {
-        this.password = password;
+    public Profile(String username,Map<Topic,Integer> topics) {
+
         this.topics = topics;
         this.username = username;
     }
 
-    public String getPassword(){
-        return password;
-    }
-    public void setPassword(String password){
-        this.password = password;
-    }
     public Map<Topic,Integer> getTopics(){
         return topics;
     }

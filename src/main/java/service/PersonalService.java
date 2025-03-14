@@ -98,7 +98,6 @@ public class PersonalService {
 
         if(!sessions.isEmpty()) {
             for (Session newSession : sessions) {
-                // Verifica se la nuova sessione si sovrappone a quelle già nel calendario
                 for (Session existingSession : existingUser.getCalendar().getSessions()) {
                     if (newSession.overlaps(existingSession)) {
                         throw new IllegalArgumentException("Session " + newSession + " overlaps with an existing session. CLASS PERSONAL SERVICE (create)");
@@ -117,7 +116,7 @@ public class PersonalService {
             for (Resource resource : resources) {
                 resourceMap.put(resource.getName(), resource);
                 if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
-                    resourceUsage.put(resource, false); // Risorsa non ancora usata
+                    resourceUsage.put(resource, false);
                 }
             }
 
@@ -142,7 +141,6 @@ public class PersonalService {
                         if (Boolean.TRUE.equals(resourceUsage.get(mainTaskResource))) {
                             throw new IllegalArgumentException("Resource " + resource.getName() + " has already been used by another subtask");
                         }
-                        // Segna la risorsa come usata
                         resourceUsage.put(mainTaskResource, true);
                     } else {
                         if (!resources.contains(resource)) {
@@ -155,32 +153,28 @@ public class PersonalService {
 
         // CONTROLLO SESSIONI SUBTASK
         if (subtasks != null && !subtasks.isEmpty()) {
-            Set<Session> allAssignedSessions = new HashSet<>(); // Per tenere traccia delle sessioni assegnate
+            Set<Session> allAssignedSessions = new HashSet<>();
 
-            // Verifica che le sessioni dei subtasks combacino con quelle del task principale
             for (Subtask subtask : subtasks) {
                 List<Session> subtaskSessions = subtask.getSessions();
 
-                // Verifica che ogni sessione del subtask sia presente nel task principale
                 for (Session session : subtaskSessions) {
-                    // Controlla se la sessione corrente è uguale a una delle sessioni del task principale
+
                     boolean sessionExistsInTask = sessions.stream().anyMatch(taskSession -> taskSession.equals(session));
                     if (!sessionExistsInTask) {
                         throw new IllegalArgumentException("Session " + session + " in subtask does not exist in the main task. CLASS PERSONAL SERVICE createPersonal");
                     }
 
-                    // Controlla se la sessione è già stata assegnata a un altro subtask
                     boolean sessionAlreadyAssigned = allAssignedSessions.stream().anyMatch(assignedSession -> assignedSession.equals(session));
                     if (sessionAlreadyAssigned) {
                         throw new IllegalArgumentException("Session " + session + " is already assigned to another subtask.");
                     }
 
-                    // Aggiungi la sessione alla lista delle sessioni assegnate
                     allAssignedSessions.add(session);
                 }
             }
         }
-        // Validazione finale delle sessioni
+
         validateSessions(sessions, timeSlots, totalTime);
 
         Personal personalTask = new Personal(name, existingUser, topic, deadline, description, subtasks, sessions, 0, priority, timeSlots, totalTime, strategies, resources);
@@ -209,14 +203,12 @@ public class PersonalService {
                 throw new IllegalArgumentException("Session startDate must be before endDate");
             }
 
-            // Calcola la durata della sessione in ore
             long sessionDuration = Duration.between(session.getStartDate(), session.getEndDate()).toHours();
             if (sessionDuration <= 0) {
                 throw new IllegalArgumentException("Session duration must be greater than 0");
             }
             totalScheduledTime += sessionDuration;
 
-            // Verifica che la sessione sia all'interno delle fasce orarie permesse
             if (!isWithinAllowedTimeSlot(timeSlots, session)) {
                 throw new IllegalArgumentException("Session with start time " + session.getStartDate() +
                         " and end time " + session.getEndDate() + " is not within the allowed time slots");
@@ -239,7 +231,6 @@ public class PersonalService {
         LocalTime slotStart;
         LocalTime slotEnd;
 
-        // Definiamo i limiti dei vari time slot
         switch (timeSlot) {
             case MORNING -> {
                 slotStart = LocalTime.of(6, 0);
@@ -258,39 +249,32 @@ public class PersonalService {
                 slotEnd = LocalTime.of(6, 0);
             }
             case MORNING_AFTERNOON -> {
-                // Combina le due fasce orarie
                 slotStart = LocalTime.of(6, 0);
                 slotEnd = LocalTime.of(18, 0);
             }
             case MORNING_EVENING -> {
-                // Combina le due fasce orarie
                 slotStart = LocalTime.of(6, 0);
                 slotEnd = LocalTime.of(0, 0);
             }
             case AFTERNOON_EVENING -> {
-                // Combina le due fasce orarie
                 slotStart = LocalTime.of(12, 0);
                 slotEnd = LocalTime.of(23, 59);
             }
             case NIGHT_AFTERNOON -> {
-                // Combina le due fasce orarie
                 slotStart = LocalTime.of(0, 0);
-                slotEnd = LocalTime.of(18, 0); // Considera la fine della notte, cioè il mattino
+                slotEnd = LocalTime.of(18, 0);
             }
             case NIGHT_MORNING -> {
-                // Combina le due fasce orarie
                 slotStart = LocalTime.of(0, 0);
                 slotEnd = LocalTime.of(12, 0);
             }
             case ALL_DAY -> {
-                // Copre tutto il giorno
                 slotStart = LocalTime.of(0, 0);
                 slotEnd = LocalTime.of(23, 59);
             }
             default -> throw new IllegalArgumentException("Unknown time slot: " + timeSlot);
         }
 
-        // Verifica sovrapposizione tra sessione e slot
         return sessionStartTime.isBefore(slotEnd) && sessionEndTime.isAfter(slotStart);
     }
 
@@ -442,20 +426,19 @@ public class PersonalService {
             personalTask.getResources().addAll(resources);
         }
 
-        // Suddivisione delle sessioni tra i subtasks
         if (subtasks != null && !subtasks.isEmpty()) {
             Set<Session> allAssignedSessions = new HashSet<>();
-            // Distribuisci le sessioni tra i subtasks
+
             for (Subtask subtask : subtasks) {
                 List<Session> assignedSessions = subtask.getSessions();
 
-                // Gestisci sessioni preesistenti nel subtask
+
                 List<Session> reconciledSessions = new ArrayList<>();
                 for (Session session : assignedSessions) {
-                    // Verifica se la sessione è presente nel task principale
+
                     boolean sessionExistsInTask = personalTask.getSessions().stream().anyMatch(taskSession -> taskSession.equals(session));
                     if (sessionExistsInTask) {
-                        // Verifica se la sessione è già stata assegnata a un altro subtask
+
                         boolean sessionAlreadyAssigned = allAssignedSessions.stream().anyMatch(assignedSession -> assignedSession.equals(session));
                         if (sessionAlreadyAssigned) {
                             throw new IllegalArgumentException("Session " + session + " is already assigned to another subtask");
@@ -467,13 +450,10 @@ public class PersonalService {
                 subtask.setSessions(reconciledSessions);
             }
 
-
-            // Verifica che tutte le sessioni del task siano state assegnate
             if (!allAssignedSessions.containsAll(personalTask.getSessions())) {
                 throw new IllegalArgumentException("Not all sessions from the main task have been assigned to subtasks");
             }
 
-            // Aggiorna i subtasks del task
             personalTask.getSubtasks().clear();
             personalTask.getSubtasks().addAll(subtasks);
         }
@@ -494,7 +474,6 @@ public class PersonalService {
             for (Subtask subtask : subtasks) {
                 for (Resource resource : subtask.getResources()) {
                     if (resource.getType() == ResourceType.MONEY) {
-                        // Gestione risorsa MONEY
                         totalMoney += resource.getMoney();
                         Resource moneyResource = resources.stream()
                                 .filter(r -> ResourceType.MONEY.equals(r.getType()))
@@ -504,7 +483,6 @@ public class PersonalService {
                             throw new IllegalArgumentException("The sum of the money of the subtasks can't exceed the task one");
                         }
                     } else if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
-                        // Gestione risorse COMPETENCE e EQUIPMENT
                         Resource mainTaskResource = resourceMap.get(resource.getName());
                         if (mainTaskResource == null || !mainTaskResource.equals(resource)) {
                             throw new IllegalArgumentException("Subtasks can't contain resource " + resource.getName() + " not present in the task");
@@ -512,7 +490,6 @@ public class PersonalService {
                         if (Boolean.TRUE.equals(resourceUsage.get(mainTaskResource))) {
                             throw new IllegalArgumentException("Resource " + resource.getName() + " has already been used by another subtask");
                         }
-                        // Segna la risorsa come usata
                         resourceUsage.put(mainTaskResource, true);
                     } else {
                         if (!resources.contains(resource)) {
@@ -573,19 +550,18 @@ public class PersonalService {
         if(session == null){
             throw new IllegalArgumentException("session with ID " + sessionId + " not found. PERSONAL SERVICE completeSession");
         }
-        // Completamento della sessione nei subtasks (se esiste una sessione corrispondente)
         if (personal.getSubtasks() != null) {
             for (Subtask subtask : personal.getSubtasks()) {
                 for (Session subSession : subtask.getSessions()) {
                     if (subSession.equals(session)) {
                         subSession.setState(SessionState.COMPLETED);
                         subtaskDAO.update(subtask);
-                        break;  // Uscita dal ciclo appena trovata la sessione corrispondente
+                        break;
                     }
                 }
             }
         }
-        personal.completeSession(session);  // Assicurati che questo metodo completi la sessione nel task principale
+        personal.completeSession(session);
         personalDAO.update(personal);
     }
 

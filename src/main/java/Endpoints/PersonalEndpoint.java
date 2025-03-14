@@ -79,7 +79,7 @@ public class PersonalEndpoint {
             List<SessionWithTaskDTO> partialList = new ArrayList<>();
             for (SessionDTO topSession : personal.getSessions()) {
                 SessionWithTaskDTO dto = new SessionWithTaskDTO();
-                dto.setId(topSession.getId());                // <== ID del task
+                dto.setId(topSession.getId());
                 dto.setStartDate(topSession.getStartDate());
                 dto.setEndDate(topSession.getEndDate());
                 dto.setState(topSession.getState());
@@ -134,7 +134,7 @@ public class PersonalEndpoint {
 
     @POST
     @Transactional
-    public Response createPersonal(PersonalDTO personalDTO) { //Passa l'id dello user, non lo userDTO
+    public Response createPersonal(PersonalDTO personalDTO) {
         try {
             // Estrai i campi da personalDTO
             String name = personalDTO.getName();
@@ -155,10 +155,8 @@ public class PersonalEndpoint {
                     .map(sessionMapper::toSessionEntity)
                     .collect(Collectors.toList());
 
-
-            // Passa i campi estratti
             PersonalDTO createdPersonal = personalService.createPersonal(
-                    name, personalDTO.getUserId(), topic, deadline, totalTime, timeSlots, strategies, priority,  //ricorda che quì ora hai user.getId()
+                    name, personalDTO.getUserId(), topic, deadline, totalTime, timeSlots, strategies, priority,
                     description, resources, subtasks, sessions
             );
             return Response.status(Response.Status.CREATED)
