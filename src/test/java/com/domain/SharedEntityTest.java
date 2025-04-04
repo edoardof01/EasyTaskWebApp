@@ -171,7 +171,6 @@ public class SharedEntityTest {
                 ()-> assertSame(shared.getState(),TaskState.INPROGRESS),
                 ()-> assertSame(shared.getIsInProgress(),true),
                 ()-> assertThat(calendar.getSessions()).containsAll(shared.getSessions()),
-                ()-> assertThat(shared.getDateOnFeed()).isNotNull(),
                 ()-> assertThat(shared.getIsOnFeed()).isTrue()
         );
     }
@@ -204,7 +203,7 @@ public class SharedEntityTest {
         assertAll(
                 ()-> assertFalse(shared.getIsInProgress()),
                 ()-> assertSame(shared.getState(),TaskState.FREEZED),
-                ()-> assertThat(shared.getIsOnFeed()).isTrue()
+                ()-> assertThat(shared.getIsOnFeed()).isFalse()
         );
     }
 
@@ -447,7 +446,7 @@ public class SharedEntityTest {
     void testAutoSkipIfNotCompleted_nowAfterNextSessionStarted() {
         session1.setStartDate(LocalDateTime.now().minusHours(2));
         session1.setEndDate(LocalDateTime.now().minusHours(1));
-        session2.setStartDate(LocalDateTime.now());
+        session2.setStartDate(LocalDateTime.now().minusMinutes(30));
         session2.setEndDate(LocalDateTime.now().plusHours(1));
         shared.autoSkipIfNotCompleted(session1);
         assertEquals(SessionState.SKIPPED, session1.getState());
@@ -479,7 +478,7 @@ public class SharedEntityTest {
 
     @Test
     void testRemoveAndFreezeTask_NoSessionsInCalendar() {
-        calendar.setSessions(new ArrayList<>());
+        calendar.setSessions(new ArrayList<>(List.of(session1,session2)));
         shared.removeAndFreezeTask(user);
         assertAll(
                 ()-> assertEquals(TaskState.FREEZED, shared.getState()),

@@ -223,18 +223,11 @@ public abstract class Task {
         }
     }
 
-    /*public boolean doExistNextSession(Session session) {
-        return sessions.stream()
-                .filter(s -> !s.getStartDate().isBefore(session.getEndDate()))
-                .min(Comparator.comparing(Session::getStartDate))
-                .isPresent();
-    }*/
 
     public boolean doExistNextSession(Session current) {
         return this.getSessions().stream()
                 .anyMatch(s -> s.getStartDate().isAfter(current.getEndDate()));
     }
-
 
 
 
@@ -607,7 +600,6 @@ public abstract class Task {
         this.setState(TaskState.FREEZED);
         this.isInProgress = false;
     }
-
     public void setIsInProgress(boolean isIt){
         this.isInProgress = isIt;
     }

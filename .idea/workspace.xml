@@ -12,29 +12,32 @@
     <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="A lot of changes and tests">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/6a9983ae-6f5d-4fc5-98f6-710a8dd5cf3e.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/6a9983ae-6f5d-4fc5-98f6-710a8dd5cf3e/storage_v2/_src_/database/easytaskapp.OhCapg.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/6a9983ae-6f5d-4fc5-98f6-710a8dd5cf3e/storage_v2/_src_/database/easytaskapp.OhCapg/schema/public.abK9xQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/6a9983ae-6f5d-4fc5-98f6-710a8dd5cf3e/storage_v2/_src_/database/postgres.edMnLQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/6a9983ae-6f5d-4fc5-98f6-710a8dd5cf3e/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4e6091e3-4957-473c-b000-027181195eb0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/4e6091e3-4957-473c-b000-027181195eb0.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4e6091e3-4957-473c-b000-027181195eb0/storage_v2/_src_/database/appeasytask.qJHp-g.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4e6091e3-4957-473c-b000-027181195eb0/storage_v2/_src_/database/appeasytask.qJHp-g/schema/public.abK9xQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/PersonalEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/PersonalEndpoint.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/JWT/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Profile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/ProfileDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/ProfileMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/ProfileMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/ResourceMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/ResourceMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SessionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SessionDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/JwtFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/RegisteredUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/RegisteredUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/registration/EmailService.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/registration/RegisterEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/registration/RegisterEndpoint.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/registration/RegisterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/registration/RegisterService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/registration/RegistrationDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/registration/RegistrationDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/GroupService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/GroupService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/PersonalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/PersonalService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/DAOs/GroupDAOTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/DAOs/GroupDAOTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/DAOs/PersonalDAOTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/DAOs/PersonalDAOTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/DAOs/UserDAOTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/DAOs/UserDAOTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/SharedService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/SharedService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/timerScheduler/SessionCheckerTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/timerScheduler/SessionCheckerTime.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/timerScheduler/TaskCheckerTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/timerScheduler/TaskCheckerTime.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/DAOs/calendarDAOTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/DAOs/calendarDAOTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/domain/GroupEntityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/domain/GroupEntityTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/domain/SharedEntityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/domain/SharedEntityTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/domain/personalEntityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/domain/personalEntityTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/services/GroupServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/services/GroupServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/services/personalServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/services/personalServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,285 +82,295 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Docker.compose.executor": "Run",
-    "JBoss/WildFly Server.JBoss/WildFly 34.0.0.Final.executor": "Run",
-    "JBoss/WildFly Server.JBoss/WildFly 34.0.0.Final1.executor": "Run",
-    "JUnit.CalendarDAOTest.executor": "Run",
-    "JUnit.CalendarDAOTest.testAddSessions.executor": "Run",
-    "JUnit.CalendarDAOTest.testRemoveSessions.executor": "Run",
-    "JUnit.CalendarDAOTest.testUpdate.executor": "Run",
-    "JUnit.GroupDAOTest.executor": "Run",
-    "JUnit.GroupEndpointTest.completeGroupBySessions.executor": "Run",
-    "JUnit.GroupEndpointTest.handleLimitExceededTest.executor": "Run",
-    "JUnit.GroupEndpointTest.leaveGroupTest.executor": "Run",
-    "JUnit.GroupEndpointTest.testCompleteSubtaskSession.executor": "Run",
-    "JUnit.GroupEndpointTest.testCreateGroup.executor": "Run",
-    "JUnit.GroupEndpointTest.testDeletePersonal.executor": "Run",
-    "JUnit.GroupEndpointTest.testForceCompletion.executor": "Run",
-    "JUnit.GroupEndpointTest.testGetAllGroups.executor": "Run",
-    "JUnit.GroupEndpointTest.testGetGroupById_NotFound.executor": "Run",
-    "JUnit.GroupEndpointTest.testJoinGroup.executor": "Run",
-    "JUnit.GroupEndpointTest.testMoveToCalendar.executor": "Run",
-    "JUnit.GroupEndpointTest.testRemoveMemberFromGroup.executor": "Run",
-    "JUnit.GroupEndpointTest.testUpdateGroup.executor": "Run",
-    "JUnit.GroupEntityTest.SkipSessionTest_SuccessNoRescheduling.executor": "Run",
-    "JUnit.GroupEntityTest.completeSessionTest_successLast.executor": "Run",
-    "JUnit.GroupEntityTest.completeSubtaskSessionTest_failAlienSession.executor": "Run",
-    "JUnit.GroupEntityTest.completeSubtaskSessionTest_failCOMPLETED.executor": "Run",
-    "JUnit.GroupEntityTest.completeSubtaskSessionTest_failSKIPPED.executor": "Run",
-    "JUnit.GroupEntityTest.completeSubtaskSessionTest_successLast.executor": "Run",
-    "JUnit.GroupEntityTest.completeSubtaskSessionTest_successNotLast.executor": "Run",
-    "JUnit.GroupEntityTest.completeTaskBySessionsTest_failForSessionsPROGRAMMED.executor": "Run",
-    "JUnit.GroupEntityTest.completeTaskBySessionsTest_success.executor": "Run",
-    "JUnit.GroupEntityTest.executor": "Run",
-    "JUnit.GroupEntityTest.joinGroupTest_fail.executor": "Run",
-    "JUnit.GroupEntityTest.joinGroupTest_failInMembers.executor": "Run",
-    "JUnit.GroupEntityTest.joinGroupTest_failSubtaskTaken.executor": "Run",
-    "JUnit.GroupEntityTest.joinGroupTest_success.executor": "Run",
-    "JUnit.GroupEntityTest.leaveGroupTaskTest_failMember.executor": "Run",
-    "JUnit.GroupEntityTest.leaveGroupTaskTest_failNoSubtask.executor": "Run",
-    "JUnit.GroupEntityTest.leaveGroupTaskTest_success.executor": "Run",
-    "JUnit.GroupEntityTest.leaveGroupTaskTest_successINPROGRESS.executor": "Run",
-    "JUnit.GroupEntityTest.modifyTask_successFromTODO.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_FailFINISHED.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_FailNoMember.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_FailSubstituteFINISHED.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_FailSubstituteTODO.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_FailSubstituteUserEqualsMember.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_FailTODO.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_FailUserEqualsMember.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_successNotSubstitute.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_successNotSubstituteFREEZED.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_successNotSubstituteINPROGRESS.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_successSubstituteAndFound.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_successSubstituteAndFoundINPROGRESS.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_successSubstituteAndNotFound.executor": "Run",
-    "JUnit.GroupEntityTest.removeMemberTest_successSubstituteAndNotFoundINPROGRESS.executor": "Run",
-    "JUnit.GroupEntityTest.skipSessionTest_SuccessWithAddAtEnd.executor": "Run",
-    "JUnit.GroupEntityTest.skipSessionTest_sessionNotFound.executor": "Run",
-    "JUnit.GroupEntityTest.skipSessionTest_successFREEZE.executor": "Run",
-    "JUnit.GroupEntityTest.skipSessionTest_successWithSubtask.executor": "Run",
-    "JUnit.GroupEntityTest.testAutoSkipIfNotCompleted_nowAfterNextSessionStarted.executor": "Run",
-    "JUnit.GroupEntityTest.testRemoveAndFreezeTask_NoSessionsInCalendar.executor": "Run",
-    "JUnit.GroupEntityTest.testRemoveAndFreezeTask_Success.executor": "Run",
-    "JUnit.GroupEntityTest.toCalendarTest_failIsComplete.executor": "Run",
-    "JUnit.GroupEntityTest.toCalendarTest_success.executor": "Run",
-    "JUnit.GroupServiceTest.completeSharedBySessions.executor": "Run",
-    "JUnit.GroupServiceTest.completeSharedBySessions_success.executor": "Run",
-    "JUnit.GroupServiceTest.completeSubtaskSessionTest_failAlienSession.executor": "Run",
-    "JUnit.GroupServiceTest.completeSubtaskSessionTest_failCOMPLETED.executor": "Run",
-    "JUnit.GroupServiceTest.completeSubtaskSessionTest_failSKIPPED.executor": "Run",
-    "JUnit.GroupServiceTest.completeSubtaskSessionTest_success.executor": "Run",
-    "JUnit.GroupServiceTest.completeSubtaskSessionTest_successLast.executor": "Run",
-    "JUnit.GroupServiceTest.completeTaskBySessionsTest_failFINISHED.executor": "Run",
-    "JUnit.GroupServiceTest.completeTaskBySessionsTest_failFREEZED.executor": "Run",
-    "JUnit.GroupServiceTest.completeTaskBySessionsTest_failForSessionsPROGRAMMED.executor": "Run",
-    "JUnit.GroupServiceTest.completeTaskBySessionsTest_failTODO.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failEmptyFieldSessions.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failEmptyFieldStrategies.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failFieldPriorityLessThanZero.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failFieldPriorityMoreThanFive.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failFieldRequiredUsersDifferentFromNUmberOfSubtasks.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failNullMandatoryFieldName.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failNullMandatoryFieldStrategies.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failNullMandatoryFieldTimeTable.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failNullMandatoryFieldUTopic.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failSKIPPEDStrategyAndDeadline.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failSKIPPEDStrategyAndMore.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failSessionDifferFromTotalTime.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failSessionOverflowTimeSLots.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failSubtaskSession.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failSubtasksResourcesDontMatchTaskResources.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failSubtasksSessionAlreadyAssigned.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_failSubtasksSessionsDifferFromTaskSessions.executor": "Run",
-    "JUnit.GroupServiceTest.createGroupTest_success.executor": "Run",
-    "JUnit.GroupServiceTest.deleteGroupTest_fail.executor": "Run",
-    "JUnit.GroupServiceTest.deleteGroupTest_success.executor": "Run",
-    "JUnit.GroupServiceTest.deleteGroupTest_successINPROGRESS.executor": "Run",
-    "JUnit.GroupServiceTest.forcedCompletion_FailFINISHED.executor": "Run",
-    "JUnit.GroupServiceTest.forcedCompletion_FailFREEZED.executor": "Run",
-    "JUnit.GroupServiceTest.forcedCompletion_FailTODO.executor": "Run",
-    "JUnit.GroupServiceTest.forcedCompletion_success.executor": "Run",
-    "JUnit.GroupServiceTest.getPersonalByIdTest_NotFound.executor": "Run",
-    "JUnit.GroupServiceTest.getPersonalByIdTest_Success.executor": "Run",
-    "JUnit.GroupServiceTest.handleLimitExceededTest_failSessionNotFound.executor": "Run",
-    "JUnit.GroupServiceTest.handleLimitExceededTest_nowAfterNextSessionStarted.executor": "Run",
-    "JUnit.GroupServiceTest.handleLimitExceededTest_nowBeforeNextSession.executor": "Run",
-    "JUnit.GroupServiceTest.handleLimitExceededTest_nowBeforeOneDayAfterThisSession.executor": "Run",
-    "JUnit.GroupServiceTest.joinGroupTest_failIsNotOnFeed.executor": "Run",
-    "JUnit.GroupServiceTest.joinGroupTest_failSubtaskTaken.executor": "Run",
-    "JUnit.GroupServiceTest.joinGroupTest_success.executor": "Run",
-    "JUnit.GroupServiceTest.leaveGroupTaskTest_failMember.executor": "Run",
-    "JUnit.GroupServiceTest.leaveGroupTaskTest_success.executor": "Run",
-    "JUnit.GroupServiceTest.leaveGroupTaskTest_successINPROGRESS.executor": "Run",
-    "JUnit.GroupServiceTest.modifyGroupTest_success.executor": "Run",
-    "JUnit.GroupServiceTest.moveToCalendarTest_failIsNotComplete.executor": "Run",
-    "JUnit.GroupServiceTest.moveToCalendarTest_failNoSuchGroup.executor": "Run",
-    "JUnit.GroupServiceTest.moveToCalendarTest_failNoSuchUser.executor": "Run",
-    "JUnit.GroupServiceTest.moveToCalendarTest_success.executor": "Run",
-    "JUnit.GroupServiceTest.removeMemberTest_FailFINISHED.executor": "Run",
-    "JUnit.GroupServiceTest.removeMemberTest_FailNoMember.executor": "Run",
-    "JUnit.GroupServiceTest.removeMemberTest_FailTODO.executor": "Run",
-    "JUnit.GroupServiceTest.removeMemberTest_FailUserEqualsMember.executor": "Run",
-    "JUnit.GroupServiceTest.removeMemberTest_successNotSubstituteFREEZED.executor": "Run",
-    "JUnit.GroupServiceTest.removeMemberTest_successNotSubstituteINPROGRESS.executor": "Run",
-    "JUnit.GroupServiceTest.removeMemberTest_successSubstituteAndFoundFREEZED.executor": "Run",
-    "JUnit.GroupServiceTest.removeMemberTest_successSubstituteAndFoundINPROGRESS.executor": "Run",
-    "JUnit.GroupServiceTest.removeMemberTest_successSubstituteAndNotFoundINPROGRESS.executor": "Run",
-    "JUnit.PersonalDAOTest.aveAndFindByIdTest.executor": "Run",
-    "JUnit.PersonalDAOTest.executor": "Run",
-    "JUnit.PersonalDAOTest.saveAndFindByIdTest.executor": "Run",
-    "JUnit.PersonalDAOTest.testDelete.executor": "Run",
-    "JUnit.PersonalDAOTest.testFindAll.executor": "Run",
-    "JUnit.PersonalDAOTest.testUpdate.executor": "Run",
-    "JUnit.PersonalEndpointTest.executor": "Run",
-    "JUnit.PersonalEndpointTest.testCompletePersonalBySessions.executor": "Run",
-    "JUnit.PersonalEndpointTest.testCompleteSession.executor": "Run",
-    "JUnit.PersonalEndpointTest.testCreatePersonal.executor": "Run",
-    "JUnit.PersonalEndpointTest.testDeletePersonal.executor": "Run",
-    "JUnit.PersonalEndpointTest.testForceCompletion.executor": "Run",
-    "JUnit.PersonalEndpointTest.testFreezePersonal.executor": "Run",
-    "JUnit.PersonalEndpointTest.testGetAllPersonalTasks.executor": "Run",
-    "JUnit.PersonalEndpointTest.testHandleLimitExceeded.executor": "Run",
-    "JUnit.PersonalEndpointTest.testMoveToCalendar.executor": "Run",
-    "JUnit.PersonalEndpointTest.testUpdatePersonal.executor": "Run",
-    "JUnit.PersonalEntityTest.AutoSkipIfNotCompletedTest_SessionNotFound.executor": "Run",
-    "JUnit.PersonalEntityTest.commonCompleteBySessionsLogicTest_failFINISHED.executor": "Run",
-    "JUnit.PersonalEntityTest.commonCompleteBySessionsLogicTest_failFREEZED.executor": "Run",
-    "JUnit.PersonalEntityTest.commonCompleteBySessionsLogicTest_failForSessionsPROGRAMMED.executor": "Run",
-    "JUnit.PersonalEntityTest.commonCompleteBySessionsLogicTest_failTODO.executor": "Run",
-    "JUnit.PersonalEntityTest.commonCompleteBySessionsLogicTest_success.executor": "Run",
-    "JUnit.PersonalEntityTest.commonCompleteBySessionsLogicTest_successWithSubtask.executor": "Run",
-    "JUnit.PersonalEntityTest.commonForcedCompletionLogicTest_FailFINISHED.executor": "Run",
-    "JUnit.PersonalEntityTest.commonForcedCompletionLogicTest_FailFREEZED.executor": "Run",
-    "JUnit.PersonalEntityTest.commonForcedCompletionLogicTest_FailTODO.executor": "Run",
-    "JUnit.PersonalEntityTest.commonForcedCompletionLogicTest_success.executor": "Run",
-    "JUnit.PersonalEntityTest.commonModifyLogicTest_failFINISHED.executor": "Run",
-    "JUnit.PersonalEntityTest.commonModifyLogicTest_successFromIsInProgress.executor": "Run",
-    "JUnit.PersonalEntityTest.commonModifyLogicTest_successFromTODO.executor": "Run",
-    "JUnit.PersonalEntityTest.commonToCalendarLogicTest_inProgressFail.executor": "Run",
-    "JUnit.PersonalEntityTest.commonToCalendarLogicTest_stateFail.executor": "Run",
-    "JUnit.PersonalEntityTest.commonToCalendarLogicTest_success.executor": "Run",
-    "JUnit.PersonalEntityTest.completeSessionTest_failAlienSession.executor": "Run",
-    "JUnit.PersonalEntityTest.completeSessionTest_failCOMPLETED.executor": "Run",
-    "JUnit.PersonalEntityTest.completeSessionTest_failSKIPPED.executor": "Run",
-    "JUnit.PersonalEntityTest.completeSessionTest_successLast.executor": "Run",
-    "JUnit.PersonalEntityTest.completeSessionTest_successNotLast.executor": "Run",
-    "JUnit.PersonalEntityTest.setStrategiesTest_EACHSuccess.executor": "Run",
-    "JUnit.PersonalEntityTest.setStrategiesTest_FREEZECONSECFail.executor": "Run",
-    "JUnit.PersonalEntityTest.setStrategiesTest_FREEZECONSECSuccess.executor": "Run",
-    "JUnit.PersonalEntityTest.setStrategiesTest_FREEZETOTFail.executor": "Run",
-    "JUnit.PersonalEntityTest.setStrategiesTest_FREEZETOTSuccess.executor": "Run",
-    "JUnit.PersonalEntityTest.setStrategiesTest_SKIPPEDFail.executor": "Run",
-    "JUnit.PersonalEntityTest.setStrategiesTest_SKIPPEDSuccess.executor": "Run",
-    "JUnit.PersonalEntityTest.setStrategiesTest_success.executor": "Run",
-    "JUnit.PersonalEntityTest.skipSessionTest_SessionNotFound.executor": "Run",
-    "JUnit.PersonalEntityTest.skipSessionTest_SuccessWithAddAtEnd.executor": "Run",
-    "JUnit.PersonalEntityTest.skipSessionTest_successWithSubtask.executor": "Run",
-    "JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_NextSessionNotNullNowAfterNextSessionStarted.executor": "Run",
-    "JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_NextSessionNotNullNowBeforeNextSession.executor": "Run",
-    "JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_NextSessionNotNull_NowAfterNextSessionStarted.executor": "Debug",
-    "JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_NoNextSessionNowAfterOneDayAfterThisSession.executor": "Run",
-    "JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_NoNextSession_NowBeforeOneDayAfterThisSession.executor": "Run",
-    "JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_SessionNotFound.executor": "Run",
-    "JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_nowBeforeOneDayAfterThisSession.executor": "Run",
-    "JUnit.PersonalEntityTest.testRemoveAndFreezeTask_NoSessionsInCalendar.executor": "Run",
-    "JUnit.PersonalEntityTest.testRemoveAndFreezeTask_Success.executor": "Run",
-    "JUnit.PersonalEntityTest.testSkipSession_SuccessNoRescheduling.executor": "Run",
-    "JUnit.PersonalServiceTest,getPersonalByIdTest_Success and 27 more.executor": "Run",
-    "JUnit.PersonalServiceTest.completeSessionTest_personalFail.executor": "Run",
-    "JUnit.PersonalServiceTest.completeSessionTest_sessionFail.executor": "Run",
-    "JUnit.PersonalServiceTest.completeSessionTest_subtaskSuccess.executor": "Run",
-    "JUnit.PersonalServiceTest.completeSessionTest_withSubtaskSuccess.executor": "Run",
-    "JUnit.PersonalServiceTest.creatPersonalTest_DoesUserExist.executor": "Run",
-    "JUnit.PersonalServiceTest.creatPersonalTest_EmptyMandatoryFieldName.executor": "Run",
-    "JUnit.PersonalServiceTest.creatPersonalTest_EmptyMandatoryFieldStrategies.executor": "Run",
-    "JUnit.PersonalServiceTest.creatPersonalTest_EmptyMandatoryFieldTotalTime.executor": "Run",
-    "JUnit.PersonalServiceTest.creatPersonalTest_NullMandatoryFieldSessions.executor": "Run",
-    "JUnit.PersonalServiceTest.creatPersonalTest_SKIPPEDStrategyAndDeadline.executor": "Run",
-    "JUnit.PersonalServiceTest.creatPersonalTest_SKIPPEDStrategyAndMore.executor": "Run",
-    "JUnit.PersonalServiceTest.creatPersonalTest_SessionsOverlapping.executor": "Run",
-    "JUnit.PersonalServiceTest.creatPersonalTest_negativeFieldTotalTime.executor": "Run",
-    "JUnit.PersonalServiceTest.createPersonalTest__duplicateSubtaskResources.executor": "Run",
-    "JUnit.PersonalServiceTest.createPersonalTest_duplicateSubtaskResources.executor": "Run",
-    "JUnit.PersonalServiceTest.createPersonalTest_duplicateSubtaskSession.executor": "Run",
-    "JUnit.PersonalServiceTest.createPersonalTest_resourcesValidData.executor": "Run",
-    "JUnit.PersonalServiceTest.createPersonalTest_subtasksSessions.executor": "Run",
-    "JUnit.PersonalServiceTest.createPersonalTest_validData.executor": "Run",
-    "JUnit.PersonalServiceTest.deletePersonalFailTest.executor": "Run",
-    "JUnit.PersonalServiceTest.deletePersonalTest.executor": "Run",
-    "JUnit.PersonalServiceTest.falseTest.executor": "Run",
-    "JUnit.PersonalServiceTest.freezeTaskTest_fail.executor": "Run",
-    "JUnit.PersonalServiceTest.freezeTaskTest_success.executor": "Run",
-    "JUnit.PersonalServiceTest.handleLimitExceededTest_personalFail.executor": "Run",
-    "JUnit.PersonalServiceTest.handleLimitExceededTest_sessionFail.executor": "Run",
-    "JUnit.PersonalServiceTest.handleLimitExceededTest_success.executor": "Run",
-    "JUnit.PersonalServiceTest.modifyPersonalTest_NegativeTotalTime.executor": "Run",
-    "JUnit.PersonalServiceTest.modifyPersonalTest_NoUserAssociated.executor": "Run",
-    "JUnit.PersonalServiceTest.modifyPersonalTest_NullMandatoryFieldName.executor": "Run",
-    "JUnit.PersonalServiceTest.modifyPersonalTest_NullMandatoryFieldSessions.executor": "Run",
-    "JUnit.PersonalServiceTest.modifyPersonalTest_NullMandatoryFieldStrategies.executor": "Run",
-    "JUnit.PersonalServiceTest.modifyPersonalTest_NullMandatoryFieldTimeSlots.executor": "Run",
-    "JUnit.PersonalServiceTest.modifyPersonalTest_NullMandatoryFieldTopic.executor": "Run",
-    "JUnit.PersonalServiceTest.modifyPersonalTest_SKIPPEDStrategyAndDeadline.executor": "Run",
-    "JUnit.PersonalServiceTest.modifyPersonalTest_SKIPPEDStrategyAndMore.executor": "Run",
-    "JUnit.PersonalServiceTest.modifyPersonalTest_SessionOverlap.executor": "Run",
-    "JUnit.PersonalServiceTest.modifyPersonalTest_ValidData.executor": "Run",
-    "JUnit.PersonalServiceTest.modifyPersonalTest_duplicateSubtaskSession.executor": "Run",
-    "JUnit.PersonalServiceTest.moveToCalendarFailTest.executor": "Run",
-    "JUnit.PersonalServiceTest.moveToCalendarSuccessTest.executor": "Run",
-    "JUnit.PersonalServiceTest.testGetPersonalById_NotFound.executor": "Run",
-    "JUnit.PersonalServiceTest.testGetPersonalById_Success.executor": "Run",
-    "JUnit.SessionDAOTest.executor": "Run",
-    "JUnit.SharedEntityTest.commonToCalendarLogicTest_success.executor": "Run",
-    "JUnit.SharedEntityTest.completeBySessionsAndChooseBestCommentTest_failComment.executor": "Run",
-    "JUnit.SharedEntityTest.completeBySessionsAndChooseBestCommentTest_success.executor": "Run",
-    "JUnit.SharedEntityTest.completeBySessionsAndChooseBestComment_failFINISHED.executor": "Run",
-    "JUnit.SharedEntityTest.completeTaskBySessionsTest_success.executor": "Run",
-    "JUnit.SharedEntityTest.forcedCompletion_success.executor": "Run",
-    "JUnit.SharedEntityTest.modifyTaskTest_successFromIsInProgress.executor": "Run",
-    "JUnit.SharedEntityTest.skipSessionTest_successWithSubtask.executor": "Run",
-    "JUnit.SharedEntityTest.testRemoveAndFreezeTask_Success.executor": "Run",
-    "JUnit.SubtaskDAOTest.deleteTest.executor": "Run",
-    "JUnit.SubtaskDAOTest.executor": "Run",
-    "JUnit.SubtaskDAOTest.findAllTest.executor": "Run",
-    "JUnit.SubtaskDAOTest.testFindAll.executor": "Run",
-    "JUnit.SubtaskDAOTest.testSaveAndFindById.executor": "Run",
-    "JUnit.UserDAOTest.executor": "Run",
-    "JUnit.UserDAOTest.testSaveAndFindById.executor": "Run",
-    "JUnit.UserEndpointTest.executor": "Run",
-    "JUnit.UserEndpointTest.testCreateUserProfile.executor": "Run",
-    "JUnit.UserEndpointTest.testGetUserById.executor": "Debug",
-    "JUnit.UserEndpointTest.testMakeComment.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "extract.method.default.visibility": "private",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "jdk.selected.JAVA_MODULE": "corretto-21",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Projects/angular_EasyTask",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Docker.compose.executor&quot;: &quot;Run&quot;,
+    &quot;JBoss/WildFly Server.JBoss/WildFly 34.0.0.Final.executor&quot;: &quot;Run&quot;,
+    &quot;JBoss/WildFly Server.JBoss/WildFly 34.0.0.Final1.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CalendarDAOTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CalendarDAOTest.testAddSessions.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CalendarDAOTest.testFindAll.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CalendarDAOTest.testRemoveSessions.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CalendarDAOTest.testUpdate.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CalendarEntityTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupDAOTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.completeGroupBySessions.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.handleLimitExceededTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.leaveGroupTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.testCompleteSubtaskSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.testCreateGroup.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.testDeletePersonal.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.testForceCompletion.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.testGetAllGroups.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.testGetGroupById_NotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.testJoinGroup.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.testMoveToCalendar.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.testRemoveMemberFromGroup.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEndpointTest.testUpdateGroup.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.SkipSessionTest_SuccessNoRescheduling.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.autoSkipIfNotCompletedTest_nowAfterNextSessionStarted.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.completeSessionTest_successLast.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.completeSubtaskSessionTest_failAlienSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.completeSubtaskSessionTest_failCOMPLETED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.completeSubtaskSessionTest_failSKIPPED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.completeSubtaskSessionTest_successLast.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.completeSubtaskSessionTest_successNotLast.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.completeTaskBySessionsTest_failForSessionsPROGRAMMED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.completeTaskBySessionsTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.joinGroupTest_fail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.joinGroupTest_failInMembers.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.joinGroupTest_failSubtaskTaken.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.joinGroupTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.leaveGroupTaskTest_failMember.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.leaveGroupTaskTest_failNoSubtask.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.leaveGroupTaskTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.leaveGroupTaskTest_successINPROGRESS.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.modifyTask_successFromTODO.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_FailFINISHED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_FailNoMember.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_FailSubstituteFINISHED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_FailSubstituteTODO.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_FailSubstituteUserEqualsMember.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_FailTODO.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_FailUserEqualsMember.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_successNotSubstitute.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_successNotSubstituteFREEZED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_successNotSubstituteINPROGRESS.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_successSubstituteAndFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_successSubstituteAndFoundINPROGRESS.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_successSubstituteAndNotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.removeMemberTest_successSubstituteAndNotFoundINPROGRESS.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.skipSessionTest_SuccessWithAddAtEnd.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.skipSessionTest_sessionNotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.skipSessionTest_successFREEZE.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.skipSessionTest_successWithSubtask.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.testAutoSkipIfNotCompleted_nowAfterNextSessionStarted.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.testRemoveAndFreezeTask_NoSessionsInCalendar.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.testRemoveAndFreezeTask_Success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.toCalendarTest_failIsComplete.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.toCalendarTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.completeSharedBySessions.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.completeSharedBySessions_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.completeSubtaskSessionTest_failAlienSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.completeSubtaskSessionTest_failCOMPLETED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.completeSubtaskSessionTest_failSKIPPED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.completeSubtaskSessionTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.completeSubtaskSessionTest_successLast.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.completeTaskBySessionsTest_failFINISHED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.completeTaskBySessionsTest_failFREEZED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.completeTaskBySessionsTest_failForSessionsPROGRAMMED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.completeTaskBySessionsTest_failTODO.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failEmptyFieldSessions.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failEmptyFieldStrategies.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failFieldPriorityLessThanZero.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failFieldPriorityMoreThanFive.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failFieldRequiredUsersDifferentFromNUmberOfSubtasks.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failNullMandatoryFieldName.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failNullMandatoryFieldStrategies.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failNullMandatoryFieldTimeTable.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failNullMandatoryFieldUTopic.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failSKIPPEDStrategyAndDeadline.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failSKIPPEDStrategyAndMore.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failSessionDifferFromTotalTime.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failSessionOverflowTimeSLots.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failSubtaskSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failSubtasksResourcesDontMatchTaskResources.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failSubtasksSessionAlreadyAssigned.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_failSubtasksSessionsDifferFromTaskSessions.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.createGroupTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.deleteGroupTest_fail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.deleteGroupTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.deleteGroupTest_successINPROGRESS.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.forcedCompletion_FailFINISHED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.forcedCompletion_FailFREEZED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.forcedCompletion_FailTODO.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.forcedCompletion_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.getPersonalByIdTest_NotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.getPersonalByIdTest_Success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.handleLimitExceededTest_failSessionNotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.handleLimitExceededTest_nowAfterNextSessionStarted.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.handleLimitExceededTest_nowBeforeNextSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.handleLimitExceededTest_nowBeforeOneDayAfterThisSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.joinGroupTest_failIsNotOnFeed.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.joinGroupTest_failSubtaskTaken.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.joinGroupTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.leaveGroupTaskTest_failMember.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.leaveGroupTaskTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.leaveGroupTaskTest_successINPROGRESS.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.modifyGroupTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.moveToCalendarTest_failIsNotComplete.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.moveToCalendarTest_failNoSuchGroup.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.moveToCalendarTest_failNoSuchUser.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.moveToCalendarTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.removeMemberTest_FailFINISHED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.removeMemberTest_FailNoMember.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.removeMemberTest_FailTODO.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.removeMemberTest_FailUserEqualsMember.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.removeMemberTest_successNotSubstituteFREEZED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.removeMemberTest_successNotSubstituteINPROGRESS.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.removeMemberTest_successSubstituteAndFoundFREEZED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.removeMemberTest_successSubstituteAndFoundINPROGRESS.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupServiceTest.removeMemberTest_successSubstituteAndNotFoundINPROGRESS.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalDAOTest.aveAndFindByIdTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalDAOTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalDAOTest.saveAndFindByIdTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalDAOTest.testDelete.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalDAOTest.testFindAll.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalDAOTest.testUpdate.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEndpointTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEndpointTest.testCompletePersonalBySessions.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEndpointTest.testCompleteSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEndpointTest.testCreatePersonal.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEndpointTest.testDeletePersonal.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEndpointTest.testForceCompletion.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEndpointTest.testFreezePersonal.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEndpointTest.testGetAllPersonalTasks.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEndpointTest.testHandleLimitExceeded.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEndpointTest.testMoveToCalendar.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEndpointTest.testUpdatePersonal.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.AutoSkipIfNotCompletedTest_SessionNotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonCompleteBySessionsLogicTest_failFINISHED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonCompleteBySessionsLogicTest_failFREEZED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonCompleteBySessionsLogicTest_failForSessionsPROGRAMMED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonCompleteBySessionsLogicTest_failTODO.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonCompleteBySessionsLogicTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonCompleteBySessionsLogicTest_successWithSubtask.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonForcedCompletionLogicTest_FailFINISHED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonForcedCompletionLogicTest_FailFREEZED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonForcedCompletionLogicTest_FailTODO.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonForcedCompletionLogicTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonModifyLogicTest_failFINISHED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonModifyLogicTest_successFromIsInProgress.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonModifyLogicTest_successFromTODO.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonToCalendarLogicTest_inProgressFail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonToCalendarLogicTest_stateFail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.commonToCalendarLogicTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.completeSessionTest_failAlienSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.completeSessionTest_failCOMPLETED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.completeSessionTest_failSKIPPED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.completeSessionTest_successLast.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.completeSessionTest_successNotLast.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.setStrategiesTest_EACHSuccess.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.setStrategiesTest_FREEZECONSECFail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.setStrategiesTest_FREEZECONSECSuccess.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.setStrategiesTest_FREEZETOTFail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.setStrategiesTest_FREEZETOTSuccess.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.setStrategiesTest_SKIPPEDFail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.setStrategiesTest_SKIPPEDSuccess.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.setStrategiesTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.skipSessionTest_SessionNotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.skipSessionTest_SuccessWithAddAtEnd.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.skipSessionTest_successWithSubtask.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_NextSessionNotNullNowAfterNextSessionStarted.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_NextSessionNotNullNowBeforeNextSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_NextSessionNotNull_NowAfterNextSessionStarted.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_NoNextSessionNowAfterOneDayAfterThisSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_NoNextSession_NowBeforeOneDayAfterThisSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_SessionNotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.testAutoSkipIfNotCompleted_nowBeforeOneDayAfterThisSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.testRemoveAndFreezeTask_NoSessionsInCalendar.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.testRemoveAndFreezeTask_Success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalEntityTest.testSkipSession_SuccessNoRescheduling.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest,getPersonalByIdTest_Success and 27 more.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.completeSessionTest_personalFail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.completeSessionTest_sessionFail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.completeSessionTest_subtaskSuccess.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.completeSessionTest_withSubtaskSuccess.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.creatPersonalTest_DoesUserExist.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.creatPersonalTest_EmptyMandatoryFieldName.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.creatPersonalTest_EmptyMandatoryFieldStrategies.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.creatPersonalTest_EmptyMandatoryFieldTotalTime.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.creatPersonalTest_NullMandatoryFieldSessions.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.creatPersonalTest_SKIPPEDStrategyAndDeadline.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.creatPersonalTest_SKIPPEDStrategyAndMore.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.creatPersonalTest_SessionsOverlapping.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.creatPersonalTest_negativeFieldTotalTime.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.createPersonalTest__duplicateSubtaskResources.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.createPersonalTest_duplicateSubtaskResources.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.createPersonalTest_duplicateSubtaskSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.createPersonalTest_resourcesValidData.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.createPersonalTest_subtasksSessions.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.createPersonalTest_validData.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.deletePersonalFailTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.deletePersonalTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.falseTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.freezeTaskTest_fail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.freezeTaskTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.handleLimitExceededTest_personalFail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.handleLimitExceededTest_sessionFail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.handleLimitExceededTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.modifyPersonalTest_NegativeTotalTime.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.modifyPersonalTest_NoUserAssociated.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.modifyPersonalTest_NullMandatoryFieldName.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.modifyPersonalTest_NullMandatoryFieldSessions.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.modifyPersonalTest_NullMandatoryFieldStrategies.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.modifyPersonalTest_NullMandatoryFieldTimeSlots.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.modifyPersonalTest_NullMandatoryFieldTopic.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.modifyPersonalTest_SKIPPEDStrategyAndDeadline.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.modifyPersonalTest_SKIPPEDStrategyAndMore.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.modifyPersonalTest_SessionOverlap.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.modifyPersonalTest_ValidData.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.modifyPersonalTest_duplicateSubtaskSession.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.moveToCalendarFailTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.moveToCalendarSuccessTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.testGetPersonalById_NotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PersonalServiceTest.testGetPersonalById_Success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SessionDAOTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.commonToCalendarLogicTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.completeBySessionsAndChooseBestCommentTest_failComment.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.completeBySessionsAndChooseBestCommentTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.completeBySessionsAndChooseBestComment_failFINISHED.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.completeTaskBySessionsTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.forcedCompletion_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.modifyTaskTest_successFromIsInProgress.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.skipSessionTest_successWithSubtask.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.testAutoSkipIfNotCompleted_nowAfterNextSessionStarted.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.testRemoveAndFreezeTask_NoSessionsInCalendar.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.testRemoveAndFreezeTask_Success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.toCalendarTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SubtaskDAOTest.deleteTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SubtaskDAOTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SubtaskDAOTest.findAllTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SubtaskDAOTest.testFindAll.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SubtaskDAOTest.testSaveAndFindById.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserDAOTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserDAOTest.testSaveAndFindById.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserEndpointTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserEndpointTest.testCreateUserProfile.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserEndpointTest.testGetUserById.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.UserEndpointTest.testMakeComment.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;corretto-21&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Projects/angular_EasyTask&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql",
-      "h2",
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;,
+      &quot;h2&quot;,
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="domain" />
@@ -520,81 +533,79 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GroupEndpointTest.handleLimitExceededTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="CalendarDAOTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="EasyTask" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.endpoints.*" />
+          <option name="PATTERN" value="com.DAOs.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.endpoints" />
-      <option name="MAIN_CLASS_NAME" value="com.endpoints.GroupEndpointTest" />
-      <option name="METHOD_NAME" value="handleLimitExceededTest" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="GroupEndpointTest.testRemoveMemberFromGroup" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="EasyTask" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.endpoints.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.endpoints" />
-      <option name="MAIN_CLASS_NAME" value="com.endpoints.GroupEndpointTest" />
-      <option name="METHOD_NAME" value="testRemoveMemberFromGroup" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="UserEndpointTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="EasyTask" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.endpoints.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.endpoints" />
-      <option name="MAIN_CLASS_NAME" value="com.endpoints.UserEndpointTest" />
+      <option name="PACKAGE_NAME" value="com.DAOs" />
+      <option name="MAIN_CLASS_NAME" value="com.DAOs.CalendarDAOTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserEndpointTest.testCreateUserProfile" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="CalendarDAOTest.testFindAll" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="EasyTask" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.endpoints.*" />
+          <option name="PATTERN" value="com.DAOs.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.endpoints" />
-      <option name="MAIN_CLASS_NAME" value="com.endpoints.UserEndpointTest" />
-      <option name="METHOD_NAME" value="testCreateUserProfile" />
+      <option name="PACKAGE_NAME" value="com.DAOs" />
+      <option name="MAIN_CLASS_NAME" value="com.DAOs.CalendarDAOTest" />
+      <option name="METHOD_NAME" value="testFindAll" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserEndpointTest.testMakeComment" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="GroupServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="EasyTask" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.endpoints.*" />
+          <option name="PATTERN" value="com.services.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.endpoints" />
-      <option name="MAIN_CLASS_NAME" value="com.endpoints.UserEndpointTest" />
-      <option name="METHOD_NAME" value="testMakeComment" />
+      <option name="PACKAGE_NAME" value="com.services" />
+      <option name="MAIN_CLASS_NAME" value="com.services.GroupServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GroupServiceTest.getPersonalByIdTest_Success" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="EasyTask" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.services.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.services" />
+      <option name="MAIN_CLASS_NAME" value="com.services.GroupServiceTest" />
+      <option name="METHOD_NAME" value="getPersonalByIdTest_Success" />
       <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PersonalServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="EasyTask" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.services.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.services" />
+      <option name="MAIN_CLASS_NAME" value="com.services.PersonalServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -620,19 +631,19 @@
     <list>
       <item itemvalue="Docker.compose" />
       <item itemvalue="JBoss/WildFly Server.JBoss/WildFly 34.0.0.Final" />
-      <item itemvalue="JUnit.GroupEndpointTest.handleLimitExceededTest" />
-      <item itemvalue="JUnit.GroupEndpointTest.testRemoveMemberFromGroup" />
-      <item itemvalue="JUnit.UserEndpointTest" />
-      <item itemvalue="JUnit.UserEndpointTest.testCreateUserProfile" />
-      <item itemvalue="JUnit.UserEndpointTest.testMakeComment" />
+      <item itemvalue="JUnit.CalendarDAOTest" />
+      <item itemvalue="JUnit.CalendarDAOTest.testFindAll" />
+      <item itemvalue="JUnit.GroupServiceTest" />
+      <item itemvalue="JUnit.GroupServiceTest.getPersonalByIdTest_Success" />
+      <item itemvalue="JUnit.PersonalServiceTest" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.UserEndpointTest.testMakeComment" />
-        <item itemvalue="JUnit.UserEndpointTest.testCreateUserProfile" />
-        <item itemvalue="JUnit.UserEndpointTest" />
-        <item itemvalue="JUnit.GroupEndpointTest.handleLimitExceededTest" />
-        <item itemvalue="JUnit.GroupEndpointTest.testRemoveMemberFromGroup" />
+        <item itemvalue="JUnit.CalendarDAOTest" />
+        <item itemvalue="JUnit.CalendarDAOTest.testFindAll" />
+        <item itemvalue="JUnit.GroupServiceTest" />
+        <item itemvalue="JUnit.GroupServiceTest.getPersonalByIdTest_Success" />
+        <item itemvalue="JUnit.PersonalServiceTest" />
       </list>
     </recent_temporary>
   </component>
@@ -811,7 +822,21 @@
       <workItem from="1741683938941" duration="14814000" />
       <workItem from="1741775883025" duration="6536000" />
       <workItem from="1741876761777" duration="7291000" />
-      <workItem from="1741940106277" duration="4056000" />
+      <workItem from="1741940106277" duration="13228000" />
+      <workItem from="1741953471690" duration="1491000" />
+      <workItem from="1741962391886" duration="7707000" />
+      <workItem from="1741981944910" duration="612000" />
+      <workItem from="1742024461328" duration="4444000" />
+      <workItem from="1742041862672" duration="906000" />
+      <workItem from="1742051355344" duration="3430000" />
+      <workItem from="1742506563634" duration="2000" />
+      <workItem from="1742551041318" duration="10230000" />
+      <workItem from="1742727771930" duration="604000" />
+      <workItem from="1742748627092" duration="3000" />
+      <workItem from="1743060997887" duration="759000" />
+      <workItem from="1743077106451" duration="2355000" />
+      <workItem from="1743092114830" duration="878000" />
+      <workItem from="1743693431573" duration="698000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -1141,7 +1166,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741890073717</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="A lot of changes and tests">
+      <option name="closed" value="true" />
+      <created>1741944340278</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1741944340278</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

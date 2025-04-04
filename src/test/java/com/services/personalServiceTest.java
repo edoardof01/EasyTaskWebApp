@@ -582,7 +582,7 @@ class PersonalServiceTest {
         assertThrows(IllegalArgumentException.class, () ->
                 personalService.modifyPersonal(99L, "New Name", Topic.ART, null, 1, Timetable.ALL_DAY,
                         List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS, null, null)),
-                        1, "description", new ArrayList<>(), null, sessions, null, null
+                        1, "description", new ArrayList<>(), null, sessions
                 )
         );
         verify(personalDAO, times(1)).findById(99L);
@@ -594,10 +594,10 @@ class PersonalServiceTest {
         when(personalDAO.findById(1L)).thenReturn(personal);
         List<Session> sessions = new  ArrayList<>(personal.getSessions());
 
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(IllegalStateException.class, () ->
                 personalService.modifyPersonal(1L, "New Name", Topic.ART, null, 1, Timetable.ALL_DAY,
                         List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS, null, null)),
-                        1, "description", new ArrayList<>(), null, sessions, null, null
+                        1, "description", new ArrayList<>(), null, sessions
                 )
         );
     }
@@ -610,7 +610,7 @@ class PersonalServiceTest {
         assertThrows(IllegalArgumentException.class, () ->
                 personalService.modifyPersonal(1L, null, Topic.ART, null, 1, Timetable.ALL_DAY,
                         List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS, null, null)),
-                        1, "description", new ArrayList<>(), null, sessions, null, null
+                        1, "description", new ArrayList<>(), null, sessions
                 )
         );
     }
@@ -621,7 +621,7 @@ class PersonalServiceTest {
         assertThrows(IllegalArgumentException.class, () ->
                 personalService.modifyPersonal(1L, personal.getName(),null, null, 1, Timetable.ALL_DAY,
                         List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS, null, null)),
-                        1, "description", new ArrayList<>(), null, sessions, null, null
+                        1, "description", new ArrayList<>(), null, sessions
                 )
         );
     }
@@ -632,7 +632,7 @@ class PersonalServiceTest {
         assertThrows(IllegalArgumentException.class, () ->
                 personalService.modifyPersonal(1L, personal.getName(),Topic.ART, null, 1, null,
                         List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS, null, null)),
-                        1, "description", new ArrayList<>(), null, sessions, null, null
+                        1, "description", new ArrayList<>(), null, sessions
                 )
         );
     }
@@ -642,7 +642,7 @@ class PersonalServiceTest {
         List<Session> sessions = new  ArrayList<>(personal.getSessions());
         assertThrows(IllegalArgumentException.class, () ->
                 personalService.modifyPersonal(1L, personal.getName(),Topic.ART, null, 1, Timetable.ALL_DAY,
-                        null, 1, "description", new ArrayList<>(), null, sessions, null, null
+                        null, 1, "description", new ArrayList<>(), null, sessions
                 )
         );
     }
@@ -652,7 +652,7 @@ class PersonalServiceTest {
         assertThrows(IllegalArgumentException.class, () ->
                 personalService.modifyPersonal(1L, personal.getName(),Topic.ART, null, 1, Timetable.ALL_DAY,
                         List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS, null, null)),
-                        1, "description", new ArrayList<>(), null, null, null, null
+                        1, "description", new ArrayList<>(), null, null
                 )
         );
     }
@@ -663,7 +663,7 @@ class PersonalServiceTest {
         assertThrows(IllegalArgumentException.class, () ->
                 personalService.modifyPersonal(1L, personal.getName(),Topic.ART, null, -1, Timetable.ALL_DAY,
                         List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS, null, null)),
-                        1, "description", new ArrayList<>(), null, sessions, null, null
+                        1, "description", new ArrayList<>(), null, sessions
                 )
         );
     }
@@ -701,7 +701,7 @@ class PersonalServiceTest {
         assertThrows(IllegalArgumentException.class, () ->
                 personalService.modifyPersonal(1L, personal.getName(),Topic.ART, deadline, 1, Timetable.ALL_DAY,
                         List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS, null, null)),
-                        1, "description", new ArrayList<>(), null, sessions, null, null
+                        1, "description", new ArrayList<>(), null, sessions
                 )
         );
     }
@@ -715,8 +715,7 @@ class PersonalServiceTest {
         );
         assertThrows(IllegalArgumentException.class, () ->
                 personalService.modifyPersonal(1L, personal.getName(),Topic.ART, null, 1, Timetable.ALL_DAY,
-                        strategies, 1, "description", new ArrayList<>(), null, sessions,
-                        null, null
+                        strategies, 1, "description", new ArrayList<>(), null, sessions
                 )
         );
     }
@@ -744,7 +743,7 @@ class PersonalServiceTest {
 
         PersonalDTO result = personalService.modifyPersonal(1L, "Modified Task", Topic.ART, null, 1, Timetable.ALL_DAY,
                 List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS, null, null)),
-                1, "new description", new ArrayList<>(), null, sessions, null, null
+                1, "new description", new ArrayList<>(), null, sessions
         );
 
         assertAll(
@@ -788,7 +787,7 @@ class PersonalServiceTest {
                 personalService.modifyPersonal(
                         1L, "New Name", Topic.ART, null, 1, Timetable.ALL_DAY,
                         List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS, null, null)),
-                        1, "description", new ArrayList<>(), null, sessions, null, null
+                        1, "description", new ArrayList<>(), null, sessions
                 )
         );
     }
@@ -818,7 +817,7 @@ class PersonalServiceTest {
                 personalService.modifyPersonal(1L, "New Name", Topic.ART, null, 1,
                         Timetable.ALL_DAY,
                         List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS, null, null)),
-                        1, "description", new ArrayList<>(), subtasks, personal.getSessions(), null, null
+                        1, "description", new ArrayList<>(), subtasks, personal.getSessions()
                 )
         );
     }

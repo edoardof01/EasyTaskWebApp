@@ -96,7 +96,7 @@ class GroupEntityTest {
         Map<Topic, Integer> topicsMap2 = new HashMap<>();
         topicsMap2.put(Topic.PROGRAMMING, 5);
         topicsMap2.put(Topic.ART, 3);
-        profile.setTopics(topicsMap2);
+        profile2.setTopics(topicsMap2);
         member.setPersonalProfile(profile2);
 
         profile3 = new Profile();
@@ -105,7 +105,7 @@ class GroupEntityTest {
         Map<Topic, Integer> topicsMap3 = new HashMap<>();
         topicsMap3.put(Topic.PROGRAMMING, 5);
         topicsMap3.put(Topic.ART, 3);
-        profile.setTopics(topicsMap3);
+        profile3.setTopics(topicsMap3);
         member2.setPersonalProfile(profile3);
 
 
@@ -692,7 +692,7 @@ class GroupEntityTest {
     void autoSkipIfNotCompletedTest_nowAfterNextSessionStarted() {
         session1.setStartDate(LocalDateTime.now().minusHours(2));
         session1.setEndDate(LocalDateTime.now().minusHours(1));
-        session2.setStartDate(LocalDateTime.now());
+        session2.setStartDate(LocalDateTime.now().minusMinutes(30));
         session2.setEndDate(LocalDateTime.now().plusHours(1));
         group.autoSkipIfNotCompleted(session1);
         assertEquals(SessionState.SKIPPED, session1.getState());

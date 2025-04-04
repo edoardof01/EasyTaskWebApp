@@ -27,16 +27,21 @@ class CalendarDAOTest {
     void setup() {
         em = emf.createEntityManager();
         calendarDAO = new CalendarDAO();
-        // Iniettiamo manualmente l'EntityManager
         calendarDAO.setEntityManager(em);
     }
 
     @AfterEach
     void tearDown() {
         if (em.isOpen()) {
+            em.getTransaction().begin();
+            em.createQuery("DELETE FROM Calendar").executeUpdate();
+            em.createQuery("DELETE FROM User").executeUpdate();
+            em.getTransaction().commit();
+            em.clear();
             em.close();
         }
     }
+
 
     @AfterAll
     static void close() {
@@ -48,25 +53,18 @@ class CalendarDAOTest {
     @Test
     void testSaveAndFindById() {
         em.getTransaction().begin();
-
-
         User user = new User();
         Profile profile = new Profile();
         user.setPersonalProfile(profile);
-        em.persist(user); // persistiamo l'utente, così l'ID è generato
-
-        // 2) Creiamo un Calendar e associamolo all'utente
+        em.persist(user);
         Calendar calendar = new Calendar(user);
 
-        // 3) Salviamo il Calendar
         calendarDAO.save(calendar);
 
         em.getTransaction().commit();
 
-        // 4) Verifichiamo che l'ID sia stato generato
         assertTrue(calendar.getId() > 0);
 
-        // 5) Recuperiamo dal DB
         Calendar found = calendarDAO.findById(calendar.getId());
         assertNotNull(found);
         assertEquals(user.getId(), found.getUser().getId());

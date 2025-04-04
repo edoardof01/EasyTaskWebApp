@@ -36,18 +36,14 @@ public class RegisterService {
         registeredUser.setPassword(hashedPassword);
         registerDAO.save(registeredUser);
 
-
-        // Crea il Profile
         Profile profile = new Profile(
                 registrationDTO.getUsername(),
                 null
         );
 
-        // Crea l'utente e imposta il profile
         User newUser = new User();
         newUser.setPersonalProfile(profile);
 
-        // Salva l'utente nel database
         userDAO.save(newUser);
 
     }

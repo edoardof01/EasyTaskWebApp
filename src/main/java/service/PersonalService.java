@@ -2,6 +2,7 @@ package service;
 
 import domain.*;
 import jakarta.annotation.Nullable;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -13,6 +14,7 @@ import java.time.LocalTime;
 
 import java.util.*;
 
+@ApplicationScoped
 public class PersonalService {
     @Inject
     private PersonalDAO personalDAO;
@@ -42,7 +44,7 @@ public class PersonalService {
     }
 
     public List<Personal> getAllPersonalEntities() {
-        return personalDAO.findAll(); // ad esempio
+        return personalDAO.findAll();
     }
 
 
@@ -52,11 +54,49 @@ public class PersonalService {
                 .toList();
     }
 
-    public PersonalDTO createPersonal(String name, long userId, Topic topic, @Nullable LocalDateTime deadline, Integer totalTime,
-                                      Timetable timeSlots, List<StrategyInstance> strategies, int priority,
-                                      String description, List<Resource> resources, @Nullable List<Subtask> subtasks, List<Session> sessions) {
+    public PersonalDTO createPersonal(String name, long userId, Topic topic, @Nullable LocalDateTime deadline,
+                                      Integer totalTime, Timetable timeSlots, List<StrategyInstance> strategies,
+                                      int priority, String description, List<Resource> resources,
+                                      @Nullable List<Subtask> subtasks, List<Session> sessions) {
 
 
+        validateRequiredFields(name, topic, totalTime, timeSlots, strategies, priority, description);
+
+        validateCoreFields(deadline, strategies, subtasks, sessions);
+
+        User existingUser = userDAO.findById(userId);
+        if (existingUser == null) {
+            throw new IllegalArgumentException("User with userId " +userId+ " does not exist.");
+        }
+
+        validateSessionOverlap(existingUser, sessions);
+
+        validateSubtaskResources(resources, subtasks);
+
+        validateSubtaskSessions(sessions, subtasks);
+
+        validateSessions(sessions, timeSlots, totalTime);
+
+        Personal personalTask = new Personal(name, existingUser, topic, deadline, description, subtasks, sessions,
+                0, priority, timeSlots, totalTime, strategies, resources);
+        personalTask.setComplexity(calculateComplexity(subtasks,resources));
+        personalDAO.save(personalTask);
+        userDAO.update(existingUser);
+        return personalMapper.toPersonalDTO(personalTask);
+    }
+
+
+
+    private void validateRequiredFields(String name, Topic topic, Integer totalTime, Timetable timeSlots,
+                                        List<StrategyInstance> strategies, int priority, String description) {
+        if (name == null || topic == null || totalTime == null || totalTime <= 0 ||
+                timeSlots == null || strategies == null || strategies.isEmpty() ||
+                priority <= 0 || priority > 5 || description == null) {
+            throw new IllegalArgumentException("Mandatory fields missing or invalid fields");
+        }
+    }
+
+    private void validateCoreFields(@Nullable LocalDateTime deadline, List<StrategyInstance> strategies, @Nullable List<Subtask> subtasks, List<Session> sessions) {
         if(subtasks != null){
             for(Subtask subtask:subtasks){
                 if (subtask.getName()==null || subtask.getLevel()==null || subtask.getDescription()==null) throw new IllegalArgumentException("you must fill this fields");
@@ -70,11 +110,6 @@ public class PersonalService {
         if(sessions==null || sessions.isEmpty()){
             throw new IllegalArgumentException("you must specify Personal's sessions");
         }
-        if (name == null || topic == null || totalTime == null || totalTime <= 0 || timeSlots == null || strategies == null
-        || strategies.isEmpty() || priority<=0 || priority>5 || description == null ) {
-            throw new IllegalArgumentException("Mandatory fields missing or invalid fields");
-        }
-
 
         if(deadline != null){
             if(strategies.stream().anyMatch(strategy ->
@@ -89,99 +124,81 @@ public class PersonalService {
                 throw new IllegalArgumentException("If this strategy is set, an other strategy can't be selected");
             }
         }
+    }
 
-
-        User existingUser = userDAO.findById(userId);
-        if (existingUser == null) {
-            throw new IllegalArgumentException("User with userId " +userId+ " does not exist.");
-        }
-
-        if(!sessions.isEmpty()) {
+    private void validateSessionOverlap(User user, List<Session> sessions) {
+        if (!sessions.isEmpty()) {
             for (Session newSession : sessions) {
-                for (Session existingSession : existingUser.getCalendar().getSessions()) {
+                for (Session existingSession : user.getCalendar().getSessions()) {
                     if (newSession.overlaps(existingSession)) {
-                        throw new IllegalArgumentException("Session " + newSession + " overlaps with an existing session. CLASS PERSONAL SERVICE (create)");
+                        throw new IllegalArgumentException("Session " + newSession + " overlaps with an existing session.");
                     }
                 }
             }
         }
+    }
 
+    private void validateSubtaskResources(List<Resource> resources, @Nullable List<Subtask> subtasks) {
+        if (subtasks == null) return;
 
-        if (subtasks != null) {
-            int totalMoney = 0;
-            Map<Resource, Boolean> resourceUsage = new HashMap<>();
-            Map<String, Resource> resourceMap = new HashMap<>();
+        int totalMoney = 0;
+        Map<Resource, Boolean> resourceUsage = new HashMap<>();
+        Map<String, Resource> resourceMap = new HashMap<>();
 
-            // Inizializza la mappa delle risorse del task principale
-            for (Resource resource : resources) {
-                resourceMap.put(resource.getName(), resource);
-                if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
-                    resourceUsage.put(resource, false);
-                }
+        for (Resource resource : resources) {
+            resourceMap.put(resource.getName(), resource);
+            if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
+                resourceUsage.put(resource, false);
             }
+        }
 
-            for (Subtask subtask : subtasks) {
-                for (Resource resource : subtask.getResources()) {
-                    if (resource.getType() == ResourceType.MONEY) {
-                        // Gestione risorsa MONEY
-                        totalMoney += resource.getMoney();
-                        Resource moneyResource = resources.stream()
-                                .filter(r -> ResourceType.MONEY.equals(r.getType()))
-                                .findFirst()
-                                .orElse(null);
-                        if (moneyResource == null || totalMoney > moneyResource.getMoney()) {
-                            throw new IllegalArgumentException("The sum of the money of the subtasks can't exceed the task one");
-                        }
-                    } else if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
-                        // Gestione risorse COMPETENCE e EQUIPMENT
-                        Resource mainTaskResource = resourceMap.get(resource.getName());
-                        if (mainTaskResource == null || !mainTaskResource.equals(resource)) {
-                            throw new IllegalArgumentException("Subtasks can't contain resource " + resource.getName() + " not present in the task");
-                        }
-                        if (Boolean.TRUE.equals(resourceUsage.get(mainTaskResource))) {
-                            throw new IllegalArgumentException("Resource " + resource.getName() + " has already been used by another subtask");
-                        }
-                        resourceUsage.put(mainTaskResource, true);
-                    } else {
-                        if (!resources.contains(resource)) {
-                            throw new IllegalArgumentException("Subtasks can't contain resource " + resource.getName());
-                        }
+        for (Subtask subtask : subtasks) {
+            for (Resource resource : subtask.getResources()) {
+                if (resource.getType() == ResourceType.MONEY) {
+                    totalMoney += resource.getMoney();
+                    Resource moneyResource = resources.stream()
+                            .filter(r -> ResourceType.MONEY.equals(r.getType()))
+                            .findFirst()
+                            .orElse(null);
+                    if (moneyResource == null || totalMoney > moneyResource.getMoney()) {
+                        throw new IllegalArgumentException("The sum of the money of the subtasks can't exceed the task one");
+                    }
+                } else if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
+                    Resource mainTaskResource = resourceMap.get(resource.getName());
+                    if (mainTaskResource == null || !mainTaskResource.equals(resource)) {
+                        throw new IllegalArgumentException("Subtasks can't contain resource " + resource.getName() + " not present in the task");
+                    }
+                    if (Boolean.TRUE.equals(resourceUsage.get(mainTaskResource))) {
+                        throw new IllegalArgumentException("Resource " + resource.getName() + " has already been used by another subtask");
+                    }
+                    resourceUsage.put(mainTaskResource, true);
+                } else {
+                    if (!resources.contains(resource)) {
+                        throw new IllegalArgumentException("Subtasks can't contain resource " + resource.getName());
                     }
                 }
             }
         }
+    }
 
-        // CONTROLLO SESSIONI SUBTASK
-        if (subtasks != null && !subtasks.isEmpty()) {
-            Set<Session> allAssignedSessions = new HashSet<>();
+    private void validateSubtaskSessions(List<Session> sessions, @Nullable List<Subtask> subtasks) {
+        if (subtasks == null || subtasks.isEmpty()) return;
 
-            for (Subtask subtask : subtasks) {
-                List<Session> subtaskSessions = subtask.getSessions();
+        Set<Session> allAssignedSessions = new HashSet<>();
 
-                for (Session session : subtaskSessions) {
-
-                    boolean sessionExistsInTask = sessions.stream().anyMatch(taskSession -> taskSession.equals(session));
-                    if (!sessionExistsInTask) {
-                        throw new IllegalArgumentException("Session " + session + " in subtask does not exist in the main task. CLASS PERSONAL SERVICE createPersonal");
-                    }
-
-                    boolean sessionAlreadyAssigned = allAssignedSessions.stream().anyMatch(assignedSession -> assignedSession.equals(session));
-                    if (sessionAlreadyAssigned) {
-                        throw new IllegalArgumentException("Session " + session + " is already assigned to another subtask.");
-                    }
-
-                    allAssignedSessions.add(session);
+        for (Subtask subtask : subtasks) {
+            for (Session session : subtask.getSessions()) {
+                boolean sessionExistsInTask = sessions.stream().anyMatch(taskSession -> taskSession.equals(session));
+                if (!sessionExistsInTask) {
+                    throw new IllegalArgumentException("Session " + session + " in subtask does not exist in the main task.");
                 }
+                boolean sessionAlreadyAssigned = allAssignedSessions.contains(session);
+                if (sessionAlreadyAssigned) {
+                    throw new IllegalArgumentException("Session " + session + " is already assigned to another subtask.");
+                }
+                allAssignedSessions.add(session);
             }
         }
-
-        validateSessions(sessions, timeSlots, totalTime);
-
-        Personal personalTask = new Personal(name, existingUser, topic, deadline, description, subtasks, sessions, 0, priority, timeSlots, totalTime, strategies, resources);
-        personalTask.setComplexity(calculateComplexity(subtasks,resources));
-        personalDAO.save(personalTask);
-        userDAO.update(existingUser);
-        return personalMapper.toPersonalDTO(personalTask);
     }
 
 
@@ -224,10 +241,12 @@ public class PersonalService {
     private static boolean isWithinAllowedTimeSlot(Timetable timeSlots, Session session) {
         LocalTime sessionStartTime = session.getStartDate().toLocalTime();
         LocalTime sessionEndTime = session.getEndDate().toLocalTime();
-        return doesSessionOverlapWithTimeSlot(sessionStartTime, sessionEndTime, timeSlots);
+        return doesSessionOverlapsWithTimeSlot(sessionStartTime, sessionEndTime, timeSlots);
     }
 
-    private static boolean doesSessionOverlapWithTimeSlot(LocalTime sessionStartTime, LocalTime sessionEndTime, Timetable timeSlot) {
+    private static boolean doesSessionOverlapsWithTimeSlot(LocalTime sessionStartTime,
+                                                           LocalTime sessionEndTime,
+                                                           Timetable timeSlot) {
         LocalTime slotStart;
         LocalTime slotEnd;
 
@@ -242,39 +261,20 @@ public class PersonalService {
             }
             case EVENING -> {
                 slotStart = LocalTime.of(18, 0);
-                slotEnd = LocalTime.of(23, 59); // Corretto per includere sessioni fino alla fine del giorno
+                slotEnd = LocalTime.of(23, 59);
             }
             case NIGHT -> {
                 slotStart = LocalTime.of(0, 0);
                 slotEnd = LocalTime.of(6, 0);
             }
-            case MORNING_AFTERNOON -> {
-                slotStart = LocalTime.of(6, 0);
-                slotEnd = LocalTime.of(18, 0);
-            }
-            case MORNING_EVENING -> {
-                slotStart = LocalTime.of(6, 0);
-                slotEnd = LocalTime.of(0, 0);
-            }
-            case AFTERNOON_EVENING -> {
-                slotStart = LocalTime.of(12, 0);
-                slotEnd = LocalTime.of(23, 59);
-            }
-            case NIGHT_AFTERNOON -> {
-                slotStart = LocalTime.of(0, 0);
-                slotEnd = LocalTime.of(18, 0);
-            }
-            case NIGHT_MORNING -> {
-                slotStart = LocalTime.of(0, 0);
-                slotEnd = LocalTime.of(12, 0);
-            }
+            // per motivi di spazio nell'immagine sono omessi MORNING_AFTERNOON,
+            // MORNING_EVENING, AFTERNOON_EVENING, NIGHT_MORNING
             case ALL_DAY -> {
                 slotStart = LocalTime.of(0, 0);
                 slotEnd = LocalTime.of(23, 59);
             }
             default -> throw new IllegalArgumentException("Unknown time slot: " + timeSlot);
         }
-
         return sessionStartTime.isBefore(slotEnd) && sessionEndTime.isAfter(slotStart);
     }
 
@@ -325,93 +325,25 @@ public class PersonalService {
 
     public PersonalDTO modifyPersonal(Long taskId, String name, Topic topic, @Nullable LocalDateTime deadline, Integer totalTime,
                                       Timetable timeSlots, List<StrategyInstance> strategies, int priority, String description,
-                                      List<Resource> resources,@Nullable List<Subtask> subtasks, List<Session> sessions, @Nullable Integer requiredUsers, @Nullable String userGuidance) {
+                                      List<Resource> resources,@Nullable List<Subtask> subtasks, List<Session> sessions) {
 
-        if(subtasks != null){
-            for(Subtask subtask:subtasks){
-                if (subtask.getName()==null || subtask.getLevel()==null || subtask.getDescription()==null) throw new IllegalArgumentException("you must fill this fields");
-            }
-        }
-        if(sessions != null){
-            for(Session session:sessions){
-                if(session.getStartDate()==null || session.getEndDate()==null) throw new IllegalArgumentException("you must fill this fields");
-            }
-        }
-        if(sessions==null || sessions.isEmpty()){
-            throw new IllegalArgumentException("you must specify Personal's sessions");
-        }
-        if (name == null || topic == null || totalTime == null || totalTime <= 0 || timeSlots == null || strategies == null) {
-            throw new IllegalArgumentException("Mandatory fields missing or invalid fields");
-        }
-        if (requiredUsers != null || userGuidance != null) {
-            throw new IllegalArgumentException("Users number can be set only for group tasks and teh userGuidance for shared tasks");
-        }
-
-        if(deadline != null){
-            if(strategies.stream().anyMatch(strategy ->
-                    strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS)){
-                throw new IllegalArgumentException("you cannot choose this strategy if a deadline is set");
-            }
-        }
-
-        if(strategies.stream().anyMatch(strategy ->
-                strategy.getStrategy() == DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS)){
-            if(strategies.size()>1){
-                throw new IllegalArgumentException("If this strategy is set, an other strategy can't be selected");
-            }
-        }
-
-
-
+       validateRequiredFields(name,topic,totalTime,timeSlots,strategies,priority,description);
+        validateCoreFields(deadline, strategies, subtasks, sessions);
         Personal personalTask = personalDAO.findById(taskId);
         if (personalTask == null) {
             throw new IllegalArgumentException("Task with ID " + taskId + " not found.");
         }
-
         User user = personalTask.getUser();
         if (user == null) {
             throw new IllegalStateException("no user associated to this task");
         }
         personalTask.modifyTask();
+        validateSessionOverlap(user, sessions);
+        syncSessionsWithCalendar(personalTask, sessions);
 
-        if(!sessions.isEmpty()) {
-            for (Session newSession : sessions) {
-                // Verifica se la nuova sessione si sovrappone a quelle già nel calendario
-                for (Session existingSession : user.getCalendar().getSessions()) {
-                    if (newSession.overlaps(existingSession)) {
-                        throw new IllegalArgumentException("Session " + newSession + " overlaps with an existing session. CLASS PERSONAL SERVICE (modify)");
-                    }
-                }
-            }
-        }
-
-        // Sincronizza le sessioni tra il task e il calendario
-        List<Session> existingSessions = new ArrayList<>(personalTask.getSessions());
-
-        // Rimuovi le sessioni non più presenti
-        for (Session existing : existingSessions) {
-            // Verifica se la sessione non è più presente nel nuovo elenco di sessioni
-            boolean sessionExistsInNewList = sessions.stream().anyMatch(session -> session.equals(existing));
-            if (!sessionExistsInNewList) {
-                personalTask.getSessions().remove(existing);
-            }
-        }
-
-        // Aggiungi nuove sessioni, se non già presenti
-        for (Session session : sessions) {
-            // Verifica se la sessione non è già presente nel task
-            boolean sessionExistsInTask = personalTask.getSessions().stream().noneMatch(taskSession -> taskSession.equals(session));
-            if (sessionExistsInTask) {
-                personalTask.getSessions().add(session);
-            }
-        }
-
-        // Validazione delle sessioni aggiornate
         validateSessions(personalTask.getSessions(), timeSlots, totalTime);
-
         userDAO.update(user);
         calendarDAO.update(user.getCalendar());
-
         personalTask.setName(name);
         personalTask.setTopic(topic);
         if (deadline != null) personalTask.setDeadline(deadline);
@@ -425,80 +357,8 @@ public class PersonalService {
             personalTask.getResources().clear();
             personalTask.getResources().addAll(resources);
         }
-
-        if (subtasks != null && !subtasks.isEmpty()) {
-            Set<Session> allAssignedSessions = new HashSet<>();
-
-            for (Subtask subtask : subtasks) {
-                List<Session> assignedSessions = subtask.getSessions();
-
-
-                List<Session> reconciledSessions = new ArrayList<>();
-                for (Session session : assignedSessions) {
-
-                    boolean sessionExistsInTask = personalTask.getSessions().stream().anyMatch(taskSession -> taskSession.equals(session));
-                    if (sessionExistsInTask) {
-
-                        boolean sessionAlreadyAssigned = allAssignedSessions.stream().anyMatch(assignedSession -> assignedSession.equals(session));
-                        if (sessionAlreadyAssigned) {
-                            throw new IllegalArgumentException("Session " + session + " is already assigned to another subtask");
-                        }
-                        reconciledSessions.add(session);
-                        allAssignedSessions.add(session);
-                    }
-                }
-                subtask.setSessions(reconciledSessions);
-            }
-
-            if (!allAssignedSessions.containsAll(personalTask.getSessions())) {
-                throw new IllegalArgumentException("Not all sessions from the main task have been assigned to subtasks");
-            }
-
-            personalTask.getSubtasks().clear();
-            personalTask.getSubtasks().addAll(subtasks);
-        }
-
-        if (subtasks!=null && !compareSubtasks(subtasks,personalTask.getSubtasks())){
-            personalTask.getSubtasks().clear();
-            personalTask.getSubtasks().addAll(subtasks);
-            int totalMoney = 0;
-            Map<Resource, Boolean> resourceUsage = new HashMap<>();
-            Map<String, Resource> resourceMap = new HashMap<>();
-            assert resources != null;
-            for (Resource resource : resources) {
-                resourceMap.put(resource.getName(), resource);
-                if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
-                    resourceUsage.put(resource, false); // Risorsa non ancora usata
-                }
-            }
-            for (Subtask subtask : subtasks) {
-                for (Resource resource : subtask.getResources()) {
-                    if (resource.getType() == ResourceType.MONEY) {
-                        totalMoney += resource.getMoney();
-                        Resource moneyResource = resources.stream()
-                                .filter(r -> ResourceType.MONEY.equals(r.getType()))
-                                .findFirst()
-                                .orElse(null);
-                        if (moneyResource == null || totalMoney > moneyResource.getMoney()) {
-                            throw new IllegalArgumentException("The sum of the money of the subtasks can't exceed the task one");
-                        }
-                    } else if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
-                        Resource mainTaskResource = resourceMap.get(resource.getName());
-                        if (mainTaskResource == null || !mainTaskResource.equals(resource)) {
-                            throw new IllegalArgumentException("Subtasks can't contain resource " + resource.getName() + " not present in the task");
-                        }
-                        if (Boolean.TRUE.equals(resourceUsage.get(mainTaskResource))) {
-                            throw new IllegalArgumentException("Resource " + resource.getName() + " has already been used by another subtask");
-                        }
-                        resourceUsage.put(mainTaskResource, true);
-                    } else {
-                        if (!resources.contains(resource)) {
-                            throw new IllegalArgumentException("Subtasks can't contain resource " + resource.getName());
-                        }
-                    }
-                }
-            }
-        }
+        validateAndAssignSubtasks(personalTask, subtasks);
+        validateAndUpdateSubtasksResources(personalTask,subtasks,resources);
         validateSessions(personalTask.getSessions(),timeSlots,totalTime);
         int complexity = calculateComplexity(subtasks, resources);
         personalTask.setComplexity(complexity);
@@ -506,6 +366,102 @@ public class PersonalService {
         personalDAO.update(personalTask);
         return personalMapper.toPersonalDTO(personalTask);
     }
+
+    private void validateAndUpdateSubtasksResources(Personal personalTask, List<Subtask> subtasks, List<Resource> resources) {
+        if (subtasks == null || compareSubtasks(subtasks, personalTask.getSubtasks())) {
+            return;
+        }
+        personalTask.getSubtasks().clear();
+        personalTask.getSubtasks().addAll(subtasks);
+
+        int totalMoney = 0;
+        Map<Resource, Boolean> resourceUsage = new HashMap<>();
+        Map<String, Resource> resourceMap = new HashMap<>();
+
+        assert resources != null;
+        for (Resource resource : resources) {
+            resourceMap.put(resource.getName(), resource);
+            if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
+                resourceUsage.put(resource, false); // Risorsa non ancora usata
+            }
+        }
+
+        for (Subtask subtask : subtasks) {
+            for (Resource resource : subtask.getResources()) {
+                if (resource.getType() == ResourceType.MONEY) {
+                    totalMoney += resource.getMoney();
+                    Resource moneyResource = resources.stream()
+                            .filter(r -> ResourceType.MONEY.equals(r.getType()))
+                            .findFirst()
+                            .orElse(null);
+                    if (moneyResource == null || totalMoney > moneyResource.getMoney()) {
+                        throw new IllegalArgumentException("The sum of the money of the subtasks can't exceed the task one");
+                    }
+                } else if (resource.getType() == ResourceType.COMPETENCE || resource.getType() == ResourceType.EQUIPMENT) {
+                    Resource mainTaskResource = resourceMap.get(resource.getName());
+                    if (mainTaskResource == null || !mainTaskResource.equals(resource)) {
+                        throw new IllegalArgumentException("Subtasks can't contain resource " + resource.getName() + " not present in the task");
+                    }
+                    if (Boolean.TRUE.equals(resourceUsage.get(mainTaskResource))) {
+                        throw new IllegalArgumentException("Resource " + resource.getName() + " has already been used by another subtask");
+                    }
+                    resourceUsage.put(mainTaskResource, true);
+                } else {
+                    if (!resources.contains(resource)) {
+                        throw new IllegalArgumentException("Subtasks can't contain resource " + resource.getName());
+                    }
+                }
+            }
+        }
+    }
+
+
+    private void syncSessionsWithCalendar(Personal personalTask, List<Session> newSessions) {
+        List<Session> existingSessions = new ArrayList<>(personalTask.getSessions());
+
+        existingSessions.forEach(existing -> {
+            if (newSessions.stream().noneMatch(session -> session.equals(existing))) {
+                personalTask.getSessions().remove(existing);
+            }
+        });
+
+        newSessions.forEach(session -> {
+            if (personalTask.getSessions().stream().noneMatch(existing -> existing.equals(session))) {
+                personalTask.getSessions().add(session);
+            }
+        });
+    }
+
+    private void validateAndAssignSubtasks(Personal personalTask, @Nullable List<Subtask> subtasks) {
+        if (subtasks == null || subtasks.isEmpty()) return;
+
+        Set<Session> allAssignedSessions = new HashSet<>();
+        for (Subtask subtask : subtasks) {
+            List<Session> assignedSessions = subtask.getSessions();
+            List<Session> reconciledSessions = new ArrayList<>();
+
+            for (Session session : assignedSessions) {
+                if (personalTask.getSessions().contains(session) && !allAssignedSessions.contains(session)) {
+                    reconciledSessions.add(session);
+                    allAssignedSessions.add(session);
+                } else {
+                    throw new IllegalArgumentException("Session " + session + " is already assigned to another subtask");
+                }
+            }
+            subtask.setSessions(reconciledSessions);
+        }
+
+        if (!allAssignedSessions.containsAll(personalTask.getSessions())) {
+            throw new IllegalArgumentException("Not all sessions from the main task have been assigned to subtasks");
+        }
+
+        personalTask.getSubtasks().clear();
+        personalTask.getSubtasks().addAll(subtasks);
+    }
+
+
+
+
 
 
     public boolean compareSubtasks(List<Subtask> subtasks, List<Subtask> personalTaskSubtasks) {

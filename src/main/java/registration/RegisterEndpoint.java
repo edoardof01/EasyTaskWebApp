@@ -16,9 +16,13 @@ public class RegisterEndpoint {
     public Response register(RegistrationDTO registrationDTO) {
         try {
             registerService.register(registrationDTO);
-            return Response.status(Response.Status.CREATED).entity("Registration successful.").build(); //add: Check your email for confirmation
+            return Response.status(Response.Status.CREATED).
+                    entity("Registration successful.").
+                    build();
         } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST).
+                    entity(e.getMessage()).
+                    build();
         }
     }
 

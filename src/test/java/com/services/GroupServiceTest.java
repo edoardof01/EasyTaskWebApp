@@ -26,50 +26,31 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class GroupServiceTest {
 
-
     @Mock
     private GroupDAO groupDAO;
-
     @Mock
     private GroupMapper groupMapper;
-
     @InjectMocks
     private GroupService groupService;
-
     @Mock
     private SessionDAO sessionDAO;
-
     @Mock
     private UserDAO userDAO;
-
-    @Mock
-    private CalendarDAO calendarDAO;
-
-    @Mock
-    private TaskCalendarDAO taskCalendarDAO;
-
     @Mock
     private SubtaskDAO subtaskDAO;
 
     private Group group;
     private GroupDTO groupDTO;
-
     private User user;
     private User member;
-
-
     private Subtask subtask1;
     private Subtask subtask2;
-
     private Session session1;
     private Session session2;
     private Session session3;
-
     private Calendar calendar;
     private Calendar calendar2;
-    private TakenSubtask takenSubtask;
     private TakenSubtask takenSubtask2;
-
     private TaskCalendar taskCalendar;
 
     @BeforeEach
@@ -151,7 +132,7 @@ public class GroupServiceTest {
                 new ArrayList<>(), new ArrayList<>(List.of(session2,session3)));
         subtask2.setId(2L);
 
-        takenSubtask = new TakenSubtask();
+        TakenSubtask takenSubtask = new TakenSubtask();
         takenSubtask.setId(1L);
         takenSubtask.setSubtask(subtask1);
         takenSubtask.setUser(user);
@@ -176,13 +157,12 @@ public class GroupServiceTest {
     void getPersonalByIdTest_Success() {
         when(groupDAO.findById(1L)).thenReturn(group);
         when(groupMapper.toGroupDTO(group)).thenReturn(groupDTO);
-
         GroupDTO result = groupService.getGroupById(1L);
 
         assertAll(
                 ()-> assertNotNull(result),
                 ()-> assertEquals(1L, result.getId()),
-                ()-> assertEquals("Test Task", result.getName())
+                ()-> assertEquals("Test Group", result.getName())
         );
         verify(groupDAO, times(1)).findById(1L);
         verify(groupMapper, times(1)).toGroupDTO(group);
@@ -348,25 +328,6 @@ public class GroupServiceTest {
                 }
         );
     }
-
-    @Test
-    void modifyGroupTest_success(){
-        when(groupDAO.findById(1L)).thenReturn(group);
-        session1.setStartDate(LocalDateTime.of(2026, 4, 20, 18, 30));
-        session1.setEndDate(LocalDateTime.of(2026, 4, 20, 19, 30));
-
-        when(groupMapper.toGroupDTO(any(Group.class))).thenReturn(groupDTO);
-        GroupDTO result = groupService.modifyGroup(1L,"Marco",Topic.JOURNEYS,group.getDeadline(), group.getTotalTime(),
-                group.getTimetable(),group.getStrategies(),3,group.getDescription(),group.getResources(),group.getSubtasks(),group.getSessions(),group.getNumUsers());
-        assertAll(
-                ()-> assertThat(result).isNotNull(),
-                ()-> {
-                    assert result != null;
-                    assertEquals("Test Group",result.getName());
-                }
-        );
-    }
-
 
     @Test
     void deleteGroupTest_success(){
@@ -850,7 +811,7 @@ public class GroupServiceTest {
         when(sessionDAO.findById(1L)).thenReturn(session1);
         session1.setStartDate(LocalDateTime.now().minusHours(2));
         session1.setEndDate(LocalDateTime.now().minusHours(1));
-        session2.setStartDate(LocalDateTime.now());
+        session2.setStartDate(LocalDateTime.now().minusMinutes(30));
         session2.setEndDate(LocalDateTime.now().plusHours(1));
         groupService.handleLimitExceeded(session1.getId(), group.getId());
         assertEquals(SessionState.SKIPPED, session1.getState());

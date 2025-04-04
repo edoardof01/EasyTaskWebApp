@@ -1,7 +1,6 @@
 package Endpoints;
 
 import domain.*;
-import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -10,7 +9,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import orm.*;
 import service.PersonalService;
-import service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -34,11 +32,6 @@ public class PersonalEndpoint {
     @Inject
     PersonalService personalService;
 
-    @Inject
-    UserMapper userMapper;
-
-    @Inject
-    UserService userService;
 
 
     @GET
@@ -200,9 +193,7 @@ public class PersonalEndpoint {
                     personalDTO.getDescription(),
                     personalDTO.getResources().stream().map(resourceMapper::toResourceEntity).collect(Collectors.toList()),
                     personalDTO.getSubtasks().stream().map(subtaskMapper::toSubtaskEntity).collect(Collectors.toList()),
-                    personalDTO.getSessions().stream().map(sessionMapper::toSessionEntity).collect(Collectors.toList()),
-                    null,
-                    null
+                    personalDTO.getSessions().stream().map(sessionMapper::toSessionEntity).collect(Collectors.toList())
             );
             return Response.ok(updatedPersonal).build();
         } catch (IllegalArgumentException e) {
@@ -220,11 +211,9 @@ public class PersonalEndpoint {
             return Response.status(Response.Status.NO_CONTENT).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(e.getMessage())
-                    .build();
+                    .entity(e.getMessage()).build();
         }
     }
-
     @PUT
     @Path("/moveToCalendar")
     @Transactional
@@ -234,11 +223,9 @@ public class PersonalEndpoint {
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(e.getMessage())
-                    .build();
+                    .entity(e.getMessage()).build();
         }
     }
-
     @PUT
     @Path("/completeSession/{personalId}/")
     @Transactional
@@ -248,8 +235,7 @@ public class PersonalEndpoint {
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(e.getMessage())
-                    .build();
+                    .entity(e.getMessage()).build();
         }
     }
 

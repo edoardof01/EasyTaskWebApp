@@ -35,7 +35,7 @@ class PersonalEntityTest {
         calendar.setId(1L);
         user.setCalendar(calendar);
         calendar.setUser(user);
-        /*calendar.setSessions(new ArrayList<>(List.of(session1, session2)));*/
+
         personal.setUser(user);
 
         session1.setId(1L);
@@ -368,7 +368,7 @@ class PersonalEntityTest {
     void testAutoSkipIfNotCompleted_nowAfterNextSessionStarted() {
         session1.setStartDate(LocalDateTime.now().minusHours(2));
         session1.setEndDate(LocalDateTime.now().minusHours(1));
-        session2.setStartDate(LocalDateTime.now());
+        session2.setStartDate(LocalDateTime.now().minusMinutes(30));
         session2.setEndDate(LocalDateTime.now().plusHours(1));
         personal.autoSkipIfNotCompleted(session1);
         assertEquals(SessionState.SKIPPED, session1.getState());
@@ -399,7 +399,9 @@ class PersonalEntityTest {
 
     @Test
     void testRemoveAndFreezeTask_NoSessionsInCalendar() {
-        calendar.setSessions(new ArrayList<>());
+        personal.setIsInProgress(true);
+        personal.setState(TaskState.INPROGRESS);
+        calendar.setSessions(new ArrayList<>(List.of(session1, session2)));
         personal.removeAndFreezeTask(user);
         assertAll(
                 ()-> assertEquals(TaskState.FREEZED, personal.getState()),

@@ -15,7 +15,6 @@ public class JwtFilter implements ContainerRequestFilter {
 
     @Inject
     private JwtUtil jwtUtil;
-
     @Inject
     private UserService userService;
 
@@ -23,9 +22,7 @@ public class JwtFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext) {
         String path = requestContext.getUriInfo().getPath();
 
-        if (isPublicEndpoint(path)) {
-            return;
-        }
+        if (isPublicEndpoint(path)) return;
         String token = requestContext.getHeaderString("Authorization");
 
         if (token == null || !jwtUtil.validateToken(token)) {
@@ -33,20 +30,14 @@ public class JwtFilter implements ContainerRequestFilter {
                     .entity("Invalid or missing token").build());
             return;
         }
-
         Claims claims = jwtUtil.getClaims(token);
-
         // Verifica l'Issuer del token
         if (!claims.getIssuer().equals("EasyTask")) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("Invalid token issuer").build());
             return;
         }
-
-        // Ottieni il nome utente dal token
         String username = claims.getSubject();
-
-        // Controlla se l'utente ha completato il profilo
         if (!isProfileComplete(username)) {
             // Se il profilo non è completo, permetti solo l'accesso a /user/create
             if (!isProfileCreationEndpoint(path)) {
@@ -64,24 +55,20 @@ public class JwtFilter implements ContainerRequestFilter {
                 return;
             }
         }
-
         // Imposta il SecurityContext
         requestContext.setSecurityContext(new JwtSecurityContext(username));
     }
 
     private boolean isPublicEndpoint(String path) {
-        // Elenco di endpoint pubblici
-        return path.startsWith("/auth/login") || path.startsWith("/register"); /// quì andrebbe aggiunto /register/confirm
+        return path.startsWith("/auth/login") || path.startsWith("/register");
     }
 
     private boolean isProfileCreationEndpoint(String path) {
-        // Endpoint per creare il profilo
         return path.startsWith("/users/create");
     }
 
     private boolean isProfileComplete(String username) {
-        // Se l'utente esiste in registered_users ma non in users, il profilo non è ancora completo
-        return userService.hasUserProfile(username) /*|| registerDAO.findByUsername(username) != null*/;
+        return userService.hasUserProfile(username);
     }
 
 }

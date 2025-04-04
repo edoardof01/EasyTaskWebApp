@@ -14,9 +14,8 @@ public class SessionCheckerTime {
     PersonalService personalService;
 
 
-    @Schedule(second = "0", minute = "*", hour = "*", persistent = false)
+    @Schedule(minute = "*", hour = "*", persistent = false)
     public void checkSessions() {
-        // 1) Chiedi a personalService la lista di entità Personal vere
         List<Personal> personalList = personalService.getAllPersonalEntities();
 
         for (Personal personalEntity : personalList) {

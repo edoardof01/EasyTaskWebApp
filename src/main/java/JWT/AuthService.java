@@ -27,7 +27,6 @@ public class AuthService {
     public TokenResponse authenticate(CredentialsDTO credentials) {
         logger.info("Authenticating user: {}", credentials.getUsername());
 
-        // Recupera l'utente registrato dal database
         RegisteredUser registeredUser = registerDAO.findByUsername(credentials.getUsername());
 
         // Se l'utente esiste e la password è corretta, genera un token JWT
@@ -36,7 +35,6 @@ public class AuthService {
             return new TokenResponse(token);
         }
 
-        // Se le credenziali sono errate, lancia un'eccezione
         throw new IllegalArgumentException("Invalid username or password");
     }
 }
