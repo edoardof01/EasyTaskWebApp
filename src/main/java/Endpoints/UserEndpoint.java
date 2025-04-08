@@ -132,5 +132,20 @@ public class UserEndpoint {
         }
     }
 
+    @GET
+    @Path("/{userId}/shared/{sharedId}/comments")
+    public Response getCommentsOfShared(@PathParam("userId") long userId,
+                                        @PathParam("sharedId") long sharedId) {
+        try {
+            List<CommentDTO> commentDTOs = userService.getCommentsOfShared(userId, sharedId);
+            return Response.ok(commentDTOs).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+
 }
 

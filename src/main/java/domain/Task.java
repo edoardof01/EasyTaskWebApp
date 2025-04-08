@@ -234,7 +234,6 @@ public abstract class Task {
     public int calculateComplexity() {
         int subtaskScore;
         if (subtasks == null || subtasks.isEmpty()) {
-            // Se non ci sono subtasks, ad esempio usa 0 o un altro valore (o considera soltanto le risorse)
             subtaskScore = 0;
         } else if (subtasks.size() <= 3) {
             subtaskScore = 1;
@@ -281,7 +280,6 @@ public abstract class Task {
         this.strategies = strategies;
     }
     private void validateStrategySelection(List<StrategyInstance> strategies) {
-        // Controlla che tutte le strategie che richiedono TOT abbiano un valore specificato
         boolean requiresTotStrategy = strategies.stream()
                 .anyMatch(strategy -> strategy.getStrategy().requiresTot());
         boolean allHaveTot = strategies.stream()

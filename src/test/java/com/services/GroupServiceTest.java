@@ -77,6 +77,7 @@ public class GroupServiceTest {
 
         calendar.setUser(user);
         calendar2.setUser(member);
+        // CONTINUA ...
 
 
         group = new Group();

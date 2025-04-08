@@ -25,7 +25,7 @@ public class SessionCheckerTime {
             for (int i = 1; i < sessionsOrdered.size(); i++) {
                 Session currentSession = sessionsOrdered.get(i);
                 Session previousSession = sessionsOrdered.get(i - 1);
-                if (previousSession.getState() != SessionState.SKIPPED && System.currentTimeMillis() > currentSession.getStartDate()
+                if (previousSession.getState() == SessionState.PROGRAMMED && System.currentTimeMillis() > currentSession.getStartDate()
                         .atZone(ZoneId.systemDefault())
                         .toInstant()
                         .toEpochMilli()) {

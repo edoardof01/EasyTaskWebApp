@@ -140,6 +140,7 @@ public class User {
         }
         Comment comment = new Comment(content, this, shared);
         shared.getComments().add(comment);
+        this.getCommentedFolder().getComment().add(comment);
         this.getCommentedFolder().getShared().add(shared);
         return comment;
     }

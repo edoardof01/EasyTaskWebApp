@@ -1,7 +1,5 @@
 package service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import domain.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -12,8 +10,6 @@ import java.util.List;
 
 @ApplicationScoped
 public class UserService {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Inject
     private UserDAO userDAO;
@@ -35,9 +31,6 @@ public class UserService {
 
     @Inject
     private CalendarDAO calendarDAO;
-
-    @Inject
-    private ProfileDAO profileDAO;
 
 
     public List<UserDTO> getAllUsers() {
@@ -157,9 +150,29 @@ public class UserService {
         System.out.println("Content: " + comment.getContent());
         System.out.println("Shared Task: " + shared.getName());
 
-
         return commentMapper.toCommentDTO(comment);
     }
+
+    @Transactional
+    public List<CommentDTO> getCommentsOfShared(long userId, long sharedId) {
+        User user = userDAO.findById(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("User with ID " + userId + " not found.");
+        }
+        Shared shared = sharedDAO.findById(sharedId);
+        if (shared == null) {
+            throw new IllegalArgumentException("Shared task with ID " + sharedId + " not found.");
+        }
+        CommentedFolder commentedFolder = user.getCommentedFolder();
+        if (commentedFolder == null) {
+            throw new IllegalArgumentException("No commented folder found for user with ID " + userId);
+        }
+        List<Comment> comments = commentedFolder.getCommentsForShared(shared);
+        return comments.stream()
+                .map(commentMapper::toCommentDTO)
+                .toList();
+    }
+
 
 }
 

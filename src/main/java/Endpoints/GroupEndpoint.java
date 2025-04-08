@@ -56,7 +56,6 @@ public class GroupEndpoint {
 
 
     @POST
-    @Transactional
     public Response createGroup(GroupSubtaskWrapperDTO wrapper) {
         try {
             // Estrai i DTO dal wrapper
@@ -107,7 +106,6 @@ public class GroupEndpoint {
 
     @DELETE
     @Path("/{id}")
-    @Transactional
     public Response deleteGroup(@PathParam("id") long id) {
         try {
             groupService.deleteGroup(id);
@@ -121,7 +119,6 @@ public class GroupEndpoint {
 
     @PUT
     @Path("/{id}")
-    @Transactional
     public Response updateGroup(@PathParam("id") long id, GroupDTO groupDTO) {
         try {
             GroupDTO updatedGroup = groupService.modifyGroup(
@@ -149,7 +146,6 @@ public class GroupEndpoint {
 
     @PUT
     @Path("/moveToCalendar/{groupId}/{userId}")
-    @Transactional
     public Response moveToCalendar(@PathParam("groupId") long groupId, @PathParam("userId") long userId) {
         try {
             groupService.moveToCalendar(groupId,userId);
@@ -178,7 +174,6 @@ public class GroupEndpoint {
 
     @PUT
     @Path("/completeSubtaskSession/{userId}/{groupId}/{subtaskId}")
-    @Transactional
     public Response completeSubtaskSession(@PathParam("userId")long userId,@PathParam("groupId") long groupId,@PathParam("subtaskId") long subtaskId, @QueryParam("sessionId") long sessionId ) {
         try{
             groupService.completeSubtaskSession(userId,groupId,subtaskId,sessionId);
@@ -194,7 +189,6 @@ public class GroupEndpoint {
 
     @PUT
     @Path("/completeBySessions/{groupId}")
-    @Transactional
     public Response completeGroupBySessions(@PathParam("groupId") long groupId) {
         try {
             groupService.completeGroupBySessions(groupId);
@@ -208,7 +202,6 @@ public class GroupEndpoint {
 
     @PUT
     @Path("/forceCompletion/{groupId}")
-    @Transactional
     public Response forceCompletion(@PathParam("groupId") long groupId, @QueryParam("userId") long userId) {
         try {
             groupService.forceCompletion(groupId,userId);
@@ -222,7 +215,6 @@ public class GroupEndpoint {
 
     @PUT
     @Path("/handleLimitExceeded/{groupId}")
-    @Transactional
     public Response handleLimitExceeded(@PathParam("groupId") long groupId,@QueryParam("sessionId") long sessionId) {
         try {
             groupService.handleLimitExceeded(sessionId, groupId);
@@ -254,7 +246,6 @@ public class GroupEndpoint {
 
     @PUT
     @Path("/{groupId}/leave/{userId}")
-    @Transactional
     public Response leaveGroup(@PathParam("groupId") long groupId, @PathParam("userId") long userId) {
         try {
             groupService.leaveGroup(groupId, userId);return Response.ok().build();
@@ -266,7 +257,6 @@ public class GroupEndpoint {
 
     @DELETE
     @Path("/{groupId}/remove/{adminId}/{userId}")
-    @Transactional
     public Response removeMemberFromGroup(
             @PathParam("groupId") long groupId,
             @PathParam("adminId") long adminId,

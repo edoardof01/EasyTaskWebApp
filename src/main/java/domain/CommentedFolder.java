@@ -3,7 +3,9 @@ package domain;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class CommentedFolder {
@@ -44,6 +46,15 @@ public class CommentedFolder {
     }
     public List<Shared> getShared() {
         return shared;
+    }
+
+    public List<Comment> getCommentsForShared(Shared shared) {
+        if (shared == null || comments == null) {
+            return Collections.emptyList();
+        }
+        return comments.stream()
+                .filter(c -> shared.equals(c.getCommentedTask()))
+                .collect(Collectors.toList());
     }
 
 }

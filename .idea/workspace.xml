@@ -11,33 +11,19 @@
   <component name="ChangeListManager">
     <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="A lot of changes and tests">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/4e6091e3-4957-473c-b000-027181195eb0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/4e6091e3-4957-473c-b000-027181195eb0.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4e6091e3-4957-473c-b000-027181195eb0/storage_v2/_src_/database/appeasytask.qJHp-g.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4e6091e3-4957-473c-b000-027181195eb0/storage_v2/_src_/database/appeasytask.qJHp-g/schema/public.abK9xQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/GroupEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/GroupEndpoint.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/PersonalEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/PersonalEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/JwtFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/JWT/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JWT/JwtUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/RegisteredUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/RegisteredUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/SharedEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/SharedEndpoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/UserEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/UserEndpoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/CommentedFolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/CommentedFolder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/registration/EmailService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/registration/RegisterEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/registration/RegisterEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/registration/RegisterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/registration/RegisterService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/registration/RegistrationDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/registration/RegistrationDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/GroupService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/GroupService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/PersonalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/PersonalService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/SharedService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/SharedService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/timerScheduler/SessionCheckerTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/timerScheduler/SessionCheckerTime.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/timerScheduler/TaskCheckerTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/timerScheduler/TaskCheckerTime.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/DAOs/calendarDAOTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/DAOs/calendarDAOTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/domain/GroupEntityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/domain/GroupEntityTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/domain/SharedEntityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/domain/SharedEntityTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/domain/personalEntityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/domain/personalEntityTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/services/GroupServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/services/GroupServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/services/personalServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/services/personalServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -837,6 +823,14 @@
       <workItem from="1743077106451" duration="2355000" />
       <workItem from="1743092114830" duration="878000" />
       <workItem from="1743693431573" duration="698000" />
+      <workItem from="1743754668415" duration="11798000" />
+      <workItem from="1743792190535" duration="1001000" />
+      <workItem from="1743842580250" duration="3315000" />
+      <workItem from="1743852692301" duration="1532000" />
+      <workItem from="1743873428960" duration="31000" />
+      <workItem from="1743946473011" duration="627000" />
+      <workItem from="1744014166823" duration="1239000" />
+      <workItem from="1744118507747" duration="927000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -1174,7 +1168,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741944340278</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="A lot of changes and tests">
+      <option name="closed" value="true" />
+      <created>1743754727940</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1743754727940</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

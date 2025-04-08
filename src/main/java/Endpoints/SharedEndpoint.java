@@ -69,7 +69,6 @@ public class SharedEndpoint {
 
 
     @POST
-    @Transactional
     public Response createShared(SharedDTO sharedDTO) {
         try {
             // Estrai i campi da sharedDTO
@@ -111,7 +110,6 @@ public class SharedEndpoint {
 
     @PUT
     @Path("/addToFeed/{sharedId}")
-    @Transactional
     public Response addToFeed(@PathParam("sharedId") long sharedId, String guidance ) {
         try {
             SharedDTO sharedDTO = sharedService.getSharedById(sharedId);
@@ -126,7 +124,6 @@ public class SharedEndpoint {
 
     @PUT
     @Path("/{sharedId}")
-    @Transactional
     public Response updateShared(@PathParam("sharedId") long sharedId, SharedDTO sharedDTO) {
         try {
             SharedDTO updatedShared = sharedService.modifyShared(
@@ -154,7 +151,6 @@ public class SharedEndpoint {
 
     @DELETE
     @Path("/{id}")
-    @Transactional
     public Response deleteShared(@PathParam("id") long id) {
         try {
             sharedService.deleteShared(id);
@@ -172,7 +168,6 @@ public class SharedEndpoint {
      */
     @PUT
     @Path("/moveToCalendar")
-    @Transactional
     public Response moveToCalendar(@QueryParam("sharedId") long sharedId) {
         try {
             sharedService.moveToCalendar(sharedId);
@@ -189,7 +184,6 @@ public class SharedEndpoint {
      */
     @DELETE
     @Path("/removeFromFeed/{sharedId}")
-    @Transactional
     public Response removeSharedFromFeed(@PathParam("sharedId") long sharedId) {
         try {
             sharedService.removeSharedFromFeed(sharedId);
@@ -206,7 +200,6 @@ public class SharedEndpoint {
      */
     @PUT
     @Path("/completeBySessionsWithComment/{sharedId}")
-    @Transactional
     public Response completeSharedBySessionsWithComment(@PathParam("sharedId") long sharedId,@QueryParam("commentId") Long commentId) {
         try {
             sharedService.completeSharedBySessionsWithComment(commentId, sharedId); // Se commentDTO non è null, usalo
@@ -219,7 +212,6 @@ public class SharedEndpoint {
     }
     @PUT
     @Path("/completeBySessions/{sharedId}")
-    @Transactional
     public Response completeSharedBySessions(@PathParam("sharedId") long sharedId) {
         try {
             sharedService.completeSharedBySessions(sharedId);
@@ -235,7 +227,6 @@ public class SharedEndpoint {
 
     @PUT
     @Path("/forceCompletion/{sharedId}")
-    @Transactional
     public Response forceCompletion(@PathParam("sharedId") long sharedId) {
         try {
             sharedService.forceCompletion(sharedId);
@@ -250,7 +241,6 @@ public class SharedEndpoint {
 
     @PUT
     @Path("/completeSession/{sharedId}")
-    @Transactional
     public Response completeSession(@PathParam("sharedId") long sharedId, @QueryParam("sessionId") long sessionId) {
         try {
             sharedService.completeSession(sharedId, sessionId);
@@ -267,7 +257,6 @@ public class SharedEndpoint {
      */
     @PUT
     @Path("/handleLimitExceeded/{sharedId}")
-    @Transactional
     public Response handleLimitExceeded(@PathParam("sharedId") long sharedId, @QueryParam("sessionId") long sessionId) {
         try {
             sharedService.handleLimitExceeded(sessionId, sharedId);

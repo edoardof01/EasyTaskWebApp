@@ -126,7 +126,6 @@ public class PersonalEndpoint {
 
 
     @POST
-    @Transactional
     public Response createPersonal(PersonalDTO personalDTO) {
         try {
             // Estrai i campi da personalDTO
@@ -164,7 +163,6 @@ public class PersonalEndpoint {
 
     @PUT
     @Path("/freeze/{personalId}")
-    @Transactional
     public Response freezePersonal(@PathParam("personalId") long personalId) {
         try {
             personalService.freezeTask(personalId);
@@ -178,7 +176,6 @@ public class PersonalEndpoint {
 
     @PUT
     @Path("/{personalId}")
-    @Transactional
     public Response updatePersonal(@PathParam("personalId") long personalId, PersonalDTO personalDTO) {
         try {
             PersonalDTO updatedPersonal = personalService.modifyPersonal(
@@ -204,7 +201,6 @@ public class PersonalEndpoint {
 
     @DELETE
     @Path("/{personalId}")
-    @Transactional
     public Response deletePersonal(@PathParam("personalId") long personalId) {
         try {
             personalService.deletePersonal(personalId);
@@ -216,7 +212,6 @@ public class PersonalEndpoint {
     }
     @PUT
     @Path("/moveToCalendar")
-    @Transactional
     public Response moveToCalendar(@QueryParam("personalId") long personalId) {
         try {
             personalService.moveToCalendar(personalId);
@@ -228,7 +223,6 @@ public class PersonalEndpoint {
     }
     @PUT
     @Path("/completeSession/{personalId}/")
-    @Transactional
     public Response completeSession(@PathParam("personalId") long personalId, @QueryParam("sessionId") long sessionId) {
         try {
             personalService.completeSession(personalId, sessionId);
@@ -241,7 +235,6 @@ public class PersonalEndpoint {
 
     @PUT
     @Path("/completeBySessions/{personalId}")
-    @Transactional
     public Response completePersonalBySessions(@PathParam("personalId") long personalId) {
         try {
             personalService.completePersonalBySessions(personalId);
@@ -254,7 +247,6 @@ public class PersonalEndpoint {
     }
     @PUT
     @Path("/forceCompletion/{personalId}")
-    @Transactional
     public Response forceCompletion(@PathParam("personalId") long personalId) {
         try {
             personalService.forceCompletion(personalId);
@@ -268,7 +260,6 @@ public class PersonalEndpoint {
 
     @PUT
     @Path("/handleLimitExceeded/{personalId}/")
-    @Transactional
     public Response handleLimitExceeded(@PathParam("personalId") long personalId,@QueryParam("sessionId") long sessionId) {
         try {
             personalService.handleLimitExceeded(sessionId, personalId);
