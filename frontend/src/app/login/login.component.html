@@ -1,0 +1,78 @@
+<!-- 🔹 LOADING OVERLAY -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="loading-content">
+    <!-- 🔹 Logo dentro un contenitore rotondo -->
+    <div class="loading-logo object-cover">
+      <img src="assets/icons/DALL·E%202025-01-26%2021.31.28.webp" alt="{{ 'LOGIN.APP_LOGO_ALT' | translate }}" />
+    </div>
+    <div class="spinner"></div>
+    <p>{{ 'LOGIN.LOADING_MESSAGE' | translate }}</p>
+  </div>
+</div>
+
+<div class="min-h-screen flex items-center justify-center bg-gray-300">
+  <div class="m-20 bg-white flex flex-row shadow-2xl rounded-3xl">
+    <!-- Colonna del Login -->
+    <div class="h-full w-1/2 flex flex-col items-center justify-center">
+      <div class="rounded-full mt-20 overflow-hidden w-32 h-32 mb-8">
+        <img class="w-full h-full object-cover" alt="{{ 'LOGIN.APP_LOGO_ALT' | translate }}" src="assets/icons/DALL·E%202025-01-26%2021.31.28.webp" />
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col items-center justify-center w-full max-w-md px-8">
+        <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">{{ 'LOGIN.TITLE' | translate }}</h2>
+
+        <!-- Username Field -->
+        <div class="w-full mb-4">
+          <label for="username" class="block text-sm font-medium text-gray-700">{{ 'LOGIN.USERNAME' | translate }}</label>
+          <input id="username" type="text" formControlName="username"
+                 class="w-full mt-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 placeholder-gray-400"
+                 placeholder="{{ 'LOGIN.USERNAME_PLACEHOLDER' | translate }}" />
+          <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="text-sm text-red-600 mt-1">
+            <small *ngIf="loginForm.get('username')?.errors?.['required']">{{ 'ERRORS.USERNAME_REQUIRED' | translate }}</small>
+            <small *ngIf="loginForm.get('username')?.errors?.['minlength']">{{ 'ERRORS.USERNAME_MINLENGTH' | translate }}</small>
+            <small *ngIf="loginForm.get('username')?.errors?.['maxlength']">{{ 'ERRORS.USERNAME_MAXLENGTH' | translate }}</small>
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="w-full mb-6">
+          <label for="password" class="block text-sm font-medium text-gray-700">{{ 'LOGIN.PASSWORD' | translate }}</label>
+          <input id="password" type="password" formControlName="password"
+                 class="w-full mt-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 placeholder-gray-400"
+                 placeholder="{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}" />
+          <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-sm text-red-600 mt-1">
+            <small *ngIf="loginForm.get('password')?.errors?.['required']">{{ 'ERRORS.PASSWORD_REQUIRED' | translate }}</small>
+            <small *ngIf="loginForm.get('password')?.errors?.['minlength']">{{ 'ERRORS.PASSWORD_MINLENGTH' | translate }}</small>
+            <small *ngIf="loginForm.get('password')?.errors?.['maxlength']">{{ 'ERRORS.PASSWORD_MAXLENGTH' | translate }}</small>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" [disabled]="loginForm.invalid"
+                class="w-full bg-gray-600 text-white font-medium py-3 px-4 rounded-full shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 transition duration-150">
+          {{ 'BUTTONS.LOGIN' | translate }}
+        </button>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="mt-4 text-center text-sm text-red-600 font-medium">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Registrazione -->
+        <div class="mt-10 text-center">
+          <span class="text-sm text-gray-500">{{ 'LOGIN.NOT_SUBSCRIBED' | translate }}
+            <a routerLink="/register" class="text-gray-500 hover:text-blue-700 cursor-pointer">{{ 'LOGIN.SIGNUP' | translate }}</a>
+          </span>
+        </div>
+      </form>
+    </div>
+
+    <!-- Colonna dell'immagine -->
+    <div class="h-full w-1/2 flex justify-center">
+      <div class="overflow-hidden rounded-3xl pt-20 pb-20 pr-20">
+        <img class="object-cover w-full h-full rounded-3xl" alt="{{ 'LOGIN.IMAGE_ALT' | translate }}"
+             src="assets/icons/_f8571a02-0805-4de2-a593-b2525e93e978.jpeg">
+      </div>
+    </div>
+  </div>
+</div>

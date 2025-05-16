@@ -1,0 +1,110 @@
+<!-- Overlay di caricamento a schermo intero -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="loading-content">
+    <div class="loading-logo">
+      <img src="assets/icons/DALL·E%202025-01-26%2021.31.28.webp" alt="{{ 'REGISTER.APP_LOGO_ALT' | translate }}" />
+    </div>
+    <div class="spinner"></div>
+    <p>{{ 'REGISTER.LOADING_MESSAGE' | translate }}</p>
+  </div>
+</div>
+
+<!-- Pagina di Registrazione -->
+<div *ngIf="!isLoading" class="min-h-screen flex items-center justify-center bg-gray-300">
+  <div class="w-full max-w-lg bg-white p-8 rounded-3xl shadow-xl">
+    <!-- Frase di benvenuto -->
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold text-gray-800">{{ 'REGISTER.WELCOME_TITLE' | translate }}</h1>
+      <p class="text-sm text-gray-600 mt-2">
+        {{ 'REGISTER.WELCOME_SUBTITLE' | translate }}
+      </p>
+    </div>
+
+    <!-- Form di registrazione -->
+    <div *ngIf="!isLoading">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <!-- Username -->
+        <div class="mb-4">
+          <label for="username" class="block text-sm font-medium text-gray-700">
+            {{ 'REGISTER.USERNAME' | translate }}
+          </label>
+          <input
+            id="username"
+            type="text"
+            formControlName="username"
+            class="w-full mt-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+            placeholder="{{ 'REGISTER.USERNAME_PLACEHOLDER' | translate }}"
+          />
+          <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched" class="text-sm text-red-600 mt-1">
+            <small *ngIf="registerForm.get('username')?.errors?.['required']">{{ 'ERRORS.USERNAME_REQUIRED' | translate }}</small>
+            <small *ngIf="registerForm.get('username')?.errors?.['minlength']">{{ 'ERRORS.USERNAME_MINLENGTH' | translate }}</small>
+            <small *ngIf="registerForm.get('username')?.errors?.['maxlength']">{{ 'ERRORS.USERNAME_MAXLENGTH' | translate }}</small>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-4">
+          <label for="password" class="block text-sm font-medium text-gray-700">
+            {{ 'REGISTER.PASSWORD' | translate }}
+          </label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            class="w-full mt-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+            placeholder="{{ 'REGISTER.PASSWORD_PLACEHOLDER' | translate }}"
+          />
+          <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-sm text-red-600 mt-1">
+            <small *ngIf="registerForm.get('password')?.errors?.['required']">{{ 'ERRORS.PASSWORD_REQUIRED' | translate }}</small>
+            <small *ngIf="registerForm.get('password')?.errors?.['minlength']">{{ 'ERRORS.PASSWORD_MINLENGTH' | translate }}</small>
+            <small *ngIf="registerForm.get('password')?.errors?.['maxlength']">{{ 'ERRORS.PASSWORD_MAXLENGTH' | translate }}</small>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-6">
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700">
+            {{ 'REGISTER.CONFIRM_PASSWORD' | translate }}
+          </label>
+          <input
+            id="confirmPassword"
+            type="password"
+            formControlName="confirmPassword"
+            class="w-full mt-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+            placeholder="{{ 'REGISTER.CONFIRM_PASSWORD_PLACEHOLDER' | translate }}"
+          />
+          <div *ngIf="registerForm.errors?.['passwordsMismatch'] && registerForm.get('confirmPassword')?.touched" class="text-sm text-red-600 mt-1">
+            <small>{{ 'ERRORS.PASSWORDS_MISMATCH' | translate }}</small>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          [disabled]="registerForm.invalid"
+          class="w-full bg-blue-600 text-white font-medium py-3 rounded-full shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150"
+        >
+          {{ 'BUTTONS.REGISTER' | translate }}
+        </button>
+
+        <!-- Success and Error Messages -->
+        <div *ngIf="successMessage" class="mt-4 text-center text-sm text-green-600 font-medium">
+          {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="mt-4 text-center text-sm text-red-600 font-medium">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Login Link -->
+        <div class="mt-8 text-center">
+          <span class="text-sm text-gray-500">
+            {{ 'REGISTER.NOT_SUBSCRIBED' | translate }}
+            <a routerLink="/login" class="text-blue-500 hover:text-blue-700 font-medium">
+              {{ 'REGISTER.LOGIN_LINK' | translate }}
+            </a>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+/* 🔹 Overlay che copre tutta la pagina */
+.loading-overlay {
+  position: fixed; /* Posizionato sopra tutto */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7); /* Sfondo scuro semi-trasparente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* 🔹 Massima priorità */
+  color: white;
+  font-size: 1.5rem;
+}
+
+/* 🔹 Contenitore centrale */
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* 🔹 Spinner animato */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 🔹 Contenitore rotondo per il logo */
+.loading-logo {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white; /* Sfondo bianco per contrasto */
+}
+
+/* 🔹 Logo dentro il contenitore */
+.loading-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

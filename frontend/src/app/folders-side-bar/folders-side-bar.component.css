@@ -1,0 +1,35 @@
+.content {
+  margin-left: 0;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+@media (min-width: 640px) {
+  .content {
+    margin-left: 16rem; /* Stesso valore della larghezza della sidebar */
+  }
+}
+
+.tooltip {
+  position: absolute;
+  left: calc(100% + 8px); /* Posiziona a destra dell'elemento */
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 4px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 11px;
+  z-index: 9999; /* Porta il tooltip sopra tutto */
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Mostra il tooltip quando si passa sopra il contenitore */
+.group:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+

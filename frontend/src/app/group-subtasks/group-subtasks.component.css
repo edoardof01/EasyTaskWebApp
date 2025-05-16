@@ -1,0 +1,26 @@
+.group {
+  position: relative; /* il contenitore del pulsante */
+}
+
+.tooltip {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 4px 6px;
+  border-radius: 4px;
+  position: absolute; /* Posizionamento assoluto */
+  top: -50%; /* Salire sopra il pulsante */
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  z-index: 9999; /* Mettilo sopra altri elementi */
+}
+
+.group:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}

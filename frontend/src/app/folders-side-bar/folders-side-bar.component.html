@@ -1,0 +1,95 @@
+<!--
+<button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar" type="button" class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover focus:outline-none focus:ring-2 focus:ring-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+  <span class="sr-only">Open sidebar</span>
+  <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+  </svg>
+</button>
+
+<aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+  <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+    <div class="pt-20">
+      <ul class="space-y-2 font-medium">
+        <li>
+          <div class="w-full">
+            &lt;!&ndash; Sezione Personal &ndash;&gt;
+            <div class="flex items-center p-2 rounded-xl hover:bg-gray-100">
+              <span class="ml-2">Personal</span>
+            </div>
+            &lt;!&ndash; Stati diretti del task &ndash;&gt;
+            <ul class="ml-4">
+              <li (click)="setShow('TODO')" [ngClass]="{'bg-gray-200': taskType === 'Personal' && clickedStates[taskType] === 'TODO', 'hover:bg-gray-100 focus:bg-gray-200': clickedStates[taskType] !== 'TODO'}" class="p-4 rounded-xl cursor-pointer">
+                TODO
+              </li>
+              <li (click)="setShow('INPROGRESS')" [ngClass]="{'bg-gray-200': taskType === 'Personal' && clickedStates[taskType] === 'INPROGRESS', 'hover:bg-gray-100 focus:bg-gray-200': clickedStates[taskType] !== 'INPROGRESS'}" class="p-4 rounded-xl cursor-pointer">
+                IN-PROGRESS
+              </li>
+              <li (click)="setShow('FREEZED')" [ngClass]="{'bg-gray-200': taskType === 'Personal' && clickedStates[taskType] === 'FREEZED', 'hover:bg-gray-100 focus:bg-gray-200': clickedStates[taskType] !== 'FREEZED'}" class="p-4 rounded-xl cursor-pointer">
+                FREEZED
+              </li>
+              <li (click)="setShow('FINISHED')" [ngClass]="{'bg-gray-200': taskType === 'Personal' && clickedStates[taskType] === 'FINISHED', 'hover:bg-gray-100 focus:bg-gray-200': clickedStates[taskType] !== 'FINISHED'}" class="p-4 rounded-xl cursor-pointer">
+                FINISHED
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</aside>
+
+<router-outlet></router-outlet>
+-->
+<button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar" type="button" class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover focus:outline-none focus:ring-2 focus:ring-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+  <span class="sr-only">{{ 'GENERAL.OPEN_SIDEBAR' | translate }}</span>
+  <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+  </svg>
+</button>
+
+<aside id="default-sidebar" class="fixed top-0 left-3 z-40 w-20 hover:w-28 h-screen flex flex-col justify-center transition-all duration-300 sm:translate-x-0">
+  <div class="py-4 rounded-3xl overflow-y-auto bg-gray-50 dark:bg-gray-800 h-auto w-full flex flex-col items-center">
+    <ul class="font-medium flex flex-col space-y-4">
+      <li>
+        <div class="w-full">
+          <ul class="flex flex-col space-y-4">
+            <!-- TODO -->
+            <li (click)="setShow('TODO')"
+                [ngClass]="{'bg-gray-200': stateType === 'TODO'}"
+                class="p-4 rounded-xl cursor-pointer hover:bg-gray-200 active:bg-gray-200 flex flex-col items-center justify-center group w-20 h-20">
+              <img alt="bulb" src="/assets/icons/icons8-light-bulb-60.png" class="w-11 h-11">
+              <div class="tooltip">{{ 'TASK_STATES.TODO' | translate }}</div>
+            </li>
+
+            <!-- INPROGRESS -->
+            <li (click)="setShow('INPROGRESS')"
+                [ngClass]="{'bg-gray-200': stateType === 'INPROGRESS'}"
+                class="p-4 rounded-xl cursor-pointer hover:bg-gray-200 active:bg-gray-200 flex flex-col items-center justify-center group w-20 h-20">
+              <img alt="hour" src="/assets/icons/hour-glass.png" class="w-10 h-10">
+              <div class="tooltip">{{ 'TASK_STATES.INPROGRESS' | translate }}</div>
+            </li>
+
+            <!-- FREEZED -->
+            <li (click)="setShow('FREEZED')"
+                [ngClass]="{'bg-gray-200': stateType === 'FREEZED'}"
+                class="p-4 rounded-xl cursor-pointer hover:bg-gray-200 active:bg-gray-200 flex flex-col items-center justify-center group w-20 h-20">
+              <img alt="snow" src="/assets/icons/snowflake%20(1).png" class="w-10 h-10">
+              <div class="tooltip">{{ 'TASK_STATES.FREEZED' | translate }}</div>
+            </li>
+
+            <!-- FINISHED -->
+            <li (click)="setShow('FINISHED')"
+                [ngClass]="{'bg-gray-200': stateType === 'FINISHED'}"
+                class="p-4 rounded-xl cursor-pointer hover:bg-gray-200 active:bg-gray-200 flex flex-col items-center justify-center group w-20 h-20">
+              <img alt="finished" src="/assets/icons/finish.png" class="w-10 h-10">
+              <div class="tooltip">{{ 'TASK_STATES.FINISHED' | translate }}</div>
+            </li>
+
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+<router-outlet></router-outlet>

@@ -1,0 +1,17 @@
+/* Esempio di regole custom aggiuntive,
+   se vuoi rifinire qualche dettaglio fuori dalle utility di Tailwind */
+
+.calendar-container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+
+}

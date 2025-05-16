@@ -1,0 +1,126 @@
+<form [formGroup]="groupSubtaskFormGroup">
+  <h2 class="text-3xl font-serif font-semibold text-gray-900 mb-6 text-center">Subtask Form</h2>
+  <div class="grid md:grid-cols-2 grid-cols-1 gap-x-6 gap-y-4">
+
+    <!-- NAME -->
+    <div class="relative">
+      <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
+      <input id="name" type="text"
+             class="block w-full h-10 px-4 py-2 bg-transparent text-base font-normal shadow-xs text-gray-900 border border-gray-300 focus:outline-none rounded-lg focus:ring-2 focus:ring-indigo-600"
+             [formControl]="nameControl"
+             (input)="onInput($event)"
+             maxlength="30"/>
+      <div class="flex justify-between mt-1 text-sm">
+        <!-- Messaggi di errore -->
+        <div class="text-red-500">
+          <span *ngIf="groupSubtaskFormGroup.get('name')?.hasError('required') && groupSubtaskFormGroup.get('name')?.touched">A Name is required</span>
+          <span *ngIf="groupSubtaskFormGroup.get('name')?.hasError('minlength')">Minimum length is 5</span>
+          <span *ngIf="groupSubtaskFormGroup.get('name')?.hasError('maxlength')">Maximum length is 20</span>
+        </div>
+        <!-- Conteggio caratteri -->
+        <span class="text-gray-500">{{ nameControl.value?.length || 0 }}/30</span>
+      </div>
+    </div>
+
+    <!-- PRIORITY -->
+    <div class="relative">
+      <label for="priority" class="block text-sm font-medium text-gray-700">Priority:</label>
+      <input id="priority" type="number" (input)="onLevelChange($event)"
+             class="block w-full h-10 px-4 py-2 bg-transparent text-base font-normal shadow-xs text-gray-900 border border-gray-300 focus:outline-none rounded-lg focus:ring-2 focus:ring-indigo-600"
+             [formControl]="levelControl"
+             min="1" max="5" />
+      <small class="text-red-500" *ngIf="groupSubtaskFormGroup.get('priority')?.hasError('required') && groupSubtaskFormGroup.get('priority')?.touched">Priority is required</small>
+      <small class="text-red-500" *ngIf="groupSubtaskFormGroup.get('priority')?.hasError('min')">Minimum value is 1</small>
+      <small class="text-red-500" *ngIf="groupSubtaskFormGroup.get('priority')?.hasError('max')">Maximum value is 5</small>
+    </div>
+
+    <!-- TOTAL TIME -->
+    <div class="relative">
+      <label for="totalTime" class="block text-sm font-medium text-gray-700">Total Time:</label>
+      <input id="totalTime" type="number"
+             class="block w-full h-10 px-4 py-2 bg-transparent text-base font-normal shadow-xs text-gray-900 border border-gray-300 focus:outline-none rounded-lg focus:ring-2 focus:ring-indigo-600"
+             [formControl]="totalTimeControl" />
+      <small class="text-red-500" *ngIf="groupSubtaskFormGroup.get('totalTime')?.hasError('required') && groupSubtaskFormGroup.get('totalTime')?.touched">Total Time is required</small>
+      <small class="text-red-500" *ngIf="groupSubtaskFormGroup.get('totalTime')?.hasError('min')">Minimum value is 1</small>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="relative md:col-span-2">
+      <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
+      <textarea id="description"
+                class="block w-full h-24 px-4 py-2 bg-transparent text-base font-normal shadow-xs text-gray-900 border border-gray-300 focus:outline-none rounded-lg focus:ring-2 focus:ring-indigo-600 resize-none"
+                [formControl]="descriptionControl"
+                (keydown.enter)="onEnter($event)"
+                minlength="15" maxlength="1000"></textarea>
+      <div class="flex justify-between mt-1 text-sm">
+        <div>
+          <small class="text-red-500" *ngIf="groupSubtaskFormGroup.get('description')?.hasError('required') && groupSubtaskFormGroup.get('description')?.touched">Description is required</small>
+          <small class="text-red-500" *ngIf="groupSubtaskFormGroup.get('description')?.hasError('min')">Minimum length is 15</small>
+          <small class="text-red-500" *ngIf="groupSubtaskFormGroup.get('description')?.hasError('max')">Maximum length is 1000</small>
+        </div>
+        <div class="text-right">
+          <span class="text-gray-500">{{ descriptionControl.value?.length || 0 }}/1000</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMBINED CHECKBOX AREA -->
+    <div class="relative md:col-span-2">
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Sessions & Resources:</h3>
+      <div class="h-28 overflow-y-auto border border-gray-300 rounded-lg p-3">
+        <!-- TASK SESSIONS -->
+        <div *ngFor="let session of groupTaskSessions.controls; let i = index">
+          <input
+            type="checkbox"
+            [attr.data-type]="'session'"
+            [attr.data-subtask-index]="subtasks.length"
+            [attr.data-start]="session.value.start"
+            [attr.data-end]="session.value.end"
+            #sessionCheckbox
+            (change)="onSessionChange($event, i)"
+          />
+          {{ session.value.start }} - {{ session.value.end }}
+        </div>
+        <ng-template #noSessions>
+          <div class="min-h-[2.5rem] flex items-center justify-center">
+            <p class="text-gray-500">No sessions available</p>
+          </div>
+        </ng-template>
+
+        <hr class="my-2 border-gray-300"/>
+
+        <!-- TASK RESOURCES -->
+        <div *ngFor="let resource of groupTaskResources.controls; let i = index">
+          <input
+            type="checkbox"
+            [attr.data-type]="'resource'"
+            [attr.data-subtask-index]="subtasks.length"
+            [attr.data-name]="resource.value.name"
+            [attr.data-value]="resource.value.value"
+            #resourceCheckBox
+            (change)="onResourceChange($event, i)"
+          />
+          {{ resource.value.name }}
+        </div>
+        <ng-template #noResources>
+          <div class="min-h-[2.5rem] flex items-center justify-center">
+            <p class="text-gray-500">No resources available</p>
+          </div>
+        </ng-template>
+      </div>
+      <div class="group mt-6 w-full flex flex-col items-center">
+        <button type="button"
+                [ngClass]="{'disabled': overNumUser}"
+                class="px-6 py-2.5 text-white bg-indigo-600 hover:bg-indigo-700 font-medium rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="!groupSubtaskFormGroup.valid"
+                (click)="onSubmit()">
+          Submit
+        </button>
+        <div class="tooltip mt-2" [class.hidden]="!errorMessage">The number of subtasks can't exceed numUsers </div>
+      </div>
+    </div>
+
+
+
+  </div>
+</form>

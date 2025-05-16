@@ -1,0 +1,224 @@
+<div class="w-full mt-24 max-w-3xl mx-auto">
+  <!-- Messaggio "Nessun task" -->
+  <div *ngIf="tasks.length === 0" class="flex flex-col justify-center items-center">
+    <div class="rounded-full overflow-hidden w-60 h-60">
+      <img alt="noPersonalFinished" src="assets/icons/A%20cartoon-style%20notepad%20with%20the%20word%20'FINIISHED'.webp" class="w-full h-full object-cover">
+    </div>
+    <h1 class="font-bold text-3xl mt-4">{{ 'TASKS.NO_TASKS_TITLE' | translate }}</h1>
+    <h3 class="text-gray-500">{{ 'TASKS.NO_TASKS_MESSAGE' | translate }}</h3>
+  </div>
+
+  <!-- Lista Task -->
+  <div class="mt-24" *ngIf="tasks.length > 0">
+    <!-- Ogni task -->
+    <div *ngFor="let task of tasks">
+      <!-- Contenitore Task -->
+      <div class="relative min-w-fit flex flex-col mb-1.5 mt-2 border-2 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+
+        <!-- Sezione superiore con Info e pulsanti -->
+        <div class="flex p-5 flex-row justify-between items-center">
+          <!-- Info Task (Nome e Topic) -->
+          <div class="flex-1 mr-6 w-80"> <!-- w-48 è 12rem -->
+            <h2 class="font-semibold text-lg text-gray-800 break-words">
+              📌 {{ task.name }}
+            </h2>
+            <p class="text-gray-600">{{ task.topic }}</p>
+          </div>
+
+          <!-- Pulsanti azioni -->
+          <div class="flex gap-2">
+            <button
+              (click)="deleteTask(task.id)"
+              class="px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-300 transition-colors flex items-center gap-2 whitespace-nowrap">
+              🗑 {{ 'TASK_ACTIONS.DELETE' | translate }}
+            </button>
+            <button
+              (click)="expandTask(task.id)"
+              class="px-4 py-2 rounded-lg hover:bg-gray-200 bg-gray-100 transition-colors flex items-center gap-2 whitespace-nowrap">
+              🔽 {{ 'TASK_ACTIONS.EXPAND' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Dettagli Task -->
+        <div *ngIf="selectedTaskId === task.id" class="bg-white pr-2">
+          <div class="p-2">
+            <!-- General Details (Verticale) -->
+            <details class="mb-1 group">
+              <summary class="font-semibold text-lg text-gray-800 cursor-pointer flex items-center justify-between p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all">
+                <span>{{ 'CALENDAR.GENERAL_DETAILS' | translate }}</span>
+                <span class="text-sm text-gray-500 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="mt-2 flex flex-col space-y-2 text-sm p-2 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div class="flex">
+                  <div class="w-1/4 font-semibold">{{ 'FORM_LABELS.NAME' | translate }}</div>
+                  <div class="w-3/4">{{ task.name ? (task.name | titlecase) : '-' }}</div>
+                </div>
+                <div class="flex">
+                  <div class="w-1/4 font-semibold">{{ 'FORM_LABELS.TOPIC' | translate }}</div>
+                  <div class="w-3/4 uppercase">{{ task.topic ? task.topic : '-' }}</div>
+                </div>
+                <div class="flex">
+                  <div class="w-1/4 font-semibold">{{ 'FORM_LABELS.DESCRIPTION' | translate }}</div>
+                  <div class="w-3/4 italic">{{ task.description || '-' }}</div>
+                </div>
+                <div class="flex">
+                  <div class="w-1/4 font-semibold">{{ 'DEADLINE.LABEL' | translate }}</div>
+                  <div class="w-3/4">{{ task.deadline ? (task.deadline | date:'shortDate') : '-' }}</div>
+                </div>
+                <div class="flex">
+                  <div class="w-1/4 font-semibold">{{ 'FORM_LABELS.PRIORITY' | translate }}</div>
+                  <div class="w-3/4">{{ task.priority || '-' }}</div>
+                </div>
+                <div class="flex">
+                  <div class="w-1/4 font-semibold">{{ 'CALENDAR.COMPLEXITY' | translate }}</div>
+                  <div class="w-3/4">{{ task.complexity ?? '-' }}</div>
+                </div>
+                <div class="flex">
+                  <div class="w-1/4 font-semibold">{{ 'TIMETABLE.LABEL' | translate }}</div>
+                  <div class="w-3/4">{{ task.timetable ? (task.timetable | lowercase) : '-' }}</div>
+                </div>
+                <div class="flex">
+                  <div class="w-1/4 font-semibold">{{ 'CALENDAR.TASK_STATE' | translate }}</div>
+                  <div class="w-3/4">{{ task.taskState || '-' }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-1/4 font-semibold">{{ 'CALENDAR.PERCENT_COMPLETION' | translate }}</div>
+                  <div class="relative w-5/12">
+                    <div class="absolute right-0 -top-4 text-xs font-semibold text-gray-700">
+                      {{ task.percentageOfCompletion ?? '0' }}%
+                    </div>
+                    <div class="w-full bg-gray-300 rounded-full h-2">
+                      <div class="h-2 rounded-full transition-all duration-500 bg-blue-900" [style.width.%]="task.percentageOfCompletion"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Sessions -->
+            <details class="mb-1 group">
+              <summary class="font-semibold text-lg text-gray-800 cursor-pointer flex items-center justify-between p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all">
+                <span>{{ 'CALENDAR.SESSIONS' | translate }}</span>
+                <span class="text-sm text-gray-500 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="mt-2 p-2 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div *ngFor="let session of task.sessions; let i = index" class="flex justify-between py-2 text-sm border-b last:border-b-0">
+                  <div class="text-gray-700 font-medium">
+                    {{ i + 1 }}. <span class="text-gray-600">{{ 'CALENDAR.SESSION' | translate }}</span>
+                  </div>
+                  <div class="text-gray-500">
+                    {{ session.startDate | date:'short' }} - {{ session.endDate | date:'short' }}
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="mb-1 group">
+              <summary class="font-semibold text-lg text-gray-800 cursor-pointer flex items-center justify-between p-2  bg-gray-100 rounded-lg hover:bg-gray-200 transition-all">
+                <span>{{ 'CALENDAR.RESOURCES' | translate }}</span>
+                <span class="text-sm text-gray-500 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div *ngIf="task.resources.length > 0; else noResources" class="mt-2 p-2 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div *ngFor="let resource of task.resources; let i = index" class="flex justify-between py-2 text-sm border-b last:border-b-0">
+                  <div class="text-gray-700 font-medium">
+                    {{ i + 1 }}. <span class="text-gray-600">{{ resource.name }}</span>
+                  </div>
+                  <div class="text-gray-500">
+                    {{ resource.type }} - {{ resource.value }}
+                  </div>
+                </div>
+              </div>
+              <ng-template #noResources>
+                <div class="flex border-gray-200 p-2 border rounded-lg my-2 flex-col items-center justify-center text-gray-500 h-full">
+                  <p class="text-lg font-medium">{{ 'CALENDAR.NORESOURCES' | translate }}</p>
+                </div>
+              </ng-template>
+            </details>
+
+            <!-- Strategies -->
+            <details class="mb-1 group">
+              <summary class="font-semibold text-lg text-gray-800 cursor-pointer flex items-center justify-between p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all">
+                <span>{{ 'CALENDAR.STRATEGIES' | translate }}</span>
+                <span class="text-sm text-gray-500 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="mt-2 p-2 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div *ngFor="let strategy of task.strategies; let i = index" class="border-b last:border-b-0 py-2 text-sm">
+                  <div class="text-gray-700 font-medium">
+                    {{ i + 1 }}. <span class="text-gray-600">{{ strategy.strategy | lowercase }}</span>
+                  </div>
+                  <div class="flex flex-col text-gray-500 text-xs mt-1">
+                    <span class="font-medium">{{ 'CALENDAR.SKIPPABLE' | translate }}: {{ strategy.tot ? strategy.tot : '-' }}</span>
+                    <span class="font-medium">{{ 'CALENDAR.CONSECUTIVE' | translate }}: {{ strategy.maxConsecSkipped ? strategy.maxConsecSkipped : '-' }}</span>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Subtasks -->
+            <details class="group mb-2">
+              <summary class="flex items-center justify-between p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all cursor-pointer font-semibold text-lg text-gray-800">
+                <span>{{ 'CALENDAR.SUBTASKS' | translate }}</span>
+                <span class="text-sm text-gray-500 transition-transform group-open:rotate-180">▼</span>
+              </summary>
+              <div class="mt-2 p-2 bg-white border border-gray-200 rounded-lg shadow-sm max-h-72 overflow-y-auto">
+                <div *ngIf="task.subtasks && task.subtasks.length > 0; else noSubtasks">
+                  <div *ngFor="let subtask of task.subtasks; let i = index" class="border-b pb-2 mb-2 flex flex-col">
+                    <div class="text-md font-semibold text-gray-700">
+                      {{ 'SUBTASKS.HEADER' | translate }} {{ i + 1 }}: {{ subtask.name }}
+                    </div>
+                    <div class="text-sm text-gray-600">
+                      {{ 'CALENDAR.SUBTASK_PRIORITY' | translate }}: {{ subtask.level }}
+                    </div>
+                    <div class="text-sm text-gray-600">
+                      {{ 'CALENDAR.SUBTASK_DESCRIPTION' | translate }}: {{ subtask.description }}
+                    </div>
+                    <div class="text-sm text-gray-600">
+                      {{ 'CALENDAR.SUBTASK_TOTAL_TIME' | translate }}: {{ subtask.totalTime }} hours
+                    </div>
+                    <div *ngIf="subtask.subSessions && subtask.subSessions.length > 0" class="mt-1">
+                      <div class="text-md font-semibold text-gray-700">{{ 'CALENDAR.SESSIONS' | translate }}:</div>
+                      <ul class="list-disc list-inside text-gray-700 text-xs">
+                        <li *ngFor="let session of subtask.subSessions; let j = index" class="pl-3">
+                          <span class="font-medium">{{ 'CALENDAR.SESSION' | translate }} {{ j + 1 }}:</span>
+                          <span class="ml-1">
+                            {{ session.startDate | date:'short' }} - {{ session.endDate | date:'short' }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div *ngIf="!subtask.subSessions || subtask.subSessions.length === 0" class="text-gray-500 italic mt-1 text-xs">
+                      {{ 'CALENDAR.NO_SESSIONS_ASSIGNED' | translate }}
+                    </div>
+                    <div *ngIf="subtask.subResources && subtask.subResources.length > 0" class="mt-1">
+                      <div class="text-md font-semibold text-gray-700">{{ 'CALENDAR.RESOURCES' | translate }}:</div>
+                      <ul class="list-disc list-inside text-gray-700 text-xs">
+                        <li *ngFor="let resource of subtask.subResources; let j = index" class="pl-3">
+                          <span class="font-medium">{{ 'CALENDAR.RESOURCE' | translate }} {{ j + 1 }}:</span>
+                          <span class="ml-1">
+                            {{ resource.name }} - {{ resource.type }} - {{ resource.value }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div *ngIf="!subtask.subResources || subtask.subResources.length === 0" class="text-gray-500 italic mt-1 text-xs">
+                      {{ 'CALENDAR.NO_RESOURCES_ASSIGNED' | translate }}
+                    </div>
+                  </div>
+                </div>
+                <ng-template #noSubtasks>
+                  <div class="flex flex-col items-center justify-center text-gray-500 h-full">
+                    <p class="text-lg font-medium">{{ 'SUBTASKS.NO_SUBTASKS' | translate }}</p>
+                  </div>
+                </ng-template>
+              </div>
+            </details>
+          </div>
+        </div><!-- Fine Dettagli Task -->
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>

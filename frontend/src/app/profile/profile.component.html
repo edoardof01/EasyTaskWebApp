@@ -1,0 +1,256 @@
+
+
+<div class="flex flex-col items-center justify-center min-h-screen ">
+  <div class="relative max-w-lg w-full bg-white mb-16 p-8 m-6 border-l border-r border-t border-b border-gray-3000">
+    <div class="absolute left-6 top-10">
+      <button class="mr-2" (click)="changeLanguage('it')">
+        <img src="assets/icons/flag.png" alt="Italiano" height="20"  width="32">
+      </button>
+      <button (click)="changeLanguage('en')">
+        <img src="assets/icons/united-kingdom.png" alt="English" height="20"  width="32">
+      </button>
+    </div>
+    <!-- Contenitore flessibile per immagine e titolo, allineato a sinistra -->
+    <div class="flex items-center justify-center mb-6">
+      <!-- Immagine -->
+      <div>
+        <img src="assets/icons/account.png" alt="account" class="w-32 h-32">
+      </div>
+      <!--<h2 class="text-5xl font-baloo text-gray-800 text-left ml-4" style="white-space: pre-line;">
+         Personal Form
+         </h2>-->
+    </div>
+    <form *ngIf="!isProfileSaved" [formGroup]="profileForm" class="w-full max-w-lg flex flex-col justify-center">
+      <div class="flex flex-col gap-6">
+        <!-- AGE -->
+        <div class="relative w-full">
+          <label for="age" class="block text-sm font-medium text-gray-700">{{ 'PROFILE.AGE' | translate }}:</label>
+          <input id="age" type="number"
+                 class="block w-full mt-1 px-4 py-2 rounded-md border border-gray-300 bg-white shadow-sm
+               focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                 [formControl]="ageControl" min="14"/>
+          <div class="flex justify-between mt-1 text-xs text-gray-500">
+            <span *ngIf="profileForm.get('age')?.hasError('required') && profileForm.get('age')?.touched" class="text-red-500">{{ 'ERRORS.AGE_REQUIRED' | translate }}</span>
+            <span *ngIf="profileForm.get('age')?.hasError('min') && profileForm.get('age')?.touched" class="text-red-500">{{ 'ERRORS.AGE_MIN' | translate }}</span>
+            <span *ngIf="profileForm.get('age')?.hasError('max') && profileForm.get('age')?.touched" class="text-red-500">{{ 'ERRORS.AGE_MAX' | translate }}</span>
+          </div>
+        </div>
+
+        <!-- SEX -->
+        <div class="relative md:col-span-2">
+          <label for="sex" class="block text-sm font-medium text-gray-700">{{ 'PROFILE.SEX' | translate }}:</label>
+          <select id="sex" class="block w-full mt-1 px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" [formControl]="sexControl">
+            <option value="">{{ 'PROFILE.SELECT_SEX' | translate }}</option>
+            <option value="MALE">{{ 'PROFILE.MALE' | translate }}</option>
+            <option value="FEMALE">{{ 'PROFILE.FEMALE' | translate }}</option>
+            <option value="OTHERS">{{ 'PROFILE.OTHERS' | translate }}</option>
+          </select>
+        </div>
+
+        <!-- PROFESSION -->
+        <div class="relative md:col-span-2">
+          <label for="profession" class="block text-sm font-medium text-gray-700">{{ 'PROFILE.PROFESSION' | translate }}:</label>
+          <textarea id="profession" rows="4" class="block w-full mt-1 px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" [formControl]="professionControl" minlength="15" maxlength="1000"></textarea>
+          <div class="flex justify-between mt-1 text-xs text-gray-500">
+            <span *ngIf="profileForm.get('profession')?.hasError('required') && profileForm.get('profession')?.touched" class="text-red-500">{{ 'ERRORS.PROFESSION_REQUIRED' | translate }}</span>
+            <span *ngIf="profileForm.get('profession')?.hasError('minlength') && profileForm.get('profession')?.touched" class="text-red-500">{{ 'ERRORS.PROFESSION_MINLENGTH' | translate }}</span>
+            <span>{{ professionControl.value?.length || 0 }}/1000</span>
+          </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="relative md:col-span-2">
+          <label for="descriptionProfile" class="block text-sm font-medium text-gray-700">{{ 'PROFILE.DESCRIPTION' | translate }}:</label>
+          <textarea id="descriptionProfile" rows="4" class="block w-full mt-1 px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" [formControl]="descriptionControl" minlength="15" maxlength="1000"></textarea>
+          <div class="flex justify-between mt-1 text-xs text-gray-500">
+            <span *ngIf="profileForm.get('description')?.hasError('required') && profileForm.get('description')?.touched" class="text-red-500">{{ 'ERRORS.DESCRIPTION_REQUIRED' | translate }}</span>
+            <span *ngIf="profileForm.get('description')?.hasError('minlength') && profileForm.get('description')?.touched" class="text-red-500">{{ 'ERRORS.DESCRIPTION_MINLENGTH' | translate }}</span>
+            <span>{{ descriptionControl.value?.length || 0 }}/1000</span>
+          </div>
+        </div>
+        <div class="relative">
+          <!-- QUALIFICATIONS -->
+          <div class="space-y-4 mt-2">
+            <div *ngIf="qualifications.controls.length > 0">
+              <div class="overflow-x-auto shadow-sm rounded-md border border-gray-300">
+                <table class="w-full text-sm text-left bg-white border-collapse">
+                  <thead>
+                  <tr class="border-b bg-gray-100 text-gray-700">
+                    <th class="px-3 py-2 w-10 text-center">#</th>
+                    <th class="px-3 py-2">{{ 'PROFILE.QUALIFICATIONS' | translate }}</th>
+                    <th class="px-3 py-2 text-center w-20">{{ 'PROFILE.ACTIONS' | translate }}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let qualification of qualifications.controls; let i = index" class="border-b hover:bg-gray-50 transition">
+                    <td class="px-3 py-2 text-center">{{ i + 1 }}</td>
+                    <td class="px-3 py-2 text-gray-800">{{ qualification.get('qualification')?.value }}</td>
+                    <td class="px-3 py-2 text-center">
+                      <button (click)="removeQualification(i)" class="text-red-500 hover:text-red-700 transition">
+                        ✖
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- Modal per gestire le qualifiche -->
+          <div *ngIf="isQualificationModalOpen" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-md">
+            <div class="bg-white p-8 rounded-lg w-[40rem] max-w-full shadow-lg">
+              <h3 class="text-2xl font-semibold text-gray-800 mb-4">{{ 'PROFILE.YOUR_QUALIFICATIONS' | translate }}</h3>
+              <!-- Lista delle qualifiche esistenti -->
+              <div class="space-y-4">
+                <div *ngIf="qualifications.controls.length > 0">
+                  <div class="overflow-x-auto shadow-sm rounded-md border border-gray-300">
+                    <table class="w-full text-sm text-left bg-white border-collapse">
+                      <thead>
+                      <tr class="border-b bg-gray-100 text-gray-700">
+                        <th class="px-3 py-2 w-10 text-center">#</th>
+                        <th class="px-3 py-2">{{ 'PROFILE.QUALIFICATIONS' | translate }}</th>
+                        <th class="px-3 py-2 text-center w-20">{{ 'PROFILE.ACTIONS' | translate }}</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let qualification of qualifications.controls; let i = index" class="border-b hover:bg-gray-50 transition">
+                        <td class="px-3 py-2 text-center">{{ i + 1 }}</td>
+                        <td class="px-3 py-2 text-gray-800">{{ qualification.get('qualification')?.value }}</td>
+                        <td class="px-3 py-2 text-center">
+                          <button (click)="removeQualification(i)" class="text-red-500 hover:text-red-700 transition">
+                            ✖
+                          </button>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div *ngIf="qualifications.controls.length === 0" class="text-gray-500 text-sm">
+                  <p>{{ 'PROFILE.NO_QUALIFICATIONS' | translate }}</p>
+                </div>
+              </div>
+              <!-- Form per aggiungere una nuova qualifica -->
+              <div *ngIf="isAddingNewQualification" class="space-y-4 mt-2" [formGroup]="qualificationsForm">
+                <label for="qualification" class="block text-sm font-medium text-gray-700">{{ 'PROFILE.NEW_QUALIFICATION' | translate }}:</label>
+                <textarea id="qualification" rows="3"
+                          class="block w-full mt-1 px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          [formControl]="qualificationControl" minlength="15" maxlength="1000">
+                </textarea>
+                <!-- Messaggi di errore -->
+                <div class="flex justify-between mt-1 text-xs text-gray-500">
+                  <span *ngIf="qualificationsForm.get('qualification')?.hasError('required') && qualificationsForm.get('qualification')?.touched"
+                        class="text-red-500">
+                    {{ 'ERRORS.QUALIFICATION_REQUIRED' | translate }}
+                  </span>
+                  <span *ngIf="qualificationsForm.get('qualification')?.hasError('minlength') && qualificationsForm.get('qualification')?.touched"
+                        class="text-red-500">
+                    {{ 'ERRORS.QUALIFICATION_MINLENGTH' | translate }}
+                  </span>
+                  <span>{{ qualificationControl.value?.length || 0 }}/1000</span>
+                </div>
+              </div>
+              <!-- Bottoni per aggiungere, salvare e chiudere -->
+              <div class="flex justify-between items-center mt-2">
+                <!-- Bottone + Add Qualification SEMPRE VISIBILE -->
+                <div class="flex flex-row gap-4 justify-center">
+                  <!-- Bottone + Add Qualification -->
+                  <button *ngIf="!isAddingNewQualification" (click)="startAddingQualification()"
+                          class="px-5 py-2 text-sm bg-blue-600 text-white font-medium rounded-md hover:bg-blue-800 transition-all duration-300">
+                    + {{ 'PROFILE.ADD_QUALIFICATION' | translate }}
+                  </button>
+                  <!-- Bottone Close -->
+                  <button type="button" (click)="closeQualificationModal()"
+                          class="px-5 py-2 text-sm bg-gray-600 text-white font-medium rounded-md hover:bg-gray-800 transition-all duration-300">
+                    {{ 'PROFILE.DONE' | translate }}
+                  </button>
+                </div>
+                <!-- Bottoni Save e Cancel -->
+                <div *ngIf="isAddingNewQualification" class="flex gap-3">
+                  <button type="button" (click)="saveQualification()"
+                          class="px-5 py-2 text-sm bg-green-600 text-white font-medium rounded-md hover:bg-green-800 transition-all duration-300">
+                    {{ 'PROFILE.SAVE' | translate }}
+                  </button>
+                  <button type="button" (click)="cancelAddingQualification()"
+                          class="px-5 py-2 text-sm bg-red-500 text-white font-medium rounded-md hover:bg-red-700 transition-all duration-300">
+                    {{ 'PROFILE.CANCEL' | translate }}
+                  </button>
+                </div>
+              </div>
+              <!-- Messaggio di errore -->
+              <div *ngIf="errorMessage" class="mt-2 text-red-600 transition-opacity duration-500"
+                   [ngClass]="{ 'opacity-100': isErrorMessageVisible, 'opacity-0': !isErrorMessageVisible }">
+                {{ errorMessage }}
+              </div>
+            </div>
+          </div>
+          <!-- Pulsante per aprire il modale delle qualifiche -->
+          <div class="flex absolute m mt-3">
+            <button (click)="openQualificationModal()"
+                    class="px-3 py-1 bg-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-400 transition-all duration-300">
+              {{ 'PROFILE.MANAGE_QUALIFICATIONS' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex mt-20 relative group">
+        <div *ngIf="profileForm.invalid" class="absolute bottom-full left-0 ml-2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          {{ 'TOOLTIPS.COMPLETE_FORM' | translate }}
+        </div>
+        <button type="submit" [disabled]="profileForm.invalid" (click)="onSubmit()"
+                class="px-6 py-2 bg-green-600 text-white font-semibold rounded-full hover:bg-green-700 transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50">
+          {{ 'BUTTONS.SAVE_PROFILE' | translate }}
+        </button>
+      </div>
+
+    </form>
+
+    <div class="fixed bottom-0 left-0 w-full bg-white py-4 shadow-md border-t border-gray-300 flex justify-start px-8">
+      <button class="px-6 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition-all duration-300 ml-4"
+              (click)="onLogout()">
+        {{ 'BUTTONS.LOGOUT' | translate }}
+      </button>
+    </div>
+
+    <div *ngIf="isProfileSaved" class="w-full max-w-lg bg-white p-8 rounded-xl shadow-lg border border-gray-300 text-black font-sans">
+      <!-- Username -->
+      <h2 class="text-2xl font-medium text-center mb-2">{{ username }}</h2>
+      <!-- Linea separatrice -->
+      <div class="w-3/4 mx-auto border-b border-gray-300 opacity-50 mb-6"></div>
+      <!-- Age e Sex sulla stessa riga -->
+      <div class="flex justify-center gap-8 text-lg font-normal mb-4">
+        <div class="text-center">
+          <span class="text-gray-500 text-sm block">{{ 'PROFILE.AGE' | translate }}</span>
+          <span>{{ profileForm.get('age')?.value }}</span>
+        </div>
+        <div class="text-center">
+          <span class="text-gray-500 text-sm block">{{ 'PROFILE.SEX' | translate }}</span>
+          <span>{{ 'PROFILE.' + profileForm.get('sex')?.value | translate }}</span>
+        </div>
+      </div>
+      <!-- Profession su riga separata -->
+      <div class="text-center text-lg font-normal mb-4">
+        <span class="text-gray-500 text-sm block">{{ 'PROFILE.PROFESSION' | translate }}</span>
+        <span>{{ profileForm.get('profession')?.value }}</span>
+      </div>
+      <!-- Linea separatrice -->
+      <div class="w-3/4 mx-auto border-b border-gray-300 opacity-50 mb-6"></div>
+      <!-- Qualifiche -->
+      <div *ngIf="qualifications.length > 0" class="flex flex-wrap justify-center gap-2 mb-6">
+        <div *ngFor="let qualification of qualifications.controls; let i = index"
+             class="bg-gray-200 text-gray-900 px-4 py-2 rounded-lg text-sm font-medium shadow">
+          {{ qualification.get('qualification')?.value }}
+        </div>
+      </div>
+      <!-- Linea separatrice -->
+      <div class="w-3/4 mx-auto border-b border-gray-300 opacity-50 mb-4"></div>
+      <!-- Descrizione -->
+      <p class="text-center text-lg font-normal"
+         [ngClass]="descriptionControl.value.length > 50 ? 'text-start' : 'text-center'">
+        {{ profileForm.get('description')?.value }}
+      </p>
+    </div>
+
+  </div>
+</div>

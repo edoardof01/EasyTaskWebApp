@@ -1,0 +1,33 @@
+/* Stile della sidebar */
+#default-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  width: 16rem; /* Larghezza della sidebar */
+  height: 100vh;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%);
+}
+
+#default-sidebar.open {
+  transform: translateX(0);
+}
+
+@media (min-width: 640px) {
+  #default-sidebar {
+    transform: translateX(0);
+  }
+}
+
+/* Stile del contenuto principale */
+.content {
+  margin-left: 0;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+@media (min-width: 640px) {
+  .content {
+    margin-left: 16rem; /* Stesso valore della larghezza della sidebar */
+  }
+}

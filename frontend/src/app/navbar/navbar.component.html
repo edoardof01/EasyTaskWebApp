@@ -1,0 +1,39 @@
+<div *ngIf="isLoggedIn$ | async" class="navbar fixed top-0 left-0 w-full h-16 flex justify-evenly items-center bg-gray-100 shadow-md">
+  <!-- Tab Folders -->
+  <div
+    class="tab flex items-center cursor-pointer px-4 py-2 text-gray-600 font-bold hover:text-gray-700"
+    routerLink="/navbar/folders"
+    routerLinkActive="text-blue-600 border-b-2 border-blue-600">
+    <img src="assets/icons/folders.png" alt="{{ 'NAVBAR.FOLDERS_ALT' | translate }}" class="mr-2 w-12 h-12">
+    {{ 'NAVBAR.FOLDERS' | translate }}
+  </div>
+
+  <!-- Tab Calendar -->
+  <div
+    class="tab flex items-center cursor-pointer px-4 py-2 text-gray-600 font-bold hover:text-gray-700"
+    routerLink="/navbar/calendar"
+    routerLinkActive="text-blue-600 border-b-2 border-blue-600">
+    <img src="assets/icons/731calendar_100366.png" alt="{{ 'NAVBAR.CALENDAR_ALT' | translate }}" class="mr-2 w-14 h-14">
+    {{ 'NAVBAR.CALENDAR' | translate }}
+  </div>
+
+  <!-- Tab Tasks -->
+  <div
+    class="tab flex items-center cursor-pointer px-4 py-2 text-gray-600 font-bold hover:text-gray-700"
+    routerLink="/navbar/tasks"
+    routerLinkActive="text-blue-600 border-b-2 border-blue-600">
+    <img src="assets/icons/Notepad_22522.png" alt="{{ 'NAVBAR.TASKS_ALT' | translate }}" class="mr-2 w-12 h-12">
+    {{ 'NAVBAR.TASKS' | translate }}
+  </div>
+
+  <!-- Tab Profile -->
+  <div
+    class="tab flex items-center cursor-pointer px-4 py-2 text-gray-600 font-bold hover:text-gray-700"
+    routerLink="/navbar/profile"
+    routerLinkActive="text-blue-600 border-b-2 border-blue-600">
+    <img src="assets/icons/avatardefault_92824.png" alt="{{ 'NAVBAR.PROFILE_ALT' | translate }}" class="mr-2 w-12 h-12">
+    {{ 'NAVBAR.PROFILE' | translate }}
+  </div>
+</div>
+
+<router-outlet></router-outlet>
