@@ -9,26 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="Then i'll make a try for commonToCalendarLogic">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/FeedEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/FeedEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/GroupEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/GroupEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/PersonalEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/PersonalEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Group.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Group.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Shared.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Shared.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/GroupMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/GroupMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SharedMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SharedMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/orm/TaskDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/TaskDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/FeedService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/FeedService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/GroupService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/GroupService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/PersonalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/PersonalService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/SharedService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/SharedService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/domain/GroupEntityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/domain/GroupEntityTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/endpoints/GroupEndpointTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/endpoints/GroupEndpointTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/services/GroupServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/services/GroupServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/services/personalServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/services/personalServiceTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="Then i'll make a try for commonToCalendarLogic" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -846,6 +827,7 @@
       <workItem from="1745494906632" duration="1741000" />
       <workItem from="1745593048976" duration="201000" />
       <workItem from="1745593285630" duration="522000" />
+      <workItem from="1747382849587" duration="305000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
