@@ -3,7 +3,6 @@ package Endpoints;
 import domain.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -61,14 +60,13 @@ public class PersonalEndpoint {
 
         for (PersonalDTO personal : allPersonal) {
 
-            // 1) Mappa delle sessioni top-level: (startDate+endDate) -> SessionDTO
             Map<String, SessionDTO> topLevelMap = new HashMap<>();
             for (SessionDTO topSession : personal.getSessions()) {
                 String key = topSession.getStartDate() + "#" + topSession.getEndDate();
                 topLevelMap.put(key, topSession);
             }
 
-            // 2) Crea i DTO per ogni sessione top-level
+            // Estende le sessioni coi dati necessari
             List<SessionWithTaskDTO> partialList = new ArrayList<>();
             for (SessionDTO topSession : personal.getSessions()) {
                 SessionWithTaskDTO dto = new SessionWithTaskDTO();
@@ -88,23 +86,20 @@ public class PersonalEndpoint {
                 partialList.add(dto);
             }
 
-            // 3) Per ogni sessione del subtask, se esiste una sessione “equivalente” tra i top-level,
-            //    aggiorniamo subtaskId/subtaskName del DTO corrispondente
+            // Per ogni sessione del subtask, se esiste una sessione “equivalente” tra i top-level,
+            //    aggiorna subtaskId e subtaskName del DTO corrispondente
             if (personal.getSubtasks() != null) {
                 for (SubtaskDTO subtask : personal.getSubtasks()) {
                     if (subtask.getSubSessions() != null) {
                         for (SessionDTO subSession : subtask.getSubSessions()) {
-                            // Chiave con startDate+endDate
                             String key = subSession.getStartDate() + "#" + subSession.getEndDate();
 
-                            // Se la mappa top-level ha una sessione “equivalente”
+                            // Se la mappa top-level ha una sessione equivalente cerca in partialList
                             if (topLevelMap.containsKey(key)) {
-                                // Troviamo il DTO corrispondente in partialList
                                 for (SessionWithTaskDTO existing : partialList) {
                                     boolean sameStart = existing.getStartDate().equals(subSession.getStartDate());
                                     boolean sameEnd   = existing.getEndDate().equals(subSession.getEndDate());
                                     if (sameStart && sameEnd) {
-                                        // Aggiorna subtaskId e subtaskName
                                         existing.setSubtaskId(subtask.getId());
                                         existing.setSubtaskName(subtask.getName());
                                         break;

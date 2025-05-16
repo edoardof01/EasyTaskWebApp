@@ -19,6 +19,7 @@ public class Group extends Task {
     private int actualMembers = 1;
     @ManyToMany
     private List<User> members = new ArrayList<>();
+    private int percentageOfCompletion;
     private LocalDateTime dateOnFeed;
     private boolean isComplete = false;
     @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
@@ -32,14 +33,14 @@ public class Group extends Task {
     }
 
     public Group(int numUsers, @NotNull User user, String name, Topic topic, @Nullable LocalDateTime deadline,
-                 String description, @NotNull List<Subtask> subtasks, List<Session> sessions, int percentageOfCompletion, int priority,
+                 String description, @NotNull List<Subtask> subtasks, List<Session> sessions, int priority,
                  Timetable timeTable, int totalTime, List<StrategyInstance> strategies, List<Resource> resources) {
         super(name, user, description, subtasks, sessions, deadline, priority, totalTime, topic, timeTable, strategies, resources);
         this.numUsers = numUsers;
         this.members.add(this.getUser());
         this.calendar = new TaskCalendar();
         this.getCalendar().setGroup(this);
-
+        this.percentageOfCompletion = 0;
     }
 
 
@@ -91,10 +92,15 @@ public class Group extends Task {
     public boolean getIsComplete() {
         return isComplete;
     }
+    public int getPercentageOfCompletion() {
+        return percentageOfCompletion;
+    }
+    public void setPercentageOfCompletion(int percentageOfCompletion) {
+        this.percentageOfCompletion = percentageOfCompletion;
+    }
     public void setIsComplete(boolean isComplete) {
         this.isComplete = isComplete;
     }
-
 
 
     public void addMember(User member) {
@@ -147,7 +153,6 @@ public class Group extends Task {
         if (!isComplete) {
             throw new UnsupportedOperationException("The group is not complete");
         }
-
 
         this.setIsOnFeed(false);
         this.setState(TaskState.INPROGRESS);
@@ -325,7 +330,7 @@ public class Group extends Task {
             throw new IllegalArgumentException("the task must be on feed for joining");
         }
         if (isSubtaskTaken) {
-            throw new IllegalArgumentException("Subtask does not exist or is already taken.");
+            throw new IllegalArgumentException("Subtask is already taken.");
         }
         if (isComplete) {
             throw new UnsupportedOperationException("The group is already complete.");
@@ -369,7 +374,6 @@ public class Group extends Task {
         this.getCalendar().removeSessions(user);
         this.getMembers().remove(user);
         for (User member : this.getMembers()) {
-            // Ottieni il subtask assegnato a questo membro
             TakenSubtask takenSubtask = takenSubtasks.stream()
                     .filter(t -> t.getUser().equals(member))
                     .findFirst()
@@ -580,8 +584,8 @@ public class Group extends Task {
         if(this.getState() == TaskState.FINISHED || this.getState() == TaskState.TODO){
             throw new IllegalStateException("you can't remove members now");
         }
-        if(this.getUser().equals(member)){
-            throw new IllegalArgumentException("Only admin users can remove members");
+        if(this.getUser().equals(member) || !this.getUser().equals(admin)){
+            throw new IllegalArgumentException("Only admin user can remove members");
         }
         if (!members.contains(member) || !members.contains(admin)) {
             throw new IllegalArgumentException("The member is not part of the group");
@@ -656,9 +660,6 @@ public class Group extends Task {
         }
         throw new IllegalArgumentException("The user does not have a subtask assigned.");
     }
-
-
-
 }
 
 

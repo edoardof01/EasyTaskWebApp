@@ -53,7 +53,7 @@ class GroupEndpointTest {
                 .contentType(ContentType.JSON)
                 .body(registrationData)
                 .when()
-                .post("http://localhost:8080/EasyTask-1.0-SNAPSHOT/api/register")  // Adatta l’endpoint se serve
+                .post("http://localhost:8080/EasyTask-1.0-SNAPSHOT/api/register")  // Adatta endpoint se serve
                 .then()
                 .log().all()
                 .statusCode(201);

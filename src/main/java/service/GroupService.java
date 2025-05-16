@@ -41,8 +41,6 @@ public class GroupService {
 
 
 
-
-
     public GroupDTO getGroupById(long id) {
         Group group = groupDAO.findById(id);
         if (group == null) {
@@ -58,7 +56,7 @@ public class GroupService {
                 toList();
     }
 
-    public GroupDTO createGroup(String name, long userId, Topic topic, @Nullable LocalDateTime deadline,@Nullable LocalDateTime dateOnFeed, Integer totalTime,
+    public GroupDTO createGroup(String name, long userId, Topic topic, @Nullable LocalDateTime deadline, Integer totalTime,
                                 Timetable timeSlots, List<StrategyInstance> strategies, int priority,
                                 String description, List<Resource> resources, @NotNull List<Subtask> subtasks, Subtask chosenSubtask, @NotNull List<Session> sessions,
                                 Integer requiredUsers) {
@@ -94,7 +92,7 @@ public class GroupService {
 
         validateSessions(sessions, timeSlots, totalTime);
 
-        Group group = new Group(requiredUsers, user, name, topic, deadline, description, subtasks, sessions, 0, priority, timeSlots,
+        Group group = new Group(requiredUsers, user, name, topic, deadline, description, subtasks, sessions, priority, timeSlots,
                 totalTime, strategies, resources);
 
         for(Subtask subtask : subtasks) {

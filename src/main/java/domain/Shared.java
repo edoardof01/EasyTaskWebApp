@@ -109,10 +109,10 @@ public class Shared extends Task {
 
     public void completeBySessionsAndChooseBestComment(Comment comment) {
         if(!comments.contains(comment)){
-        throw new EntityNotFoundException("The comment selected is not found");
+            throw new EntityNotFoundException("The comment selected is not found");
         }
         if(this.getState() != TaskState.INPROGRESS) {
-         throw new IllegalStateException("The shared task is not in progress");
+            throw new IllegalStateException("The shared task is not in progress");
         }
         this.commonCompleteBySessionsLogic(this.getUser());
         this.setIsOnFeed(false);
@@ -129,7 +129,7 @@ public class Shared extends Task {
         this.setIsOnFeed(false);
     }
 
-    
+
 }
 
 

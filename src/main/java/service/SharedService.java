@@ -80,8 +80,8 @@ public class SharedService {
         validateSessions(sessions, timeSlots, totalTime);
 
 
-        Shared sharedTask = new Shared(name, existingUser, topic, deadline, description, subtasks, sessions,
-                0 , priority, timeSlots, totalTime, strategies, resources, userGuidance);
+        Shared sharedTask = new Shared(name, existingUser, topic, deadline, description, subtasks, sessions,0,
+                priority, timeSlots, totalTime, strategies, resources, userGuidance);
 
         sharedTask.setComplexity(calculateComplexity(subtasks,resources));
 

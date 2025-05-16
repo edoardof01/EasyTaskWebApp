@@ -20,12 +20,6 @@ public class FeedService implements Serializable {
     @Inject
     private TaskDAO taskDAO;
 
-    @Inject
-    private GroupDAO groupDAO;
-
-    @Inject
-    private SharedDAO sharedDAO;
-
     public Topic getTopicFilter() {
         return topicFilter;
     }

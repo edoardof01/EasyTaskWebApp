@@ -5,7 +5,6 @@ import domain.Topic;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import service.FeedService;
 
 import java.util.List;

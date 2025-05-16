@@ -36,12 +36,6 @@ class GroupEntityTest {
     private Subtask subtask3;
     private TaskCalendar taskCalendar;
 
-    private Profile profile;
-    private Profile profile2;
-    private Profile profile3;
-
-    private TakenSubtask takenSubtask;
-    private TakenSubtask takenSubtask2;
     private TakenSubtask takenSubtask3;
 
     @BeforeEach
@@ -81,7 +75,7 @@ class GroupEntityTest {
         member2.setCalendar(calendar3);
         calendar3.setUser(member2);
 
-        profile = new Profile();
+        Profile profile = new Profile();
         profile.setUsername("MARCO");
         profile.setId(1L);
         Map<Topic, Integer> topicsMap = new HashMap<>();
@@ -90,7 +84,7 @@ class GroupEntityTest {
         profile.setTopics(topicsMap);
         user.setPersonalProfile(profile);
 
-        profile2 = new Profile();
+        Profile profile2 = new Profile();
         profile2.setId(2L);
         profile2.setUsername("MARIA");
         Map<Topic, Integer> topicsMap2 = new HashMap<>();
@@ -99,7 +93,7 @@ class GroupEntityTest {
         profile2.setTopics(topicsMap2);
         member.setPersonalProfile(profile2);
 
-        profile3 = new Profile();
+        Profile profile3 = new Profile();
         profile3.setId(2L);
         profile3.setUsername("BRUNO");
         Map<Topic, Integer> topicsMap3 = new HashMap<>();
@@ -126,12 +120,12 @@ class GroupEntityTest {
         subtask3.setName("Subtask3");
         subtask3.setSessions(List.of(session3));
 
-        takenSubtask = new TakenSubtask();
+        TakenSubtask takenSubtask = new TakenSubtask();
         takenSubtask.setId(1L);
         takenSubtask.setUser(user);
         takenSubtask.setSubtask(subtask);
 
-        takenSubtask2 = new TakenSubtask();
+        TakenSubtask takenSubtask2 = new TakenSubtask();
         takenSubtask2.setId(2L);
         takenSubtask2.setUser(member);
         takenSubtask2.setSubtask(subtask2);
@@ -141,19 +135,19 @@ class GroupEntityTest {
         takenSubtask3.setUser(member2);
         takenSubtask3.setSubtask(subtask3);
 
-        List<TakenSubtask> takenList = new ArrayList<>(List.of(takenSubtask,takenSubtask2,takenSubtask3));
+        List<TakenSubtask> takenList = new ArrayList<>(List.of(takenSubtask, takenSubtask2,takenSubtask3));
 
         session1.setId(1L);
         session1.setStartDate(LocalDateTime.of(2025, 3, 20, 10, 0));
         session1.setEndDate(LocalDateTime.of(2025, 3, 20, 11, 0));
         session1.setState(SessionState.PROGRAMMED);
         session2.setId(2L);
-        session2.setStartDate(LocalDateTime.of(2025, 3, 20, 12, 0));
-        session2.setEndDate(LocalDateTime.of(2025, 3, 20, 13, 0));
+        session2.setStartDate(LocalDateTime.of(2025, 4, 20, 12, 0));
+        session2.setEndDate(LocalDateTime.of(2025, 4, 20, 13, 0));
         session2.setState(SessionState.PROGRAMMED);
         session3.setId(3L);
-        session3.setStartDate(LocalDateTime.of(2025, 3, 20, 14, 0));
-        session3.setEndDate(LocalDateTime.of(2025, 3, 20, 15, 0));
+        session3.setStartDate(LocalDateTime.of(2025, 5, 20, 14, 0));
+        session3.setEndDate(LocalDateTime.of(2025, 5, 20, 15, 0));
         session3.setState(SessionState.PROGRAMMED);
 
 
@@ -683,7 +677,7 @@ class GroupEntityTest {
 
     @Test
     void autoSkipIfNotCompletedTest_nowBeforeNextSession() {
-        session2.setStartDate(LocalDateTime.now().plusHours(1));
+        session2.setStartDate(LocalDateTime.now().plusHours(2));
         group.autoSkipIfNotCompleted(session1);
         assertEquals(SessionState.PROGRAMMED, session1.getState());
     }

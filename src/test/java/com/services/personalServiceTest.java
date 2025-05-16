@@ -60,8 +60,8 @@ class PersonalServiceTest {
         personal.setUser(user);
         session = new Session();
         session.setId(1L);
-        session.setStartDate(LocalDateTime.of(2025, 3, 20, 10, 0));
-        session.setEndDate(LocalDateTime.of(2025, 3, 20, 11, 0));
+        session.setStartDate(LocalDateTime.of(2025, 7, 20, 10, 0));
+        session.setEndDate(LocalDateTime.of(2025, 7, 20, 11, 0));
         session.setState(SessionState.PROGRAMMED);
         List<Session> sessions = new ArrayList<>(List.of(session));
         personal.setSessions(sessions);
@@ -115,8 +115,8 @@ class PersonalServiceTest {
         List<Resource> resources = new ArrayList<>(); // lista vuota ma valida
         // Creiamo una sessione valida (dato che le sessioni sono obbligatorie)
         Session session = new Session();
-        session.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        session.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
+        session.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        session.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
         List<Session> sessions = List.of(session);
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -137,8 +137,8 @@ class PersonalServiceTest {
         List<Resource> resources = new ArrayList<>(); // lista vuota ma valida
         // Creiamo una sessione valida (dato che le sessioni sono obbligatorie)
         Session session = new Session();
-        session.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        session.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
+        session.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        session.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
         List<Session> sessions = List.of(session);
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -158,8 +158,8 @@ class PersonalServiceTest {
         List<Resource> resources = new ArrayList<>(); // lista vuota ma valida
         // Creiamo una sessione valida (dato che le sessioni sono obbligatorie)
         Session session = new Session();
-        session.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        session.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
+        session.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        session.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
         List<Session> sessions = List.of(session);
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -182,8 +182,8 @@ class PersonalServiceTest {
         List<Resource> resources = new ArrayList<>(); // lista vuota ma valida
         // Creiamo una sessione valida (dato che le sessioni sono obbligatorie)
         Session session = new Session();
-        session.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        session.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
+        session.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        session.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
         List<Session> sessions =
                 List.of(session);
 
@@ -205,8 +205,8 @@ class PersonalServiceTest {
         List<Resource> resources = new ArrayList<>(); // lista vuota ma valida
         // Creiamo una sessione valida (dato che le sessioni sono obbligatorie)
         Session session = new Session();
-        session.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        session.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
+        session.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        session.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
         List<Session> sessions = List.of(session);
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -245,8 +245,8 @@ class PersonalServiceTest {
         List<Resource> resources = new ArrayList<>(); // lista vuota ma valida
         // Creiamo una sessione valida (dato che le sessioni sono obbligatorie)
         Session session = new Session();
-        session.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        session.setEndDate(LocalDateTime.of(2025, 3, 9, 12, 0));
+        session.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        session.setEndDate(LocalDateTime.of(2025, 7, 9, 12, 0));
         List<Session> sessions =
                 List.of(session);
 
@@ -274,11 +274,11 @@ class PersonalServiceTest {
         int priority = 1;
         Timetable timeSlots = Timetable.ALL_DAY;
         String description = "Test description";
-        LocalDateTime deadline = LocalDateTime.of(2025, 3, 9, 10, 0);
+        LocalDateTime deadline = LocalDateTime.of(2025, 7, 9, 10, 0);
         List<Resource> resources = new ArrayList<>();
         Session session = new Session();
-        session.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        session.setEndDate(LocalDateTime.of(2025, 3, 9, 12, 0));
+        session.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        session.setEndDate(LocalDateTime.of(2025, 7, 9, 12, 0));
         List<StrategyInstance> strategies = List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS,null,null));
         List<Session> sessions = List.of(session);
 
@@ -302,8 +302,8 @@ class PersonalServiceTest {
         List<Resource> resources = new ArrayList<>(); // lista vuota ma valida
         // Creiamo una sessione valida (dato che le sessioni sono obbligatorie)
         Session session = new Session();
-        session.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        session.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
+        session.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        session.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
         List<StrategyInstance> strategies = List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS,null,null),
                 new StrategyInstance(DefaultStrategy.FREEZE_TASK_AFTER_TOT_SKIPPED_SESSIONS,2,null));
         List<Session> sessions = List.of(session);
@@ -330,8 +330,8 @@ class PersonalServiceTest {
         List<Resource> resources = new ArrayList<>(); // lista vuota ma valida
         // Creiamo una sessione valida (dato che le sessioni sono obbligatorie)
         Session session = new Session();
-        session.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        session.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
+        session.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        session.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
         List<StrategyInstance> strategies = List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS,null,null));
         List<Session> sessions = List.of(session);
 
@@ -356,14 +356,14 @@ class PersonalServiceTest {
         List<Resource> resources = new ArrayList<>(); // lista vuota ma valida
 
         Session personalSession = new Session();
-        personalSession.setStartDate(LocalDateTime.of(2025, 3, 9, 11, 0));
-        personalSession.setEndDate(LocalDateTime.of(2025, 3, 9, 12, 0));
+        personalSession.setStartDate(LocalDateTime.of(2025, 7, 9, 11, 0));
+        personalSession.setEndDate(LocalDateTime.of(2025, 7, 9, 12, 0));
         List<StrategyInstance> strategies = List.of(new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS,null,null));
         List<Session> sessions = new ArrayList<>(List.of(personalSession));
 
         Session calendarSession = new Session();
-        calendarSession.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 15));
-        calendarSession.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 15));
+        calendarSession.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 15));
+        calendarSession.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 15));
         List<Session> calendarSessions = new ArrayList<>(List.of(calendarSession));
 
         when(userDAO.findById(userId)).thenReturn(user);
@@ -396,10 +396,10 @@ class PersonalServiceTest {
 
         Session personalSession = new Session();
         Session personalSession2 = new Session();
-        personalSession.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        personalSession.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
-        personalSession2.setStartDate(LocalDateTime.of(2025, 3, 9, 14, 0));
-        personalSession2.setEndDate(LocalDateTime.of(2025, 3, 9, 15, 0));
+        personalSession.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        personalSession.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
+        personalSession2.setStartDate(LocalDateTime.of(2025, 7, 9, 14, 0));
+        personalSession2.setEndDate(LocalDateTime.of(2025, 7, 9, 15, 0));
         List<Session> sessions = new ArrayList<>(List.of(personalSession, personalSession2));
 
         // Crea due subtasks che usano le stesse sessioni della lista principale (caso valido)
@@ -439,10 +439,10 @@ class PersonalServiceTest {
 
         Session personalSession = new Session();
         Session personalSession2 = new Session();
-        personalSession.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        personalSession.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
-        personalSession2.setStartDate(LocalDateTime.of(2025, 3, 9, 14, 0));
-        personalSession2.setEndDate(LocalDateTime.of(2025, 3, 9, 15, 0));
+        personalSession.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        personalSession.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
+        personalSession2.setStartDate(LocalDateTime.of(2025, 7, 9, 14, 0));
+        personalSession2.setEndDate(LocalDateTime.of(2025, 7, 9, 15, 0));
         List<Session> sessions = new ArrayList<>(List.of(personalSession, personalSession2));
 
         // Crea due subtasks che usano le stesse sessioni della lista principale (caso valido)
@@ -488,10 +488,10 @@ class PersonalServiceTest {
 
         Session personalSession = new Session();
         Session personalSession2 = new Session();
-        personalSession.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        personalSession.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
-        personalSession2.setStartDate(LocalDateTime.of(2025, 3, 9, 14, 0));
-        personalSession2.setEndDate(LocalDateTime.of(2025, 3, 9, 15, 0));
+        personalSession.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        personalSession.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
+        personalSession2.setStartDate(LocalDateTime.of(2025, 7, 9, 14, 0));
+        personalSession2.setEndDate(LocalDateTime.of(2025, 7, 9, 15, 0));
         List<Session> sessions = new ArrayList<>(List.of(personalSession, personalSession2));
 
         // Crea due subtasks che usano le stesse sessioni della lista principale (caso valido)
@@ -541,10 +541,10 @@ class PersonalServiceTest {
 
         Session personalSession = new Session();
         Session personalSession2 = new Session();
-        personalSession.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        personalSession.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
-        personalSession2.setStartDate(LocalDateTime.of(2025, 3, 9, 14, 0));
-        personalSession2.setEndDate(LocalDateTime.of(2025, 3, 9, 15, 0));
+        personalSession.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        personalSession.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
+        personalSession2.setStartDate(LocalDateTime.of(2025, 7, 9, 14, 0));
+        personalSession2.setEndDate(LocalDateTime.of(2025, 7, 9, 15, 0));
         List<Session> sessions = new ArrayList<>(List.of(personalSession, personalSession2));
 
         // Crea due subtasks che usano le stesse sessioni della lista principale (caso valido)
@@ -696,7 +696,7 @@ class PersonalServiceTest {
     @Test
     void modifyPersonalTest_SKIPPEDStrategyAndDeadline() {
         List<Session> sessions = new  ArrayList<>(personal.getSessions());
-        LocalDateTime deadline = LocalDateTime.of(2025, 3, 1, 10, 0);
+        LocalDateTime deadline = LocalDateTime.of(2025, 7, 1, 10, 0);
 
         assertThrows(IllegalArgumentException.class, () ->
                 personalService.modifyPersonal(1L, personal.getName(),Topic.ART, deadline, 1, Timetable.ALL_DAY,
@@ -724,8 +724,8 @@ class PersonalServiceTest {
     @Test
     void modifyPersonalTest_ValidData() {
         Session existingSession = new Session();
-        existingSession.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        existingSession.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
+        existingSession.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        existingSession.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
 
         Calendar calendar = new Calendar(user);
         calendar.addSessions(List.of(existingSession));
@@ -734,8 +734,8 @@ class PersonalServiceTest {
         when(personalDAO.findById(1L)).thenReturn(personal);
 
         Session newSession = new Session();
-        newSession.setStartDate(LocalDateTime.of(2025, 3, 9, 11, 30));
-        newSession.setEndDate(LocalDateTime.of(2025, 3, 9, 12, 30));
+        newSession.setStartDate(LocalDateTime.of(2025, 7, 9, 11, 30));
+        newSession.setEndDate(LocalDateTime.of(2025, 7, 9, 12, 30));
 
         List<Session> sessions = new ArrayList<>(List.of(newSession));
 
@@ -764,8 +764,8 @@ class PersonalServiceTest {
 
         // Calendario dell'utente con una sessione 10:00-11:00
         Session existingSession = new Session();
-        existingSession.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        existingSession.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
+        existingSession.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        existingSession.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
 
 
         Calendar calendar = new Calendar(user);
@@ -778,8 +778,8 @@ class PersonalServiceTest {
 
         // modifico la sessione del personal
         Session newSession = new Session();
-        newSession.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 30));
-        newSession.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 30));
+        newSession.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 30));
+        newSession.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 30));
 
         List<Session> sessions = new ArrayList<>(List.of(newSession));
 
@@ -799,12 +799,12 @@ class PersonalServiceTest {
         user.setCalendar(calendar);
 
         Session session1 = new Session();
-        session1.setStartDate(LocalDateTime.of(2025, 3, 9, 10, 0));
-        session1.setEndDate(LocalDateTime.of(2025, 3, 9, 11, 0));
+        session1.setStartDate(LocalDateTime.of(2025, 7, 9, 10, 0));
+        session1.setEndDate(LocalDateTime.of(2025, 7, 9, 11, 0));
 
         Session session2 = new Session();
-        session2.setStartDate(LocalDateTime.of(2025, 3, 9, 14, 0));
-        session2.setEndDate(LocalDateTime.of(2025, 3, 9, 15, 0));
+        session2.setStartDate(LocalDateTime.of(2025, 7, 9, 14, 0));
+        session2.setEndDate(LocalDateTime.of(2025, 7, 9, 15, 0));
         List<Session> newSessions = List.of(session1, session2);
         personal.getSessions().addAll(newSessions);
 

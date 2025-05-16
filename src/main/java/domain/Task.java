@@ -330,6 +330,8 @@ public abstract class Task {
         if (this.getIsInProgress() && this.getState() == TaskState.INPROGRESS) {
             user.getCalendar().removeSessions(this);
             this.setState(TaskState.FREEZED);
+            this.setSkippedSessions(0);
+            this.setConsecutiveSkippedSessions(0);
         }
         this.isInProgress = false;
     }
@@ -396,9 +398,7 @@ public abstract class Task {
             }
         }
         this.setState(TaskState.FINISHED);
-        this.percentageOfCompletion = 100;
-
-
+        this.setPercentageOfCompletion(100);
     }
 
     // METODI PER LE SESSIONI SALTATE
@@ -408,18 +408,20 @@ public abstract class Task {
         }
         session.setState(SessionState.SKIPPED);
         Subtask incriminatedSubtask = null;
+        Session matchedSession = null;
         boolean sessionFound = false;
         for (Subtask subtask : this.getSubtasks()) {
             for (Session subSession : subtask.getSessions()) {
                 if (subSession.equals(session)) {
                     incriminatedSubtask = subtask;
+                    matchedSession = subSession;
                     subSession.setState(SessionState.SKIPPED);
                     sessionFound = true;
                     break;
                 }
             }
         }
-        if (!sessionFound && !subtasks.isEmpty()) {
+        if (!sessionFound && !subtasks.isEmpty() ) {
             throw new IllegalStateException("Session not found in any subtask. CLASS TASK skipSession");
         }
         boolean shouldAddAtEnd = strategies.stream()
@@ -434,22 +436,24 @@ public abstract class Task {
             LocalDateTime newEndDate = newStartDate.plusMinutes(session.getDurationMinutes());
 
             if (this.getDeadline() != null && (newEndDate.isAfter(this.getDeadline()))) {
-                // Rimane SKIPPED definitivamente, non faccio nulla
-                System.out.println("La sessione supera la deadline, resta SKIPPED");
+                System.out.println("the session exceeds the deadline, it remains SKIPPED");
             } else {
                 sessions.remove(session); // rimuovi dall’elenco
                 if(incriminatedSubtask != null) {
-                    incriminatedSubtask.getSessions().remove(session);
+                    incriminatedSubtask.getSessions().remove(matchedSession);
                 }
 
                 session.setStartDate(newStartDate);
                 session.setEndDate(newEndDate);
+
                 if(incriminatedSubtask != null) {
-                    incriminatedSubtask.getSessions().add(session);
+                    matchedSession.setStartDate(newStartDate);
+                    matchedSession.setEndDate(newEndDate);
+                    incriminatedSubtask.getSessions().add(matchedSession);
                 }
-                sessions.add(session);
+                this.getSessions().add(session);
                 session.setState(SessionState.PROGRAMMED);
-                sessions.sort(Comparator.comparing(Session::getStartDate));
+                this.getSessions().sort(Comparator.comparing(Session::getStartDate));
             }
         }
         skippedSessions++;
@@ -480,7 +484,7 @@ public abstract class Task {
         LocalDateTime lastSessionEnd = sessions.stream()
                 .map(Session::getEndDate)
                 .max(LocalDateTime::compareTo)
-                .orElse(LocalDateTime.now());
+                .orElseThrow(() -> new IllegalStateException("Cannot calculate new session date: no sessions available."));
 
         LocalTime timetableStart = getTimetableStart();
         LocalTime timetableEnd = getTimetableEnd();
@@ -555,8 +559,6 @@ public abstract class Task {
             case ALL_DAY -> true;  // Copre l'intera giornata
         };
     }
-
-
 
 
 

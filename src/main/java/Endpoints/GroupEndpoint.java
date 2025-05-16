@@ -2,7 +2,6 @@ package Endpoints;
 import domain.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -65,7 +64,6 @@ public class GroupEndpoint {
             // Estrai i campi da groupDTO
             String name = groupDTO.getName();
             Integer numUsers = groupDTO.getNumUser();
-            LocalDateTime dateOnFeed = groupDTO.getDateOnFeed();
             Topic topic = groupDTO.getTopic();
             LocalDateTime deadline = groupDTO.getDeadline();
             int totalTime = groupDTO.getTotalTime();
@@ -90,7 +88,7 @@ public class GroupEndpoint {
 
             // Passa i campi estratti e le entità al servizio
             GroupDTO createdGroup = groupService.createGroup(
-                    name, groupDTO.getUserId(), topic, dateOnFeed, deadline, totalTime, timeSlots, strategies, priority,
+                    name, groupDTO.getUserId(), topic, deadline, totalTime, timeSlots, strategies, priority,
                     description, resources, subtasks, chosenSubtask, sessions, numUsers);
 
             return Response.status(Response.Status.CREATED)

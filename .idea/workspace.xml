@@ -9,21 +9,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="A lot of changes and tests">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4e6091e3-4957-473c-b000-027181195eb0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/4e6091e3-4957-473c-b000-027181195eb0.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" />
+    <list default="true" id="a8471fd9-1628-45a1-a46b-34954f45cdba" name="Changes" comment="Then i'll make a try for commonToCalendarLogic">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/FeedEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/FeedEndpoint.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/GroupEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/GroupEndpoint.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/PersonalEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/PersonalEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/SharedEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/SharedEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Endpoints/UserEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Endpoints/UserEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/CommentedFolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/CommentedFolder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Group.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Group.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/domain/Shared.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Shared.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/domain/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/domain/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/timerScheduler/SessionCheckerTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/timerScheduler/SessionCheckerTime.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/GroupMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/GroupMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/SharedMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/SharedMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/orm/TaskDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/orm/TaskDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/FeedService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/FeedService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/GroupService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/GroupService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/PersonalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/PersonalService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/SharedService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/SharedService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/domain/GroupEntityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/domain/GroupEntityTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/endpoints/GroupEndpointTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/endpoints/GroupEndpointTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/services/GroupServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/services/GroupServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/services/personalServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/services/personalServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,6 +99,7 @@
     &quot;JUnit.GroupEndpointTest.testUpdateGroup.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.GroupEntityTest.SkipSessionTest_SuccessNoRescheduling.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.GroupEntityTest.autoSkipIfNotCompletedTest_nowAfterNextSessionStarted.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupEntityTest.autoSkipIfNotCompletedTest_nowBeforeNextSession.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.GroupEntityTest.completeSessionTest_successLast.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.GroupEntityTest.completeSubtaskSessionTest_failAlienSession.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.GroupEntityTest.completeSubtaskSessionTest_failCOMPLETED.executor&quot;: &quot;Run&quot;,
@@ -310,7 +315,7 @@
     &quot;JUnit.SharedEntityTest.completeBySessionsAndChooseBestCommentTest_failComment.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.SharedEntityTest.completeBySessionsAndChooseBestCommentTest_success.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.SharedEntityTest.completeBySessionsAndChooseBestComment_failFINISHED.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.SharedEntityTest.completeTaskBySessionsTest_success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedEntityTest.completeTaskBySessionsTest_success.executor&quot;: &quot;Debug&quot;,
     &quot;JUnit.SharedEntityTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.SharedEntityTest.forcedCompletion_success.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.SharedEntityTest.modifyTaskTest_successFromIsInProgress.executor&quot;: &quot;Run&quot;,
@@ -519,78 +524,78 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="CalendarDAOTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="GroupEntityTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="EasyTask" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.DAOs.*" />
+          <option name="PATTERN" value="com.domain.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.DAOs" />
-      <option name="MAIN_CLASS_NAME" value="com.DAOs.CalendarDAOTest" />
+      <option name="PACKAGE_NAME" value="com.domain" />
+      <option name="MAIN_CLASS_NAME" value="com.domain.GroupEntityTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="CalendarDAOTest.testFindAll" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="GroupEntityTest.autoSkipIfNotCompletedTest_nowBeforeNextSession" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="EasyTask" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.DAOs.*" />
+          <option name="PATTERN" value="com.domain.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.DAOs" />
-      <option name="MAIN_CLASS_NAME" value="com.DAOs.CalendarDAOTest" />
-      <option name="METHOD_NAME" value="testFindAll" />
+      <option name="PACKAGE_NAME" value="com.domain" />
+      <option name="MAIN_CLASS_NAME" value="com.domain.GroupEntityTest" />
+      <option name="METHOD_NAME" value="autoSkipIfNotCompletedTest_nowBeforeNextSession" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GroupServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="GroupEntityTest.completeTaskBySessionsTest_success" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="EasyTask" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.services.*" />
+          <option name="PATTERN" value="com.domain.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.services" />
-      <option name="MAIN_CLASS_NAME" value="com.services.GroupServiceTest" />
+      <option name="PACKAGE_NAME" value="com.domain" />
+      <option name="MAIN_CLASS_NAME" value="com.domain.GroupEntityTest" />
+      <option name="METHOD_NAME" value="completeTaskBySessionsTest_success" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PersonalEntityTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="EasyTask" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.domain.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.domain" />
+      <option name="MAIN_CLASS_NAME" value="com.domain.PersonalEntityTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GroupServiceTest.getPersonalByIdTest_Success" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SharedEntityTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="EasyTask" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.services.*" />
+          <option name="PATTERN" value="com.domain.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.services" />
-      <option name="MAIN_CLASS_NAME" value="com.services.GroupServiceTest" />
-      <option name="METHOD_NAME" value="getPersonalByIdTest_Success" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PersonalServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="EasyTask" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.services.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.services" />
-      <option name="MAIN_CLASS_NAME" value="com.services.PersonalServiceTest" />
+      <option name="PACKAGE_NAME" value="com.domain" />
+      <option name="MAIN_CLASS_NAME" value="com.domain.SharedEntityTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -617,19 +622,19 @@
     <list>
       <item itemvalue="Docker.compose" />
       <item itemvalue="JBoss/WildFly Server.JBoss/WildFly 34.0.0.Final" />
-      <item itemvalue="JUnit.CalendarDAOTest" />
-      <item itemvalue="JUnit.CalendarDAOTest.testFindAll" />
-      <item itemvalue="JUnit.GroupServiceTest" />
-      <item itemvalue="JUnit.GroupServiceTest.getPersonalByIdTest_Success" />
-      <item itemvalue="JUnit.PersonalServiceTest" />
+      <item itemvalue="JUnit.GroupEntityTest" />
+      <item itemvalue="JUnit.GroupEntityTest.autoSkipIfNotCompletedTest_nowBeforeNextSession" />
+      <item itemvalue="JUnit.GroupEntityTest.completeTaskBySessionsTest_success" />
+      <item itemvalue="JUnit.PersonalEntityTest" />
+      <item itemvalue="JUnit.SharedEntityTest" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.CalendarDAOTest" />
-        <item itemvalue="JUnit.CalendarDAOTest.testFindAll" />
-        <item itemvalue="JUnit.GroupServiceTest" />
-        <item itemvalue="JUnit.GroupServiceTest.getPersonalByIdTest_Success" />
-        <item itemvalue="JUnit.PersonalServiceTest" />
+        <item itemvalue="JUnit.SharedEntityTest" />
+        <item itemvalue="JUnit.GroupEntityTest.completeTaskBySessionsTest_success" />
+        <item itemvalue="JUnit.PersonalEntityTest" />
+        <item itemvalue="JUnit.GroupEntityTest" />
+        <item itemvalue="JUnit.GroupEntityTest.autoSkipIfNotCompletedTest_nowBeforeNextSession" />
       </list>
     </recent_temporary>
   </component>
@@ -830,7 +835,17 @@
       <workItem from="1743873428960" duration="31000" />
       <workItem from="1743946473011" duration="627000" />
       <workItem from="1744014166823" duration="1239000" />
-      <workItem from="1744118507747" duration="927000" />
+      <workItem from="1744118507747" duration="5813000" />
+      <workItem from="1744125120449" duration="6200000" />
+      <workItem from="1744135060090" duration="16000" />
+      <workItem from="1744642072344" duration="1092000" />
+      <workItem from="1744702752359" duration="1247000" />
+      <workItem from="1744730099788" duration="470000" />
+      <workItem from="1744871963009" duration="90000" />
+      <workItem from="1745476554278" duration="4035000" />
+      <workItem from="1745494906632" duration="1741000" />
+      <workItem from="1745593048976" duration="201000" />
+      <workItem from="1745593285630" duration="522000" />
     </task>
     <task id="LOCAL-00001" summary="initial building">
       <option name="closed" value="true" />
@@ -1176,7 +1191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743754727940</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="Then i'll make a try for commonToCalendarLogic">
+      <option name="closed" value="true" />
+      <created>1744119804543</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1744119804543</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1223,7 +1246,8 @@
     <MESSAGE value="Authentication e Registration" />
     <MESSAGE value="Pom change" />
     <MESSAGE value="A lot of changes and tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="A lot of changes and tests" />
+    <MESSAGE value="Then i'll make a try for commonToCalendarLogic" />
+    <option name="LAST_COMMIT_MESSAGE" value="Then i'll make a try for commonToCalendarLogic" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>

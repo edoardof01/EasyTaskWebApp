@@ -4,7 +4,6 @@ package orm;
 import domain.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 
 import java.util.ArrayList;
@@ -43,6 +42,11 @@ public class TaskDAO {
     public List<Task> findFiltered(Topic topicFilter, boolean groupFilter, boolean sharedFilter) {
         List<Task> result = new ArrayList<>();
 
+        // Se nessun filtro è attivo → findAll
+        if (!groupFilter && !sharedFilter && topicFilter == null) {
+            return findAll();
+        }
+
         if (groupFilter) {
             StringBuilder sbGroup = new StringBuilder("SELECT g FROM Group g WHERE g.isOnFeed = true ");
             if (topicFilter != null) {
@@ -69,5 +73,6 @@ public class TaskDAO {
 
         return result;
     }
+
 
 }

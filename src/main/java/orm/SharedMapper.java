@@ -6,9 +6,7 @@ import jakarta.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.eclipse.persistence.expressions.ExpressionOperator.LocalDateTime;
 
 @ApplicationScoped
 public class SharedMapper {
@@ -62,7 +60,7 @@ public class SharedMapper {
                 sharedDTO.getDescription(),
                 subtasks,
                 sessions,
-                sharedDTO.getPercentageOfCompletion(),
+                0,
                 sharedDTO.getPriority(),
                 sharedDTO.getTimetable(),
                 sharedDTO.getTotalTime(),
@@ -71,35 +69,7 @@ public class SharedMapper {
                 sharedDTO.getUserGuidance()
         );
     }
-    public void updateSharedFromDTO(SharedDTO sharedDTO, Shared shared) {
-        if (sharedDTO == null || shared == null) {
-            throw new NullPointerException();
-        }
 
-        // Aggiornamento delle proprietà principali
-        shared.setName(sharedDTO.getName());
-        shared.setDeadline(sharedDTO.getDeadline());
-        shared.setDescription(sharedDTO.getDescription());
-        shared.setPercentageOfCompletion(sharedDTO.getPercentageOfCompletion());
-        shared.setComplexity(sharedDTO.getComplexity());
-        shared.setPriority(sharedDTO.getPriority());
-        shared.setTimetable(sharedDTO.getTimetable());
-        shared.setTotalTime(sharedDTO.getTotalTime());
-
-        // Aggiornamento dello stato e delle strategie
-        shared.setState(sharedDTO.getTaskState());
-        shared.setStrategies(sharedDTO.getStrategies());
-        List<Resource> resources = sharedDTO.getResources()
-                .stream()
-                .map(resourceMapper::toResourceEntity)
-                .collect(Collectors.toList());
-        shared.setResources(resources);
-
-        // Se c'è una proprietà che rappresenta la guida dell'utente, aggiornarla (facoltativo)
-        if (sharedDTO.getUserGuidance() != null) {
-            shared.updateUserGuidance(sharedDTO.getUserGuidance());
-        }
-    }
 }
 
 

@@ -216,6 +216,10 @@ public class PersonalService {
                 throw new IllegalArgumentException("Session startDate and endDate cannot be null");
             }
 
+            if(session.getStartDate().isBefore(LocalDateTime.now())){
+                throw new IllegalArgumentException("Session startDate cannot be before current date");
+            }
+
             if (!session.getStartDate().isBefore(session.getEndDate())) {
                 throw new IllegalArgumentException("Session startDate must be before endDate");
             }
@@ -352,7 +356,7 @@ public class PersonalService {
         personalTask.setPriority(priority);
         personalTask.getStrategies().clear();
         personalTask.getStrategies().addAll(strategies);
-        if (description != null) personalTask.setDescription(description);
+        personalTask.setDescription(description);
         if (resources != null) {
             personalTask.getResources().clear();
             personalTask.getResources().addAll(resources);

@@ -38,6 +38,12 @@ public class GroupServiceTest {
     private UserDAO userDAO;
     @Mock
     private SubtaskDAO subtaskDAO;
+    @Mock
+    private TaskCalendarDAO taskCalendarDAO;
+    @Mock
+    private CalendarDAO calendarDAO;
+
+
 
     private Group group;
     private GroupDTO groupDTO;
@@ -151,11 +157,12 @@ public class GroupServiceTest {
         groupDTO = new GroupDTO();
         groupDTO.setId(1L);
         groupDTO.setName("Test Group");
+
     }
 
 
     @Test
-    void getPersonalByIdTest_Success() {
+    void getGroupByIdTest_Success() {
         when(groupDAO.findById(1L)).thenReturn(group);
         when(groupMapper.toGroupDTO(group)).thenReturn(groupDTO);
         GroupDTO result = groupService.getGroupById(1L);
@@ -170,7 +177,7 @@ public class GroupServiceTest {
     }
 
     @Test
-    void getPersonalByIdTest_failNotFound() {
+    void getGroupByIdTest_failNotFound() {
         when(groupDAO.findById(99L)).thenReturn(null);
         assertThrows(EntityNotFoundException.class, () -> groupService.getGroupById(99L)); //
         verify(groupDAO, times(1)).findById(99L);
@@ -183,7 +190,7 @@ public class GroupServiceTest {
     @Test
     void createGroupTest_failNullMandatoryFieldName(){
         group.setName(null);
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
 
 
@@ -192,7 +199,7 @@ public class GroupServiceTest {
     @Test
     void createGroupTest_failNullMandatoryFieldTopic(){
         group.setTopic(null);
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
 
     }
@@ -200,32 +207,32 @@ public class GroupServiceTest {
     @Test
     void createGroupTest_failNullMandatoryFieldTimeTable(){
         group.setTimetable(null);
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null,  group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
     }
 
     @Test
     void createGroupTest_failNullMandatoryFieldStrategies(){
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null,  group.getTotalTime(),
                 group.getTimetable(),null ,group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
     }
 
     @Test
     void createGroupTest_failEmptyFieldStrategies(){
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null,  group.getTotalTime(),
                 group.getTimetable(),null ,group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
     }
 
 
     @Test
     void createGroupTest_failNullMandatoryFieldSessions(){
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null,  group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,null,group.getNumUsers()));
     }
 
     @Test
     void createGroupTest_failEmptyFieldSessions(){
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null,  group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,new ArrayList<>(),group.getNumUsers()));
     }
 
@@ -233,27 +240,27 @@ public class GroupServiceTest {
     @Test
     void createGroupTest_failFieldPriorityLessThanZero(){
         group.setPriority(-1);
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null,  group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
     }
     @Test
     void createGroupTest_failFieldPriorityMoreThanFive(){
         group.setPriority(6);
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
     }
 
     @Test
     void createGroupTest_failFieldRequiredUsersDifferentFromNUmberOfSubtasks(){
         group.setSubtasks(new ArrayList<>(List.of(subtask1)));
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),null, group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
     }
 
     @Test
     void createGroupTest_failSKIPPEDStrategyAndDeadline(){
         group.setDeadline(LocalDateTime.of(2027, 7, 10, 10, 0));
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
     }
 
@@ -262,27 +269,27 @@ public class GroupServiceTest {
         StrategyInstance strategyInstance = new StrategyInstance(DefaultStrategy.FREEZE_TASK_AFTER_TOT_CONSECUTIVE_SKIPPED_SESSIONS,null,1);
         StrategyInstance strategyInstance2 = new StrategyInstance(DefaultStrategy.SKIPPED_SESSIONS_NOT_POSTPONED_THE_TASK_CANNOT_BE_FREEZED_FOR_SKIPPED_SESSIONS,null,null);
         group.setStrategies(new ArrayList<>(List.of(strategyInstance,strategyInstance2)));
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
     }
 
     @Test
     void createGroupTest_failSubtaskSession(){
         calendar.addSessions(new ArrayList<>(List.of(new Session(LocalDateTime.of(2025, 3, 20, 10, 30),LocalDateTime.of(2025, 3, 20, 11, 30)))));
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(),  group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
     }
 
     @Test
     void createGroupTest_failSubtasksSessionsDifferFromTaskSessions(){
         subtask1.getSessions().add(new Session(LocalDateTime.of(2025, 3, 20, 18, 30),LocalDateTime.of(2025, 3, 20, 18, 30)));
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
     }
     @Test
     void createGroupTest_failSubtasksSessionAlreadyAssigned(){
         subtask1.getSessions().add(session2);
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
     }
 
@@ -293,7 +300,7 @@ public class GroupServiceTest {
         List<Resource> resources = new ArrayList<>(List.of(resource1,resource2));
         group.setResources(resources);
         subtask1.setResources(new ArrayList<>(List.of(resource1)));
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
     }
 
@@ -302,7 +309,7 @@ public class GroupServiceTest {
         group.setTimetable(Timetable.MORNING);
         session1.setStartDate(LocalDateTime.of(2025, 3, 20, 18, 30));
         session1.setEndDate(LocalDateTime.of(2025, 3, 20, 19, 30));
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
 
     }
@@ -310,7 +317,7 @@ public class GroupServiceTest {
     @Test
     void createGroupTest_failSessionDifferFromTotalTime(){
         group.setTotalTime(1);
-        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), null, group.getTotalTime(),
+        assertThrows(IllegalArgumentException.class, ()-> groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers()));
 
     }
@@ -319,7 +326,8 @@ public class GroupServiceTest {
     void createGroupTest_success(){
         when(userDAO.findById(1L)).thenReturn(user);
         when(groupMapper.toGroupDTO(any(Group.class))).thenReturn(groupDTO);
-        GroupDTO result = groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), null, group.getTotalTime(),
+
+        GroupDTO result = groupService.createGroup(group.getName(),user.getId(),group.getTopic(),group.getDeadline(), group.getTotalTime(),
                 group.getTimetable(),group.getStrategies(),group.getPriority(),group.getDescription(),group.getResources(),group.getSubtasks(),subtask1,group.getSessions(),group.getNumUsers());
         assertAll(
                 ()-> assertThat(result).isNotNull(),
@@ -328,6 +336,7 @@ public class GroupServiceTest {
                     assertEquals("Test Group",result.getName());
                 }
         );
+        verify(taskCalendarDAO).save(any(TaskCalendar.class));
     }
 
     @Test
@@ -636,6 +645,7 @@ public class GroupServiceTest {
                 ()-> assertThat(user.getCalendar().getSessions()).doesNotContainAnyElementsOf(subtask1.getSessions()),
                 ()-> assertThat(member.getCalendar().getSessions()).doesNotContainAnyElementsOf(subtask2.getSessions())
         );
+        verify(calendarDAO, atLeastOnce()).update(any(Calendar.class));
     }
 
     @Test
